@@ -560,6 +560,20 @@ Omitting `crop` retains the full screenshot.
 Raw screenshots and snapshots remain complete, and the production legend sits below the cropped image under T11.
 The preview establishes crop geometry only; production annotation rendering remains governed by the previously approved visual rules.
 
+### T39. Match evidence by unique step name
+
+Agreed on 2026-10-15 during M1 contract review.
+Use each step's file-wide unique name to match it with earlier evidence in the flow.
+Renaming a step creates a new, incomplete step requiring capture, even when its checks are identical.
+Removing a step excludes its results from current outcomes and check counts and moves its evidence into bounded history under T29.
+Reordering steps or criteria preserves evidence when the criterion wording and effective step settings remain unchanged.
+Changing the step's criterion invalidates its evidence under T27.
+Build and environment compatibility remain required under T32-T35.
+
+For example, renaming `after` to `updated-total` requires a new capture.
+Matching does not infer identity from similar names or identical checks.
+Inherited settings and the complete normalized effective step configuration remain M1 contract work.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.

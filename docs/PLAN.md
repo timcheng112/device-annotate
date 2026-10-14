@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with build-identity, missing-environment, check, annotation, and crop contracts approved in T32-T38.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with build-identity, missing-environment, check, annotation, crop, and step-matching contracts approved in T32-T39.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -166,6 +166,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T36](DESIGN.md#t36-one-predicate-per-expectation) defines standalone checks and one predicate per expectation.
 [T37](DESIGN.md#t37-annotation-input-shapes) defines the five annotation input shapes.
 [T38](DESIGN.md#t38-crop-to-targets-while-preserving-drawable-evidence) defines crop targets, padding, and preservation of drawable evidence.
+[T39](DESIGN.md#t39-match-evidence-by-unique-step-name) defines step matching, renaming, removal, and reordering for evidence reuse.
 The package foundation and offline build-identity, check, annotation, and crop schemas are implemented; remaining spec, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
@@ -239,6 +240,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Test that an uncaptured step remains incomplete and that replacing one step's result preserves other steps.
 - Test zero checks, all-pass and mixed results, INFO exclusion, uncaptured steps, and recapture replacement without double counting.
 - Test selector/check/annotation edits affecting one step, criterion and shared-setting changes affecting dependent steps, new steps, and formatting-only edits.
+- Verify T39: renamed steps are incomplete, removed steps leave current counts and enter bounded history, and step/criterion reordering preserves compatible evidence.
 - Verify that invalidated passes and their check counts cannot contribute to current outcomes, and that reused evidence retains its original capture time and provenance.
 - Verify that evidence with unknown build identity is never automatically reused, as required by T33.
 - Test that device/platform, OS, display-configuration, and tool-version changes invalidate old results, while ordinary navigation does not.
@@ -314,6 +316,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - End-to-end tests drive the neutral fixture app with agent-device, then capture evidence on both platforms.
 - Demonstrate a passing criterion, a real assertion failure, and an evidence error with their distinct artifacts and outcomes.
 - Verify multi-step aggregation and replacement of a previously captured step.
+- Verify safe archival of removed and renamed steps' evidence under T39 without losing artifacts referenced by retained steps.
 - Verify T35 with missing environment metadata, including actionable multi-step errors, allowed fresh single-step captures, and exclusion of evidence with unknown compatibility from reuse.
 - Verify that failed saves cannot trigger history pruning, referenced current artifacts remain intact, repeated cleanup is safe, and cleanup touches only eligible package-managed files.
 - Test capture-versus-capture and capture-versus-cleanup contention, path aliases for the same folder, normal lock release, and recovery after an interrupted owner.
@@ -348,13 +351,13 @@ These tasks are part of the implementation sequence, not additional settled deci
 Investigate runtime facts directly and review any resulting user-visible behavior choices before implementing the affected contract.
 
 - M0: establish reliable app/build and environment identity metadata, and determine how an affected verification flow can be identified when runtime metadata is insufficient.
-- M1, before freezing the schema: define exact annotation/check/crop/recording fields, check counts, grouped-number representation, provenance, and managed history records.
+- M1, before freezing the schema: compose the approved annotation/check/crop contracts with the remaining root and step settings, recording fields, check counts, grouped-number representation, environment provenance, and managed history records.
 - M1, before implementing persistence: define partial and pre-capture error records, including optional artifact paths and unavailable device metadata.
-- M1, before enabling reuse: specify step/criterion matching, removed and renamed steps, inherited settings, and caller-provided build provenance within the per-spec flow boundary approved in T32 and missing-identity behavior approved in T33.
+- M1, before enabling reuse: finish inherited settings and effective step configuration under T27 and T39, carrying the approved build and environment rules in T32-T35 through the manifest contract.
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T38 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T39 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.
