@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T45 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T46 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -173,6 +173,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T43](DESIGN.md#t43-spec-level-history-retention-settings) defines retention settings and defaults at spec scope.
 [T44](DESIGN.md#t44-output-paths-relative-to-the-spec) defines spec-relative output paths and invocation-relative CLI path arguments.
 [T45](DESIGN.md#t45-per-capture-video-references) defines per-capture references to caller-owned videos and file preflight.
+[T46](DESIGN.md#t46-errors-before-evidence-capture) defines pre-capture errors with known context and omitted unavailable evidence.
 The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
@@ -205,8 +206,12 @@ Blank paths and embedded null characters fail validation; filesystem checks, sym
 The ninth slice adds [recording input validation](../src/spec/recordings.ts), its [generated JSON Schema](../src/spec/recordings.schema.json), an [input example](../examples/recordings.json), and [file preflight](../src/capture/recordings.ts).
 Preflight returns absolute references after checking readability and regular-file status without changing or copying the caller's files.
 Tests use opaque synthetic bytes to check file access, not video decoding; actual capture ordering, manifest references, and cleanup protection still need M5 integration.
-On 2026-10-15, `npm run check` passed type checking, all 298 tests, and all nine generated-schema freshness checks.
-Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+The tenth slice adds the [pre-capture error schema and conversion](../src/spec/errors.ts), its [generated JSON Schema](../src/spec/pre-capture-error.schema.json), and an [example](../examples/pre-capture-error.json).
+Input diagnostics retain every issue's field location and include only validated context; recording file failures now expose `RECORDING_UNAVAILABLE` with the attachment position.
+JSON serialization excludes internal causes, stacks, and unavailable device/artifact fields.
+The implemented error codes cover schema validation and recording file access; YAML, other capture failures, and partial-evidence records remain to be added.
+On 2026-10-15, `npm run check` passed type checking, all 323 tests, and all ten generated-schema freshness checks.
+Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
 This verifies offline schema validation and step normalization; YAML loading, public validation entry points, capture preflight, multi-step enforcement, and manifest reconciliation remain to be integrated.
 
 Full-spec validation review has identified a JSON Schema export limitation.
@@ -388,7 +393,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T45 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T46 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

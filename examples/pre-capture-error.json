@@ -1,0 +1,15 @@
+{
+  "result": "error",
+  "step": "after",
+  "criterion": "Cart total updates when quantity changes",
+  "error": {
+    "code": "INVALID_INPUT",
+    "message": "Input validation failed. Correct the fields listed in issues.",
+    "issues": [
+      {
+        "path": ["recordings", 0],
+        "message": "Supply a non-blank local path."
+      }
+    ]
+  }
+}

@@ -66,6 +66,7 @@ test("validation works with device-client and all built-in module imports blocke
   const effectiveStepURL = new URL("dist/spec/effective-step.js", root).href;
   const specSchemaURL = new URL("dist/spec/schema.js", root).href;
   const recordingSchemaURL = new URL("dist/spec/recordings.js", root).href;
+  const errorSchemaURL = new URL("dist/spec/errors.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -105,6 +106,10 @@ test("validation works with device-client and all built-in module imports blocke
     if (recordingOptionsSchema.parse({}).recordings.length !== 0) throw new Error("Incorrect recording defaults");
     if (!recordingOptionsSchema.safeParse({ recordings: ["clip.mp4"] }).success) throw new Error("Valid recording input rejected");
     if (recordingOptionsSchema.safeParse({ recordings: [""] }).success) throw new Error("Invalid recording path accepted");
+    const { inputErrorResult } = await import(${JSON.stringify(errorSchemaURL)});
+    const invalidRecording = recordingOptionsSchema.safeParse({ recordings: [""] });
+    const diagnostic = inputErrorResult(invalidRecording.error);
+    if (diagnostic.result !== "error" || diagnostic.error.issues[0].path[1] !== 0 || "image" in diagnostic) throw new Error("Incorrect pre-capture error");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {
     cwd: fileURLToPath(root),

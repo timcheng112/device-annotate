@@ -4,6 +4,7 @@ import * as path from "node:path";
 import * as z from "zod";
 import { recordingOptionsSchema, type RecordingOptionsInput } from "../spec/recordings.js";
 import { localPathSchema } from "../spec/values.js";
+import { PreCaptureError } from "../spec/errors.js";
 
 const inputSchema = recordingOptionsSchema.extend({
   cwd: localPathSchema.refine(path.isAbsolute, "Supply an absolute working directory."),
@@ -26,7 +27,15 @@ export async function prepareRecordings(input: RecordingOptionsInput & { cwd: st
         await handle.close();
       }
     } catch (cause) {
-      throw new Error(`Cannot use recordings[${index}] (${JSON.stringify(file)}). Supply an existing, readable regular video file.`, { cause });
+      const message = `Cannot use recordings[${index}] (${JSON.stringify(file)}). Supply an existing, readable regular video file.`;
+      throw new PreCaptureError({
+        result: "error",
+        error: {
+          code: "RECORDING_UNAVAILABLE",
+          message,
+          issues: [{ path: ["recordings", index], message }],
+        },
+      }, { cause });
     }
   }
   return resolved;

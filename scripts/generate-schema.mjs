@@ -8,6 +8,7 @@ import { defaultsSchema, stepSchema } from "../dist/spec/step.js";
 import { specStructureSchema } from "../dist/spec/schema.js";
 import { retentionSchema } from "../dist/spec/retention.js";
 import { recordingOptionsSchema } from "../dist/spec/recordings.js";
+import { preCaptureErrorSchema } from "../dist/spec/errors.js";
 
 const args = process.argv.slice(2);
 if (args.length > 1 || (args.length === 1 && args[0] !== "--check")) {
@@ -24,6 +25,7 @@ const schemas = [
   { name: "spec", source: "schema", schema: specStructureSchema },
   { name: "retention", source: "retention", schema: retentionSchema },
   { name: "recordings", source: "recordings", schema: recordingOptionsSchema },
+  { name: "pre-capture-error", source: "errors", schema: preCaptureErrorSchema },
 ];
 
 for (const { name, source, schema } of schemas) {

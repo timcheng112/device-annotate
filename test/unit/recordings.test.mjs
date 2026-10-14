@@ -77,6 +77,9 @@ test("missing files and directories fail with the attachment index and path", as
       assert.match(error.message, /recordings\[1\]/);
       assert.ok(error.message.includes(JSON.stringify(path.resolve(cwd, name))));
       assert.ok(error.cause);
+      assert.equal(error.result.error.code, "RECORDING_UNAVAILABLE");
+      assert.deepEqual(error.result.error.issues[0].path, ["recordings", 1]);
+      assert.deepEqual(Object.keys(JSON.parse(JSON.stringify(error))), ["result", "error"]);
       return true;
     });
   }

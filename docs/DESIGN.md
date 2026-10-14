@@ -684,6 +684,22 @@ Input validation reports the recording's list position and preflight identifies 
 This check establishes file readability at preflight time; it does not decode or validate video content, and external files remain under caller control afterwards.
 Video annotation is outside the v1 milestone plan.
 
+### T46. Errors before evidence capture
+
+Agreed on 2026-10-15 during M1 contract review.
+When an operation fails before evidence capture, return `result: error` with a structured `error` and any validated, known `step` or `criterion`.
+Omit unknown context and unavailable device or artifact fields instead of emitting placeholders or invented paths.
+Preserve known criterion wording verbatim.
+The structured error has a machine-readable `code`, an actionable `message`, and optional nonempty `issues` containing field-location arrays and messages.
+Field locations use string keys and zero-based array indexes; an empty location identifies the whole input.
+
+The first implemented codes are `INVALID_INPUT` for schema validation and `RECORDING_UNAVAILABLE` for recording file preflight.
+Return every schema issue, including whole-file semantic errors, while keeping the originating field locations.
+Internal exception causes and stacks stay outside the JSON result.
+T16's exit code 2 remains the capture error outcome.
+The [pre-capture error example](../examples/pre-capture-error.json) demonstrates known step and criterion context without device or artifact claims.
+Partial errors after capture, additional error codes, and manifest persistence remain separate M1/M5 work.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.
