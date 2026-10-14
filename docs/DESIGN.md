@@ -265,7 +265,7 @@ Agreed on 2026-10-14 during implementation-plan review.
 Steps may contain standalone checks, so an `absent` expectation does not require a drawable annotation target.
 A successful absence check appears in the legend without an on-screen marker.
 Annotations still require a drawable target: asking to box a missing element is an evidence error, while successfully proving that element absent is a passing check.
-The exact spec and manifest fields for standalone checks remain to be defined during contract review.
+T36 defines the spec fields for standalone checks; their manifest representation remains contract-review work.
 
 ### T20. Nearby annotation markers
 
@@ -484,6 +484,30 @@ Unlike the caller-supplied build identity checked offline under T33, environment
 This rule does not promise detection before contacting the device.
 It also does not relax the geometry requirements needed to produce correctly anchored evidence.
 The exact environment fields and unavailable-metadata representation remain M1 contract work.
+
+### T36. One predicate per expectation
+
+Agreed on 2026-10-15 during M1 contract review.
+Each `expect` contains exactly one check.
+Additional checks use separate entries, even when they target the same element.
+Steps accept standalone checks through a `checks` array, with each entry containing `target` and `expect`.
+
+```yaml
+checks:
+  - target: 'id="cart-total"'
+    expect: { visible: true }
+  - target: 'id="cart-total"'
+    expect: { text: "£12.00" }
+  - target: 'id="error-banner"'
+    expect: { absent: true }
+```
+
+State checks use `true` with one of `visible`, `hidden`, `exists`, `absent`, `editable`, `selected`, or `focused`.
+Text checks use `text` with the expected string.
+Each check retains its own PASS or FAIL result and contributes one evaluated check when evaluation completes, under T26.
+The same single-check rule applies to expectations inside annotations.
+An annotation without `expect` remains INFO under T25.
+This defines the input shape without changing upstream predicate semantics or the drawing requirements in T19 and T24.
 
 ## Upstream candidates
 

@@ -1,0 +1,14 @@
+[
+  {
+    "target": "id=\"cart-total\"",
+    "expect": { "visible": true }
+  },
+  {
+    "target": "id=\"cart-total\"",
+    "expect": { "text": "£12.00" }
+  },
+  {
+    "target": "id=\"error-banner\"",
+    "expect": { "absent": true }
+  }
+]

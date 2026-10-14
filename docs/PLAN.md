@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with build-identity and missing-environment behavior approved in T32-T35.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with build-identity, missing-environment, and check-input behavior approved in T32-T36.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -163,7 +163,8 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 Contract review has established the verification-flow boundary in [DESIGN.md, T32](DESIGN.md#t32-one-verification-flow-per-spec) and missing-build-identity behavior in [T33](DESIGN.md#t33-build-identity-required-for-multi-step-captures).
 [T34](DESIGN.md#t34-separate-caller-supplied-build-identity) defines the separate build JSON file and matching Node API object.
 [T35](DESIGN.md#t35-complete-environment-identity-for-multi-step-captures) defines behavior when environment compatibility cannot be established.
-The package foundation and offline build-identity schema are implemented; remaining spec, environment, manifest, and error contracts still require review.
+[T36](DESIGN.md#t36-one-predicate-per-expectation) defines standalone checks and one predicate per expectation.
+The package foundation and offline build-identity and check schemas are implemented; remaining annotation, spec, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
 The first implementation slice contains the [zod build schema](../src/spec/build-identity.ts), its [generated JSON Schema](../src/spec/build.schema.json), and neutral [embedded](../examples/build.embedded.json) and [external-runtime](../examples/build.external.json) examples.
@@ -171,9 +172,12 @@ The example identifiers are illustrative and do not identify a captured app.
 The root package pins the verified agent-device peer version and remains private during implementation.
 Run `npm ci --ignore-scripts --no-audit --no-fund` to install the pinned dependencies, `npm run generate:schema` to regenerate schemas, and `npm run check` to verify the implementation.
 The generator uses [zod's JSON Schema conversion](https://zod.dev/json-schema); generated files must not be edited manually.
-On 2026-10-15, `npm run check` passed type checking, all 27 build-identity tests, and the generated-schema freshness check.
-Tests cover agreement between zod and JSON Schema, field locations, input preservation, invalid runtime combinations, unknown fields, and validation with device-client and built-in module imports blocked.
-This verifies offline build-identity validation only; capture preflight and multi-step enforcement remain to be integrated with the complete spec contract.
+The second slice adds the [expectation and standalone-check schemas](../src/spec/check.ts), a [generated check JSON Schema](../src/spec/check.schema.json), and [standalone examples](../examples/checks.json).
+The inspected agent-device 0.21.27 command rejects empty expected text, while whitespace remains meaningful for exact text comparison; the input schema preserves those rules.
+Selector validation currently checks for a non-blank string; syntax parsing and target resolution are separate work.
+On 2026-10-15, `npm run check` passed type checking, all 61 schema tests, and both generated-schema freshness checks.
+Tests cover agreement between zod and JSON Schema, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+This verifies offline build-identity and check shape validation only; capture preflight and multi-step enforcement remain to be integrated with the complete spec contract.
 
 ### Work
 
@@ -338,7 +342,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T35 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T36 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

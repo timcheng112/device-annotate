@@ -60,6 +60,7 @@ test("incomplete external identity reports the missing field", () => {
 
 test("validation works with device-client and all built-in module imports blocked", () => {
   const schemaURL = new URL("dist/spec/build-identity.js", root).href;
+  const checkSchemaURL = new URL("dist/spec/check.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -74,6 +75,9 @@ test("validation works with device-client and all built-in module imports blocke
     const { buildIdentitySchema } = await import(${JSON.stringify(schemaURL)});
     if (!buildIdentitySchema.safeParse(${JSON.stringify(embedded)}).success) throw new Error("Valid identity rejected");
     if (buildIdentitySchema.safeParse({}).success) throw new Error("Invalid identity accepted");
+    const { standaloneCheckSchema } = await import(${JSON.stringify(checkSchemaURL)});
+    if (!standaloneCheckSchema.safeParse({ target: 'id="cart-total"', expect: { text: "£12.00" } }).success) throw new Error("Valid check rejected");
+    if (standaloneCheckSchema.safeParse({ target: 'id="cart-total"', expect: { visible: true, selected: true } }).success) throw new Error("Combined check accepted");
     console.log("offline validation passed");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {
