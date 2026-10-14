@@ -4,6 +4,7 @@ import { buildIdentitySchema } from "../dist/spec/build-identity.js";
 import { standaloneCheckSchema } from "../dist/spec/check.js";
 import { annotationSchema } from "../dist/spec/annotation.js";
 import { cropSchema } from "../dist/spec/crop.js";
+import { defaultsSchema, stepSchema } from "../dist/spec/step.js";
 
 const args = process.argv.slice(2);
 if (args.length > 1 || (args.length === 1 && args[0] !== "--check")) {
@@ -15,6 +16,8 @@ const schemas = [
   { name: "check", source: "check", schema: standaloneCheckSchema },
   { name: "annotation", source: "annotation", schema: annotationSchema },
   { name: "crop", source: "crop", schema: cropSchema },
+  { name: "defaults", source: "step", schema: defaultsSchema },
+  { name: "step", source: "step", schema: stepSchema },
 ];
 
 for (const { name, source, schema } of schemas) {

@@ -63,6 +63,7 @@ test("validation works with device-client and all built-in module imports blocke
   const checkSchemaURL = new URL("dist/spec/check.js", root).href;
   const annotationSchemaURL = new URL("dist/spec/annotation.js", root).href;
   const cropSchemaURL = new URL("dist/spec/crop.js", root).href;
+  const effectiveStepURL = new URL("dist/spec/effective-step.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -87,6 +88,9 @@ test("validation works with device-client and all built-in module imports blocke
     const { cropSchema } = await import(${JSON.stringify(cropSchemaURL)});
     if (cropSchema.parse({ targets: ['id="cart-total"'] }).padding !== 24) throw new Error("Missing default crop padding");
     if (cropSchema.safeParse({ targets: [] }).success) throw new Error("Empty crop targets accepted");
+    const { normalizeStep } = await import(${JSON.stringify(effectiveStepURL)});
+    const step = normalizeStep({ criterion: " Exact wording ", step: {}, defaults: { crop: { targets: ['id="cart"'] } } });
+    if (step.criterion !== " Exact wording " || step.crop.padding !== 24 || step.checks.length !== 0) throw new Error("Incorrect effective step");
     console.log("offline validation passed");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {

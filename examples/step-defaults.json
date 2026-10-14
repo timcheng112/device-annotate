@@ -1,0 +1,17 @@
+{
+  "defaults": {
+    "crop": {
+      "targets": ["id=\"cart\""],
+      "padding": 24
+    }
+  },
+  "criteria": [
+    {
+      "criterion": "Cart total updates when quantity changes",
+      "steps": {
+        "before": {},
+        "after": { "crop": null }
+      }
+    }
+  ]
+}

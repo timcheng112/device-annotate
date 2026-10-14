@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with build-identity, missing-environment, check, annotation, crop, and step-matching contracts approved in T32-T39.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with build-identity, missing-environment, check, annotation, crop, step-matching, and inheritance contracts approved in T32-T40.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -167,7 +167,8 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T37](DESIGN.md#t37-annotation-input-shapes) defines the five annotation input shapes.
 [T38](DESIGN.md#t38-crop-to-targets-while-preserving-drawable-evidence) defines crop targets, padding, and preservation of drawable evidence.
 [T39](DESIGN.md#t39-match-evidence-by-unique-step-name) defines step matching, renaming, removal, and reordering for evidence reuse.
-The package foundation and offline build-identity, check, annotation, and crop schemas are implemented; remaining spec, environment, manifest, and error contracts still require review.
+[T40](DESIGN.md#t40-shared-crop-defaults-and-explicit-step-overrides) defines shared crop defaults, whole-object step overrides, and explicit full-frame captures.
+The package foundation, component schemas, and effective step normalization are implemented; remaining full-spec validation, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
 The first implementation slice contains the [zod build schema](../src/spec/build-identity.ts), its [generated JSON Schema](../src/spec/build.schema.json), and neutral [embedded](../examples/build.embedded.json) and [external-runtime](../examples/build.external.json) examples.
@@ -182,9 +183,19 @@ The third slice adds the [annotation schema](../src/spec/annotation.ts), its [ge
 Supplied annotation labels must contain non-whitespace text and retain their original wording.
 The fourth slice adds the [crop schema](../src/spec/crop.ts), its [generated JSON Schema](../src/spec/crop.schema.json), and an [example](../examples/crop.json).
 Omitted and explicit default padding normalize identically, while zero padding remains zero.
-On 2026-10-15, `npm run check` passed type checking, all 116 schema tests, and all four generated-schema freshness checks.
-Tests cover agreement between zod and JSON Schema, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, unknown fields, actions, and validation with device-client and built-in module imports blocked.
-This verifies offline build-identity, check, annotation, and crop shape validation only; capture preflight and multi-step enforcement remain to be integrated with the complete spec contract.
+The fifth slice adds [step and shared-default schemas](../src/spec/step.ts), their generated [step](../src/spec/step.schema.json) and [defaults](../src/spec/defaults.schema.json) JSON Schemas, and [effective step normalization](../src/spec/effective-step.ts).
+The [inheritance example](../examples/step-defaults.json) demonstrates shared crop and an explicit full-frame override; its full-spec envelope still awaits the complete root validator.
+Normalization retains criterion wording and annotation/check order, resolves crop inheritance, and canonicalizes crop-target unions by removing repeated selectors and sorting them.
+It normalizes omitted annotation/check lists to empty lists without manufacturing assertions.
+On 2026-10-15, `npm run check` passed type checking, all 148 tests, and all six generated-schema freshness checks.
+Tests cover agreement between zod and JSON Schema for the implemented components, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+This verifies offline component validation and step normalization; full-spec validation, capture preflight, multi-step enforcement, and manifest reconciliation remain to be integrated.
+
+Full-spec validation review has identified a JSON Schema export limitation.
+With pinned zod 4.6.7 and Ajv 8.18.0, a custom whole-file uniqueness refinement rejects duplicate step names across criteria at runtime, but its generated JSON Schema accepts the same input.
+Reproduce this focused experiment with `node scripts/probe-schema-refinement.mjs`; it is separate from the production validator.
+The pending recommendation is to use generated JSON Schema for structural validation and the shared offline validator for complete validation, including cross-step rules, with capture preflight using that same validator.
+This recommendation has not been approved, and the full-spec parity gate below has not yet been revised.
 
 The [crop contract preview](prototypes/crop-contract/index.html) illustrates the geometry approved in T38 and remains separate from the production renderer.
 Regenerate its neutral image and geometry data with `node scripts/preview-crop.mjs`, then open the HTML in cmux.
@@ -357,7 +368,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T39 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T40 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

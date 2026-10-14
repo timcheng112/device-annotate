@@ -556,7 +556,7 @@ Add configurable padding of 24 screenshot pixels by default, limiting the crop t
 Padding is a non-negative integer; zero is allowed.
 Missing, ambiguous, or fully off-screen explicit crop targets produce an evidence error.
 The existing partial-visibility and edge-uncertainty rules continue to apply.
-Omitting `crop` retains the full screenshot.
+Omitting `crop` retains the full screenshot when no shared crop default applies; T40 defines inheritance and explicit full-frame overrides.
 Raw screenshots and snapshots remain complete, and the production legend sits below the cropped image under T11.
 The preview establishes crop geometry only; production annotation rendering remains governed by the previously approved visual rules.
 
@@ -572,7 +572,34 @@ Build and environment compatibility remain required under T32-T35.
 
 For example, renaming `after` to `updated-total` requires a new capture.
 Matching does not infer identity from similar names or identical checks.
-Inherited settings and the complete normalized effective step configuration remain M1 contract work.
+T40 defines inherited settings; the complete normalized effective step configuration remains M1 implementation work.
+
+### T40. Shared crop defaults and explicit step overrides
+
+Agreed on 2026-10-15 during M1 contract review.
+Crop is the only inherited setting in v1.
+The spec may define a shared crop under `defaults.crop`.
+Annotations and checks remain explicit within each step.
+
+```yaml
+defaults:
+  crop:
+    targets: ['id="cart"']
+    padding: 24
+
+criteria:
+  - criterion: "Cart total updates when quantity changes"
+    steps:
+      before: {}
+      after:
+        crop: null
+```
+
+A step that omits `crop` inherits the shared default, or uses the full screenshot when no default exists.
+Setting a step's `crop` to `null` explicitly selects the full screenshot.
+A step's own crop object replaces the entire default crop.
+Omitted padding in that object uses T38's default of 24 screenshot pixels, regardless of padding in the shared default.
+Changing the shared default invalidates only steps whose effective crop changes.
 
 ## Upstream candidates
 
