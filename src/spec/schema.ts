@@ -2,7 +2,7 @@ import * as z from "zod";
 import { retentionSchema } from "./retention.js";
 import { defaultsSchema, stepSchema } from "./step.js";
 import { stepNameSchema } from "./step-name.js";
-import { criterionSchema } from "./values.js";
+import { criterionSchema, localPathSchema } from "./values.js";
 
 const minimumSteps = 1;
 const stepsSchema = z.record(stepNameSchema, stepSchema)
@@ -12,7 +12,7 @@ const stepsSchema = z.record(stepNameSchema, stepSchema)
 
 /** Export this structural schema; arbitrary whole-file refinements cannot be exported. */
 export const specStructureSchema = z.strictObject({
-  out: z.string().regex(/\S/, "Supply a non-blank output folder, or omit out for the default.").optional(),
+  out: localPathSchema.optional(),
   defaults: defaultsSchema.optional(),
   retention: retentionSchema.prefault({}),
   criteria: z.array(z.strictObject({

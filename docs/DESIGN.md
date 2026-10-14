@@ -95,6 +95,7 @@ criteria:
 
 Step names are unique across the file.
 T42 defines their portable filename format.
+T44 defines the base directory for relative output paths.
 The spec never contains actions.
 
 ### T7. Output per step
@@ -652,6 +653,21 @@ Current evidence and caller-owned recordings remain protected under T29.
 Retention settings control history cleanup and do not change a step's effective capture configuration or invalidate otherwise reusable evidence.
 Saving a spec alone never deletes history; T29's safe-save and explicit-cleanup triggers still apply.
 History eligibility and filesystem cleanup remain M2 and M5 work respectively.
+
+### T44. Output paths relative to the spec
+
+Agreed on 2026-10-15 during M1 contract review.
+Resolve a relative YAML `out` path from the directory containing the supplied spec path.
+For `specs/cart.yaml`, `out: evidence/cart` resolves to `specs/evidence/cart`.
+When `out` is omitted, use `evidence/<spec-name>` in that same directory, where `<spec-name>` is the spec filename without its final extension.
+Changing the command's working directory while referring to the same spec path preserves this output location.
+Absolute output paths remain absolute.
+
+Resolve paths supplied through CLI arguments from the command's working directory, including the spec argument itself, build-identity files, and one-off output paths.
+Preserve spaces in supplied paths; shell expansion is the invoking shell's responsibility.
+Reject blank paths and embedded null characters before filesystem or device work.
+The internal resolver takes an explicit absolute working directory and performs lexical resolution only.
+It does not read files, create folders, or resolve symlinks; M5 remains responsible for recognizing filesystem aliases when locking an output folder.
 
 ## Upstream candidates
 

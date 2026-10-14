@@ -24,7 +24,14 @@
   "$defs": {
     "__schema0": {
       "type": "string",
-      "pattern": "\\S"
+      "allOf": [
+        {
+          "pattern": "\\S"
+        },
+        {
+          "pattern": "^[^\\u0000]*$"
+        }
+      ]
     },
     "__schema1": {
       "type": "object",
