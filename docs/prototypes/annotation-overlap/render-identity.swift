@@ -37,6 +37,48 @@ func ui(_ x: CGFloat, _ y: CGFloat) {
     fill(CGRect(x: x+220, y: y+160, width: 210, height: 65), NSColor(calibratedWhite: 0.84, alpha: 1))
     text("Pay $12.00", x+260, y+180, 20, ink, true)
 }
+if CommandLine.arguments.count > 2 && CommandLine.arguments[2] == "info" {
+    fill(CGRect(x: 0, y: 0, width: 1120, height: 1120), NSColor(calibratedWhite: 0.96, alpha: 1))
+    text("Approved: distinguish information from a checked result", 30, 24, 28, ink, true)
+    text("A number without ✓ or × identifies an informational annotation. Its legend row says INFO.", 30, 70, 19)
+    text("Dotted outline: no checks. Solid: checks all pass. Dashed: at least one check fails.", 30, 107, 19, gray)
+    for i in 0..<2 {
+        let x = CGFloat(30+i*550)
+        fill(CGRect(x: x, y: 154, width: 520, height: 620), .white)
+        text(i == 0 ? "Information only" : "Information and checks share bounds", x+20, 175, i == 0 ? 24 : 22, ink, true)
+        fill(CGRect(x: x+25, y: 230, width: 470, height: 240), NSColor(calibratedWhite: 0.92, alpha: 1))
+        let target = CGRect(x: x+95, y: 310, width: 330, height: 80)
+        fill(target, NSColor(calibratedWhite: 0.84, alpha: 1))
+        text("Continue", x+205, 334, 22, ink, true)
+        if i == 0 {
+            let p = NSBezierPath(rect: target)
+            NSColor.white.setStroke(); p.lineWidth = 9; p.stroke()
+            p.setLineDash([1, 9], count: 2, phase: 0); p.lineCapStyle = .round
+            blue.setStroke(); p.lineWidth = 4; p.stroke()
+        } else { outline(target, blue, true) }
+        let label = i == 0 ? "1" : "1, 2 ✓, 3 ×"
+        let measured = NSAttributedString(string: label, attributes: [.font: NSFont.boldSystemFont(ofSize: 20)]).size().width
+        let pill = NSBezierPath(roundedRect: CGRect(x: x+75, y: 288, width: measured+28, height: 40), xRadius: 20, yRadius: 20)
+        NSColor.white.setStroke(); pill.lineWidth = 6; pill.stroke(); blue.setFill(); pill.fill()
+        text(label, x+89, 295, 20, .white, true)
+        text("1   INFO · Continue button", x+25, 505, 21, blue, true)
+        text("Highlighted for context; no assertion", x+25, 540, 17, gray)
+        if i == 1 {
+            text("2   ✓ PASS · Button is visible", x+25, 580, 21, blue, true)
+            text("Expected visible; actual visible", x+25, 615, 17, gray)
+            text("3   × FAIL · Button text", x+25, 655, 21, blue, true)
+            text("Expected Pay now; actual Continue", x+25, 690, 17, gray)
+        } else {
+            text("No test has passed or failed here.", x+25, 610, 20, ink, true)
+            text("The target was found and highlighted.", x+25, 650, 18, gray)
+        }
+    }
+    text("Individual results remain explicit even when informational and checked annotations share a tag.", 30, 811, 19)
+    NSGraphicsContext.restoreGraphicsState()
+    let panel = NSBitmapImageRep(cgImage: bitmap.cgImage!.cropping(to: CGRect(x: 0, y: 0, width: 1120, height: 870))!)
+    try panel.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: CommandLine.arguments[1]))
+    exit(0)
+}
 if CommandLine.arguments.count > 2 && CommandLine.arguments[2] == "grouped" {
     fill(CGRect(x: 0, y: 0, width: 1120, height: 1120), NSColor(calibratedWhite: 0.96, alpha: 1))
     text("One shared tag, an individual result for every check", 30, 24, 29, ink, true)

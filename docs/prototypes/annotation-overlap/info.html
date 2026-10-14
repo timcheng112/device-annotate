@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>device-proof: informational annotations</title>
+<style>
+body { margin: 20px; background: #eef0f2; color: #202428; font: 17px/1.5 system-ui, sans-serif; }
+header { max-width: 78ch; } h1 { font-size: 25px; }
+button { font: inherit; padding: 8px 14px; cursor: pointer; }
+img { display: block; width: 1120px; max-width: 100%; height: auto; margin-top: 20px; }
+img.full { max-width: none; }
+</style>
+<header>
+<h1>Approved: informational annotations</h1>
+<p>An annotation with no assertion gets a number without a result symbol, plus an INFO legend row. A region with no checks gets a dotted outline. Regions with checks retain the agreed solid/all-pass and dashed/any-failure rule.</p>
+<button onclick="document.querySelector('img').classList.toggle('full'); this.textContent = document.querySelector('img').classList.contains('full') ? 'Fit to pane' : 'Show full size'">Show full size</button>
+<a href="grouped.html">Approved grouped-tag example</a>
+</header>
+<img src="info.png" alt="Informational annotation with dotted outline and mixed shared tag containing information, passing and failing checks">
+</html>

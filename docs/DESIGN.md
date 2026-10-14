@@ -70,12 +70,13 @@ device-proof's own code owns layout: anchoring, label placement, collision avoid
 
 ```
 device-proof capture <spec.yaml> --step <name>
-device-proof capture --box 'id="x"' -o shot.png
+device-proof capture --box 'id="x"' --criterion "The expected control is visible" -o shot.png
 device-proof validate <spec.yaml>
 ```
 
 `validate` needs no device.
 There is no `report` command (T14).
+One-off captures require `--criterion` and validate it before contacting the device (T23).
 
 ### T6. Spec structure
 
@@ -220,6 +221,7 @@ Result precedence, first match wins, for criteria and for the whole manifest:
 4. `passed`: every step captured and every check passed.
 
 Exit codes per `capture`: 0 passed, 1 failed, 2 error.
+T26 adds explicit check counts so callers can distinguish assertion-free captures from captures with passing checks.
 
 ### T17. Module layout
 
@@ -299,7 +301,101 @@ Long tags wrap or move outside the target with a connector, keeping all numbers 
 Grouping affects drawing only; selectors, resolved component identities, and individual check results remain separate.
 Equal rectangles do not establish that two selectors refer to the same component.
 The dense-overlap threshold in T21 remains based on distinct resolved targets, not the number of shared outlines.
-Presentation of annotations without checks remains a contract-review detail in PLAN.md.
+T25 defines the presentation of annotations without checks.
+
+### T23. Required criterion for one-off captures
+
+Agreed on 2026-10-14 during implementation-plan review.
+One-off captures require a non-empty `--criterion` argument, just as YAML captures require a criterion.
+Reject missing or blank criteria as validation errors before contacting the device.
+Use the supplied criterion verbatim in the normalized capture spec, image legend, and manifest.
+Do not infer it from the selector or output filename.
+
+### T24. Hidden checks without drawable targets
+
+Agreed on 2026-10-14 during implementation-plan review.
+A successful standalone `hidden` check appears in the legend without an on-screen marker when there is no visible target to mark.
+This extends the absence-check presentation in T19 without changing the upstream predicate's semantics.
+Explicit drawing annotations continue to require drawable targets.
+
+### T25. Informational annotations
+
+Agreed on 2026-10-14 after reviewing the [informational annotation prototype](prototypes/annotation-overlap/info.png).
+An annotation without an assertion displays its number without a checkmark or cross and has an INFO legend row.
+A region with no attached checks uses a dotted outline.
+A region that also has checks retains T22's solid/all-pass and dashed/any-failure rule.
+Informational entries keep their numbers without result symbols inside a shared tag, such as `1, 2 ✓, 3 ×`.
+INFO describes context that was highlighted; it does not represent a passing test.
+
+### T26. Explicit check counts
+
+Agreed on 2026-10-14 during implementation-plan review.
+Report total evaluated checks, passed checks, and failed checks in the manifest.
+The total represents checks that completed evaluation with a pass or fail result, so total equals passed plus failed.
+A passing check met its expectation; a failing check was evaluated and did not meet its expectation.
+Informational annotations do not count as checks.
+Checks in uncaptured steps do not count as having run.
+An evidence-production error remains an error under T16 and must not be manufactured into a failed assertion.
+Expose counts for steps and aggregate them for criteria and the manifest from the current recorded results, without counting replaced captures twice.
+The existing result precedence and exit codes remain unchanged; zero checks must be explicit even when the successful capture result is `passed`.
+
+### T27. Selective evidence reuse after spec changes
+
+Agreed on 2026-10-14 during implementation-plan review.
+Meaningful spec edits do not require restarting every capture or choosing a new output folder.
+Retain evidence for unaffected steps and invalidate results affected by the changed spec.
+
+- A change to a step's selector, annotation, or check invalidates that step.
+- A newly added step is incomplete until captured; unaffected existing steps retain their evidence.
+- A change to a criterion or shared setting invalidates every step affected by it.
+- Changes to comments or formatting alone do not invalidate evidence.
+
+An invalidated step must be captured again before its result can contribute to the current criterion or manifest outcome.
+Exclude its old results from current check counts and treat it as incomplete under T16.
+Preserve the original capture time and provenance for reused evidence so reuse does not imply a fresh observation.
+
+Spec compatibility alone cannot establish that the app is unchanged.
+When the app build changes, recapture the affected verification flow even if its spec text is unchanged.
+The mechanism for identifying app builds and the extent of an affected flow must be established before enabling automatic reuse; inspect the available runtime metadata during M0.
+Do not infer unchanged app behavior solely from unchanged selectors or expectations.
+T28 defines device and tool-version compatibility.
+T29 defines retention of superseded files.
+
+### T28. Environment compatibility for evidence reuse
+
+Agreed on 2026-10-14 during implementation-plan review.
+Reuse requires the same device configuration and the same device-proof and agent-device versions.
+A change of platform or device, OS version, display configuration, or either tool version requires fresh captures for the run.
+Old results must not contribute to the current run's outcomes or check counts after such a change.
+Ordinary app navigation between steps is expected and does not itself invalidate earlier evidence.
+M0 establishes the metadata needed to identify the device and its relevant configuration reliably.
+T27 separately governs spec changes and changed app builds.
+
+### T29. Bounded local evidence history and cleanup
+
+Agreed on 2026-10-14 during implementation-plan review.
+When a step is captured again, retain the superseded attempt as local history, subject to configurable retention limits.
+Only the current attempt contributes to the current manifest's results and check counts; a newer error supersedes an older pass as the current result.
+
+Default history limits per output folder:
+
+- At most three previous attempts per step.
+- Historical attempts expire seven days after their recorded capture time.
+- Historical artifacts have a combined 500 MB budget; remove oldest historical attempts first when over budget.
+
+All limits apply together, so the count or size limit may remove an attempt before it reaches seven days old.
+Current attempts are protected from automatic history cleanup, regardless of age or size.
+The history budget covers package-managed historical screenshots, snapshots, and any package-managed recording copies.
+Referenced external recordings remain caller-owned and are never deleted by history cleanup.
+
+Run history cleanup after a new attempt and its manifest update are safely saved, and when the dedicated cleanup command is invoked.
+There is no background timer or cleanup daemon.
+Use the stored capture timestamp and the current clock to calculate elapsed age; seven days means seven times 24 hours, not a file modification date or a calendar-date boundary.
+Expired files in an idle output folder remain until the next capture or cleanup command.
+
+Provide a dedicated cleanup command with a deletion preview before applying explicit cleanup, including cleanup of finished runs' current evidence.
+Delete only managed artifacts eligible for the selected cleanup scope and preserve artifacts still referenced by protected current attempts.
+Document retention configuration, opportunistic cleanup, and finished-run cleanup in CLI help and the agent skill.
 
 ## Upstream candidates
 

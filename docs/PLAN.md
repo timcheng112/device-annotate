@@ -40,6 +40,55 @@ Identical bounds share one outline and one tag listing each number with its indi
 Keep separate legend entries and check results, including for mixed passing and failing checks.
 M3 and M4 must cover grouping, mixed results, and long tags in layout tests and reviewed golden images.
 
+### P6. Required criterion for one-off captures
+
+Agreed on 2026-10-14 and recorded as T23 in [DESIGN.md](DESIGN.md).
+Require `--criterion` for one-off captures and reject missing or blank criteria before contacting the device.
+M1 verifies this offline validation behavior, and M6 uses the required flag in all one-off help examples.
+
+### P7. Legend-only hidden checks when appropriate
+
+Agreed on 2026-10-14 and recorded as T24 in [DESIGN.md](DESIGN.md).
+Show a successful standalone `hidden` check only in the legend when there is no visible target to mark.
+M2 through M4 must distinguish that success from an explicit annotation's missing-target error while retaining upstream check semantics.
+
+### P8. Explicit informational annotations
+
+Agreed on 2026-10-14 and recorded as T25 in [DESIGN.md](DESIGN.md).
+Annotations without assertions use number-only tags and INFO legend rows; regions with no checks use dotted outlines.
+Mixed regions retain individual result symbols and the agreed solid/all-pass or dashed/any-failure border rule.
+M3 and M4 must test informational-only and mixed regions without manufacturing passing check results for INFO entries.
+
+### P9. Explicit check counts
+
+Agreed on 2026-10-14 and recorded as T26 in [DESIGN.md](DESIGN.md).
+Report total evaluated, passed, and failed checks, excluding informational annotations and checks that have not run.
+Preserve the agreed result precedence and exit codes while making zero-check captures distinguishable from captures with passing checks.
+M2 must verify per-step and aggregate counts, including replacement of prior step results.
+
+### P10. Reuse unaffected evidence after spec edits
+
+Agreed on 2026-10-14 and recorded as T27 in [DESIGN.md](DESIGN.md).
+Keep unaffected step evidence, invalidate steps affected by semantic spec changes, and mark newly added steps incomplete.
+Formatting-only changes preserve results.
+Changed app builds require fresh evidence for the affected verification flow.
+M0 investigates build identity, M1 defines effective step configuration, M2 tests reconciliation, and M5 integrates provenance checks before reuse.
+
+### P11. Require a compatible environment for reuse
+
+Agreed on 2026-10-14 and recorded as T28 in [DESIGN.md](DESIGN.md).
+Changing device/platform, OS, display configuration, or either tool version requires fresh captures for the run.
+Ordinary app navigation between steps preserves reuse eligibility.
+M0 identifies the necessary runtime metadata, and M2/M5 verify compatibility checks and stale-result exclusion.
+
+### P12. Bounded history and explicit finished-run cleanup
+
+Agreed on 2026-10-14 and recorded as T29 in [DESIGN.md](DESIGN.md).
+Keep at most three previous attempts per step, expire history after seven elapsed days, and cap history at 500 MB per output folder; make these limits configurable.
+Protect current evidence from automatic pruning and leave referenced external recordings alone.
+Run pruning after safely saving a capture and through the cleanup command; provide a preview before applying explicit finished-run deletion.
+M1 defines retention configuration, M2 tests eligibility as pure logic, M5 implements safe archival and cleanup, and M6 documents the lifecycle.
+
 ## Proposed build order
 
 1. M0: verify the capture assumptions on both platforms.
@@ -67,6 +116,8 @@ The milestone details below remain proposals pending review.
 - Find and verify a way to inspect the running daemon's version before any client call that could replace it.
 - Exercise a version mismatch with a disposable session and confirm that refusal preserves the existing daemon and session.
 - Record the exact dependency versions, device configuration, observations, and any remaining limitations.
+- Inspect available app/build identity metadata and establish what additional caller-supplied provenance, if any, is needed to support T27 safely.
+- Verify metadata for device identity, OS, display configuration, and tool versions needed for T28's environment compatibility rule.
 
 ### Verification and exit criteria
 
@@ -86,10 +137,13 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 
 - Establish the TypeScript package, test commands, and the module boundaries in T17.
 - Define the zod schema for criteria, unique step names, all annotation primitives, checks, crop settings, and output configuration.
+- Define retention configuration and managed attempt metadata, including capture times, current/history status, artifact ownership, and artifact references needed for safe cleanup.
 - Resolve outstanding spec details through review before treating the schema as stable.
 - Generate the JSON Schema from zod, keeping generated files under script control.
 - Implement YAML loading and actionable validation errors with field locations.
 - Normalize file-based and one-off inputs into the same internal representation.
+- Define normalized effective step configuration, including its criterion and inherited settings, so reconciliation distinguishes semantic edits from formatting-only changes.
+- Require a non-empty `--criterion` for one-off captures and preserve the supplied wording.
 - Expose offline `validate()` and `device-proof validate` without loading or contacting the device client.
 
 ### Verification and exit criteria
@@ -97,6 +151,7 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Unit tests cover valid examples, malformed YAML, unknown fields, missing criteria, duplicate step names, unsupported predicates, invalid annotation combinations, and attempts to specify actions.
 - Verify that zod validation and generated JSON Schema agree on representative valid and invalid documents.
 - Verify that validation works with no running daemon or device.
+- Verify that one-off captures with missing or blank criteria fail before any device-client call and that supplied criterion text is preserved.
 - Validate the examples that will later ship in CLI help.
 
 ## M2. Resolution, checks, and outcomes
@@ -110,6 +165,9 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Produce actionable candidate diagnostics for unresolved or ambiguous targets.
 - Evaluate checks against the supplied capture snapshot without triggering another device capture.
 - Implement pure manifest updates and result aggregation; keep filesystem operations in `capture/` or `cli/` as required by T17.
+- Compute step, criterion, and manifest check counts from recorded pass/fail results, excluding INFO entries and uncaptured checks.
+- Reconcile existing evidence against the current spec, retaining unaffected steps and marking affected or newly added steps incomplete according to T27.
+- Compute history cleanup eligibility from capture timestamps, configured count/age/size limits, and protected artifact references without filesystem side effects.
 
 ### Verification and exit criteria
 
@@ -119,13 +177,18 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Verify expected and actual values for failed checks.
 - Test aggregate precedence: error, failed, incomplete, then passed.
 - Test that an uncaptured step remains incomplete and that replacing one step's result preserves other steps.
+- Test zero checks, all-pass and mixed results, INFO exclusion, uncaptured steps, and recapture replacement without double counting.
+- Test selector/check/annotation edits affecting one step, criterion and shared-setting changes affecting dependent steps, new steps, and formatting-only edits.
+- Verify that invalidated passes and their check counts cannot contribute to current outcomes, and that reused evidence retains its original capture time and provenance.
+- Test that device/platform, OS, display-configuration, and tool-version changes invalidate old results, while ordinary navigation does not.
+- Use a controlled clock to test just before and at the seven-day boundary, as well as count and size limits, oldest-first pruning, current-attempt protection, and INFO/error attempt history.
 
 ## M3. Pure layout
 
 ### Work
 
 - Bundle the Inter font with its required license and measure text using its glyph metrics.
-- Implement deterministic numbered markers, region colors, boxes, arrows, masks, crop projection, and the legend panel according to T11 and T19-T22.
+- Implement deterministic numbered markers, region colors, boxes, arrows, masks, crop projection, and the legend panel according to T11 and T19-T25.
 - Group identical bounds for drawing, preserving per-check results, and apply the agreed dense-overlap fallback.
 - Wrap criteria, annotation text, and expected and actual values without truncating evidence.
 - Define deterministic collision handling, edge placement, padding, and contrast treatment.
@@ -139,6 +202,7 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Verify repeatable layout for identical inputs.
 - Test overlap groups with containment, touching edges, transitive chains, repeated checks on one target, and distinct targets with identical bounds.
 - Test grouped tags with all-pass and mixed results, separate legend entries, and long lists that wrap or move without losing numbers.
+- Test INFO-only regions and tags combining INFO, passing checks, and failing checks; verify that INFO entries never acquire a checkmark or a passing assertion result.
 
 ## M4. Rendering and reviewed golden images
 
@@ -169,6 +233,10 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Write annotated images, raw images, snapshots, and the shared manifest according to T7 and T16.
 - Preserve available raw evidence and structured diagnostics when evidence production fails.
 - Make manifest writes resilient to interruption and define safe behavior when captures target the same output directory.
+- Preserve superseded attempts in managed history and prune only after the new attempt and manifest are safely saved, according to T29.
+- Implement cleanup preview and explicit application, protecting current evidence during automatic pruning and excluding caller-owned recordings.
+- Check app/build provenance before reusing evidence and apply the agreed affected-flow recapture rule when the build changes.
+- Enforce T28's environment compatibility rule before accepting existing evidence into the current run.
 - List caller-supplied local recordings without annotating them.
 - Complete `capture()` and the capture CLI, JSON stdout, diagnostics, and exit codes.
 
@@ -180,6 +248,7 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - End-to-end tests drive the neutral fixture app with agent-device, then capture evidence on both platforms.
 - Demonstrate a passing criterion, a real assertion failure, and an evidence error with their distinct artifacts and outcomes.
 - Verify multi-step aggregation and replacement of a previously captured step.
+- Verify that failed saves cannot trigger history pruning, referenced current artifacts remain intact, repeated cleanup is safe, and cleanup touches only eligible package-managed files.
 - Run iOS simulator tests on macOS CI and Android emulator tests in CI, as required by T10.
 
 ## M6. Help, skill, and package verification
@@ -190,6 +259,7 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Use `skill-creator` when writing `skills/device-proof/SKILL.md`, following the scope and integrity rules in T18.
 - Explain session selection, stale refs after capture, stable selectors, and adding `testID`s.
 - Explain that masks affect the annotated image while raw screenshots and snapshots remain audit artifacts.
+- Explain retention limits, stored capture times, cleanup on command execution, preview/apply behavior, and explicit cleanup of finished runs in help and the skill.
 - Configure the agent-device peer dependency and package contents, including the font, WASM requirements, generated schema, and licenses.
 - Exclude the skill, prototype inputs, and development fixtures from the npm package as appropriate to T18.
 - Verify the packed artifact in an isolated local consumer.
@@ -208,19 +278,17 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 The following details need clarification before the affected contracts are implemented.
 They are questions, not recorded decisions.
 
-- Should the agreed legend-only treatment for successful absence checks also apply to successful `hidden` checks without drawable targets?
-- How should annotations without checks appear without implying a passing test?
-- How does a one-off capture provide the required criterion?
 - What are the precise fields and combinations for each annotation, standalone check, crop, and recording reference?
 - How are pre-capture errors represented when no raw image or device metadata exists?
-- What identifies a compatible existing manifest when the spec, device, or dependency versions change between steps?
-- What is the intended behavior for concurrent captures and replacement of existing step artifacts?
+- How are app-build changes and affected verification flows identified when runtime metadata is insufficient?
+- What is the intended behavior for concurrent captures or cleanup commands targeting the same output folder?
 
 ## Accepted visual references
 
 The [nearby-target example](prototypes/annotation-overlap/nearby.png) demonstrates the badge placement agreed in T20.
 The [dense-overlap example](prototypes/annotation-overlap/dense.png) demonstrates the overview and individual detail views agreed in T21; its old outcome colors are superseded by T22.
 The [grouped-tag example](prototypes/annotation-overlap/grouped.png) demonstrates the region colors, shared outline, individual result symbols, and separate legend entries agreed in T22.
+The [informational annotation example](prototypes/annotation-overlap/info.png) demonstrates the INFO-only and mixed regions agreed in T25.
 Earlier comparison images remain exploratory references, not the current specification.
 These illustrations use synthetic UI and local AppKit drawing scripts; they do not validate the production font, renderer, collision algorithm, or platform coordinate mapping.
 
