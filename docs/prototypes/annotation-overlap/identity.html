@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>device-proof: annotation identity colors</title>
+<style>
+body { margin: 20px; background: #eef0f2; color: #202428; font: 17px/1.5 system-ui, sans-serif; }
+header { max-width: 78ch; } h1 { font-size: 25px; }
+button { font: inherit; padding: 8px 14px; cursor: pointer; }
+img { display: block; width: 1120px; max-width: 100%; height: auto; margin-top: 20px; }
+img.full { max-width: none; }
+</style>
+<header>
+<h1>Color for identity; symbols and borders for results</h1>
+<p>My recommendation for this alternative: give each annotation an identity color, keep its number, and use explicit ✓ PASS / × FAIL cues. Solid/dashed borders reinforce the result. The color choice itself would not indicate success or failure.</p>
+<p>Colors help separate overlapping targets. They do not prevent one identical outline from covering another, and still need white halos against matching app backgrounds.</p>
+<button onclick="document.querySelector('img').classList.toggle('full'); this.textContent = document.querySelector('img').classList.contains('full') ? 'Fit to pane' : 'Show full size'">Show full size</button>
+<a href="dense.html">Dense fallback</a> · <a href="preview.html">Earlier examples</a>
+</header>
+<img src="identity.png" alt="Comparison of outcome colors and identity colors, plus two identical outlines where one color hides another">
+</html>

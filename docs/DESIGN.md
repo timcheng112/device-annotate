@@ -125,8 +125,10 @@ Needs one runtime test to confirm.
 ### T11. Annotation style: markers and legend
 
 Chosen from three prototypes rendered on a real fortress-mobile-app capture (`prototypes/annotation-style/`).
-- On screen: numbered circle markers and outlined boxes only, colored by outcome (info blue, pass green, fail red), with a white halo for contrast.
-- Below the screenshot: a legend panel with the outcome badge, the criterion, and one row per marker (text plus check result, failures showing expected and actual).
+- On screen: numbered markers and outlined boxes, with white halos for contrast.
+  The approved T22 refinement assigns colors to regions and uses result symbols and border styles for outcomes.
+- Below the screenshot: a legend panel with the outcome badge, the criterion, and one row per annotation or standalone check (text plus check result, failures showing expected and actual).
+  A grouped marker retains a separate legend row for each of its numbers.
 - No text covers the UI being proven.
 - Arrows stay available as a primitive for direction and gestures.
 - `mask` renders as a hatched block labelled "masked".
@@ -207,7 +209,7 @@ Humans read the annotated images.
 ```
 
 - `rect` is in screenshot pixels.
-- `n` matches the image marker and legend row.
+- `n` matches a number in the image marker and its individual legend row; T22 allows several numbers to share one marker.
 - A step that errored carries `"error": { "code", "message", "candidates" }` instead of annotation results.
 - `capture` prints the step object as JSON to stdout, so the agent need not read the file mid-run.
 
@@ -254,6 +256,51 @@ The spec schema is defined in zod; the JSON Schema file is generated from it.
 - Integrity rules: never edit images or `manifest.json` by hand; never weaken an `expect` to turn a failure into a pass (change it only if the criterion was misread, and say so); report failures as they are.
 - The detailed, version-specific reference (spec format, annotation types, checks, examples) lives in `device-proof help`, which ships with the binary.
 
+### T19. Standalone absence checks
+
+Agreed on 2026-10-14 during implementation-plan review.
+Steps may contain standalone checks, so an `absent` expectation does not require a drawable annotation target.
+A successful absence check appears in the legend without an on-screen marker.
+Annotations still require a drawable target: asking to box a missing element is an evidence error, while successfully proving that element absent is a passing check.
+The exact spec and manifest fields for standalone checks remain to be defined during contract review.
+
+### T20. Nearby annotation markers
+
+Agreed on 2026-10-14 during implementation-plan review.
+When targets are nearby, place their numbered badges on separate outer edges so the badges remain distinguishable.
+Keep each box anchored to its actual target bounds.
+T22 defines the approved color and identical-bounds treatment.
+
+### T21. Detail-view fallback for dense overlap
+
+Agreed on 2026-10-14 during implementation-plan review.
+For dense overlapping annotations, retain a numbered overview and add individual detail views beneath it, each highlighting one target with its corresponding checks.
+All views come from the same captured frame and remain in one evidence image per step.
+The user accepted this fallback after reviewing the five-target prototype.
+Activate the fallback for a connected overlap group containing three or more distinct resolved targets.
+Overlap means positive shared area in the visible target rectangles, including containment; touching edges alone do not count.
+Connections are transitive: A overlapping B and B overlapping C makes one group.
+Multiple checks on the same resolved target count as one target, while distinct targets with identical rectangles remain separate targets.
+Only the qualifying groups receive detail views; unrelated annotations retain their normal presentation.
+
+### T22. Region colors, explicit results, and grouped tags
+
+Agreed on 2026-10-14 after reviewing the [grouped-tag prototype](prototypes/annotation-overlap/grouped.png).
+This refines T11: color identifies a highlighted region instead of encoding pass or failure.
+Different regions use distinct colors, while identical rendered rectangles share one color and one outline.
+Retain white halos so annotation edges and tags remain distinguishable from matching app backgrounds.
+
+Identical bounds use one tag containing the individual annotation/check numbers and their own result symbols, such as `1 ✓, 2 ×, 5 ✓, 9 ✓`.
+Every check retains its own legend row with explicit PASS or FAIL wording; failures include expected and actual values.
+For checked regions, use a solid outline when all attached checks pass and a dashed outline when any attached check fails.
+The dashed shared outline indicates at least one failure, while the tag and legend identify the individual failed checks.
+Long tags wrap or move outside the target with a connector, keeping all numbers visible.
+
+Grouping affects drawing only; selectors, resolved component identities, and individual check results remain separate.
+Equal rectangles do not establish that two selectors refer to the same component.
+The dense-overlap threshold in T21 remains based on distinct resolved targets, not the number of shared outlines.
+Presentation of annotations without checks remains a contract-review detail in PLAN.md.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.
@@ -263,4 +310,5 @@ The spec schema is defined in zod; the JSON Schema file is generated from it.
 
 ## Still to design
 
-Nothing open. Next: implementation plan.
+Implementation planning is in progress in [PLAN.md](PLAN.md).
+Its review queue tracks remaining contract clarifications.

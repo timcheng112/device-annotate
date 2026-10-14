@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>device-proof: grouped tag with individual results</title>
+<style>
+body { margin: 20px; background: #eef0f2; color: #202428; font: 17px/1.5 system-ui, sans-serif; }
+header { max-width: 78ch; } h1 { font-size: 25px; }
+button { font: inherit; padding: 8px 14px; cursor: pointer; }
+img { display: block; width: 1120px; max-width: 100%; height: auto; margin-top: 20px; }
+img.full { max-width: none; }
+</style>
+<header>
+<h1>One tag can show mixed results</h1>
+<p><strong>Approved annotation treatment.</strong></p>
+<p>Example: <strong>1 ✓, 2 ×, 5 ✓, 9 ✓</strong>. Each check keeps its own result symbol inside the same tag. A dashed outline means at least one attached check failed; it does not mean they all failed.</p>
+<p>The legend explains each result separately. For a long list, the tag wraps or moves outside the target with a connector, keeping every check number visible.</p>
+<button onclick="document.querySelector('img').classList.toggle('full'); this.textContent = document.querySelector('img').classList.contains('full') ? 'Fit to pane' : 'Show full size'">Show full size</button>
+<a href="shared.html">Earlier separate tags</a> · <a href="dense.html">Dense fallback</a>
+</header>
+<img src="grouped.png" alt="Single shared tag containing a result symbol per check, with all-pass and mixed-result examples">
+</html>

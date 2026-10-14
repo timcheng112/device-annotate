@@ -1,0 +1,231 @@
+# device-proof: implementation plan
+
+Status: draft, under question-round review.
+The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
+This plan proposes implementation milestones and their verification; proposed details are not new agreed decisions.
+
+## Agreed planning decisions
+
+### P1. Verify capture before building the annotation pipeline
+
+Agreed on 2026-10-14.
+The first milestone uses a neutral fixture app to verify capture on both iOS and Android before building the annotation pipeline.
+It verifies Android pixel mapping, iOS native density, session sharing, and the daemon-version safeguard.
+Results determine whether the existing design can be implemented as written or whether a specific blocker needs discussion.
+
+### P2. Standalone absence checks
+
+Agreed on 2026-10-14 and recorded as T19 in [DESIGN.md](DESIGN.md).
+Allow standalone checks in a step and show successful absence checks in the legend without on-screen markers.
+Annotations continue to require drawable targets.
+M1 must define the spec and manifest representation, and M2 through M4 must verify the distinction between a passing absence check and an annotation-target error.
+
+### P3. Separate nearby target badges
+
+Agreed on 2026-10-14 and recorded as T20 in [DESIGN.md](DESIGN.md).
+Place nearby targets' badges on separate outer edges without moving their target bounds.
+T22 defines the approved color and identical-bounds treatment.
+
+### P4. Detail views for dense overlap
+
+Agreed on 2026-10-14 and recorded as T21 in [DESIGN.md](DESIGN.md).
+Use a numbered overview plus individual detail views from the same capture, within one evidence image, for dense overlap.
+The user also agreed to the threshold of three or more distinct targets in a connected overlap group, detailed below.
+
+### P5. Region colors and grouped tags with individual results
+
+Agreed on 2026-10-14 and recorded as T22 in [DESIGN.md](DESIGN.md).
+Use region identity colors, result symbols, explicit legend outcomes, and solid/dashed result borders.
+Identical bounds share one outline and one tag listing each number with its individual result symbol.
+Keep separate legend entries and check results, including for mixed passing and failing checks.
+M3 and M4 must cover grouping, mixed results, and long tags in layout tests and reviewed golden images.
+
+## Proposed build order
+
+1. M0: verify the capture assumptions on both platforms.
+2. M1: define the complete spec contract and implement offline validation.
+3. M2: resolve selectors, evaluate checks, and calculate manifest outcomes.
+4. M3: calculate annotation geometry and legend layout.
+5. M4: render deterministic images and establish reviewed golden images.
+6. M5: integrate capture, artifact writing, and the public interfaces.
+7. M6: finish CLI help, the agent skill, packaging, and release verification.
+
+Each milestone must satisfy its verification criteria before its dependent work is considered complete.
+The milestone details below remain proposals pending review.
+
+## M0. Capture compatibility and neutral fixtures
+
+### Work
+
+- Establish a neutral fixture app with stable identifiers, known geometry, and reproducible data.
+- Inspect the installed agent-device version and its corresponding source before relying on the findings recorded at commit `3d48bb99`.
+- Install and configure agent-device following that version's README when beginning this milestone.
+- Capture a snapshot and screenshot on an Android emulator and an iOS simulator.
+- Verify coordinate mapping with elements near screen edges and the system bars, plus partially off-screen elements.
+- Verify iOS screenshot dimensions and rect projection at native density.
+- Verify implicit session attachment using the same working directory and platform as the CLI, plus explicit named sessions.
+- Find and verify a way to inspect the running daemon's version before any client call that could replace it.
+- Exercise a version mismatch with a disposable session and confirm that refusal preserves the existing daemon and session.
+- Record the exact dependency versions, device configuration, observations, and any remaining limitations.
+
+### Verification and exit criteria
+
+- Keep neutral capture pairs with provenance suitable for committed test fixtures.
+- Show a rendered coordinate overlay on each platform and verify its alignment against the fixture app's known geometry.
+- Demonstrate that capture reads the app session the agent has already opened.
+- Demonstrate the daemon-version safeguard without disturbing the user's active sessions.
+- Identify whether the public capture response supplies all metadata needed for stability checks and the manifest.
+- Treat a failed foundational assumption as a blocker requiring an explicit resolution before proceeding with dependent code.
+
+Employer-app captures and snapshots remain ignored and must never become committed fixtures.
+The existing prototype is a visual reference only; its hard-coded targets and estimated text widths are not implementation foundations.
+
+## M1. Spec contract and offline validation
+
+### Work
+
+- Establish the TypeScript package, test commands, and the module boundaries in T17.
+- Define the zod schema for criteria, unique step names, all annotation primitives, checks, crop settings, and output configuration.
+- Resolve outstanding spec details through review before treating the schema as stable.
+- Generate the JSON Schema from zod, keeping generated files under script control.
+- Implement YAML loading and actionable validation errors with field locations.
+- Normalize file-based and one-off inputs into the same internal representation.
+- Expose offline `validate()` and `device-proof validate` without loading or contacting the device client.
+
+### Verification and exit criteria
+
+- Unit tests cover valid examples, malformed YAML, unknown fields, missing criteria, duplicate step names, unsupported predicates, invalid annotation combinations, and attempts to specify actions.
+- Verify that zod validation and generated JSON Schema agree on representative valid and invalid documents.
+- Verify that validation works with no running daemon or device.
+- Validate the examples that will later ship in CLI help.
+
+## M2. Resolution, checks, and outcomes
+
+### Work
+
+- Vendor the agreed predicate, visibility, absence, and React Native merge code from the verified upstream version, with its license, source headers, and matching upstream tests.
+- Add the vendor comparison script from T1.
+- Reuse the public selector functions over the supplied snapshot.
+- Map rects into screenshot pixels and classify fully and partially off-screen targets.
+- Produce actionable candidate diagnostics for unresolved or ambiguous targets.
+- Evaluate checks against the supplied capture snapshot without triggering another device capture.
+- Implement pure manifest updates and result aggregation; keep filesystem operations in `capture/` or `cli/` as required by T17.
+
+### Verification and exit criteria
+
+- Run the vendored upstream parity tests.
+- Unit tests cover zero, one, and multiple matches; React Native duplicate reporting; off-screen targets; and iOS and Android coordinate transforms.
+- Unit tests cover every supported predicate and the upstream restrictions on proving absence from incomplete snapshots.
+- Verify expected and actual values for failed checks.
+- Test aggregate precedence: error, failed, incomplete, then passed.
+- Test that an uncaptured step remains incomplete and that replacing one step's result preserves other steps.
+
+## M3. Pure layout
+
+### Work
+
+- Bundle the Inter font with its required license and measure text using its glyph metrics.
+- Implement deterministic numbered markers, region colors, boxes, arrows, masks, crop projection, and the legend panel according to T11 and T19-T22.
+- Group identical bounds for drawing, preserving per-check results, and apply the agreed dense-overlap fallback.
+- Wrap criteria, annotation text, and expected and actual values without truncating evidence.
+- Define deterministic collision handling, edge placement, padding, and contrast treatment.
+- Keep layout independent of devices and file writes.
+
+### Verification and exit criteria
+
+- Unit tests cover marker numbering, collision handling, long criteria, multiline text, and viewport edges.
+- Test crop coordinate translation and padding, including partially off-screen targets.
+- Test that legend text stays outside the app image and that mask geometry covers the intended region.
+- Verify repeatable layout for identical inputs.
+- Test overlap groups with containment, touching edges, transitive chains, repeated checks on one target, and distinct targets with identical bounds.
+- Test grouped tags with all-pass and mixed results, separate legend entries, and long lists that wrap or move without losing numbers.
+
+## M4. Rendering and reviewed golden images
+
+### Work
+
+- Build SVG from the screenshot and calculated layout, then rasterize with `@resvg/resvg-wasm` and the bundled font.
+- Escape all user and snapshot text when embedding it in SVG.
+- Render each supported primitive, region color, result symbol and border style, expected/actual failure row, and the hatched mask labelled "masked".
+- Create reference images from neutral captures and review them visually before accepting them as golden images.
+
+### Verification and exit criteria
+
+- Compare rendered outputs pixel for pixel with reviewed golden images, as required by T10.
+- Cover both platforms, dense annotations, long text, edge placement, masks, crops, and mixed passing and failing checks.
+- Include text containing XML-sensitive characters to verify safe rendering.
+- Include matching-color app backgrounds, grouped tags with mixed results, long tags, and dense-overlap detail views in the reviewed golden images.
+- Confirm that tests use the bundled font rather than host fonts.
+- Measure added processing time on representative captures against the less-than-one-second requirement, recording the environment and measurement boundary.
+
+## M5. Capture and artifact integration
+
+### Work
+
+- Turn the verified capture spike into the production adapter with implicit and explicit session targeting.
+- Enforce the daemon-version safeguard before the first potentially disruptive call.
+- Implement stable wait, snapshot/screenshot/snapshot comparison ignoring refs, and bounded retries according to T8.
+- Feed one accepted snapshot through resolution and checks, with the corresponding screenshot used for rendering.
+- Write annotated images, raw images, snapshots, and the shared manifest according to T7 and T16.
+- Preserve available raw evidence and structured diagnostics when evidence production fails.
+- Make manifest writes resilient to interruption and define safe behavior when captures target the same output directory.
+- List caller-supplied local recordings without annotating them.
+- Complete `capture()` and the capture CLI, JSON stdout, diagnostics, and exit codes.
+
+### Verification and exit criteria
+
+- Unit tests cover stable captures, irrelevant ref changes, meaningful snapshot changes, retries, and retry exhaustion.
+- Integration tests with a controlled adapter cover capture failures, rendering failures, interrupted writes, manifest preservation, and version mismatch refusal.
+- CLI tests verify per-step exit codes 0, 1, and 2 and machine-readable stdout.
+- End-to-end tests drive the neutral fixture app with agent-device, then capture evidence on both platforms.
+- Demonstrate a passing criterion, a real assertion failure, and an evidence error with their distinct artifacts and outcomes.
+- Verify multi-step aggregation and replacement of a previously captured step.
+- Run iOS simulator tests on macOS CI and Android emulator tests in CI, as required by T10.
+
+## M6. Help, skill, and package verification
+
+### Work
+
+- Write version-specific `device-proof help` covering the full spec, annotations, predicates, examples, and diagnostics.
+- Use `skill-creator` when writing `skills/device-proof/SKILL.md`, following the scope and integrity rules in T18.
+- Explain session selection, stale refs after capture, stable selectors, and adding `testID`s.
+- Explain that masks affect the annotated image while raw screenshots and snapshots remain audit artifacts.
+- Configure the agent-device peer dependency and package contents, including the font, WASM requirements, generated schema, and licenses.
+- Exclude the skill, prototype inputs, and development fixtures from the npm package as appropriate to T18.
+- Verify the packed artifact in an isolated local consumer.
+
+### Verification and exit criteria
+
+- Exercise help examples through validation and selected end-to-end scenarios.
+- Verify CLI and Node API entry points from the packed artifact.
+- Inspect package contents and ensure all runtime assets and required notices are present.
+- Verify no telemetry or package-initiated network calls in the implemented workflow.
+- Run the completed unit, golden-image, and platform end-to-end suites.
+- Record remaining limitations and release evidence without overstating untested platform support.
+
+## Review queue
+
+The following details need clarification before the affected contracts are implemented.
+They are questions, not recorded decisions.
+
+- Should the agreed legend-only treatment for successful absence checks also apply to successful `hidden` checks without drawable targets?
+- How should annotations without checks appear without implying a passing test?
+- How does a one-off capture provide the required criterion?
+- What are the precise fields and combinations for each annotation, standalone check, crop, and recording reference?
+- How are pre-capture errors represented when no raw image or device metadata exists?
+- What identifies a compatible existing manifest when the spec, device, or dependency versions change between steps?
+- What is the intended behavior for concurrent captures and replacement of existing step artifacts?
+
+## Accepted visual references
+
+The [nearby-target example](prototypes/annotation-overlap/nearby.png) demonstrates the badge placement agreed in T20.
+The [dense-overlap example](prototypes/annotation-overlap/dense.png) demonstrates the overview and individual detail views agreed in T21; its old outcome colors are superseded by T22.
+The [grouped-tag example](prototypes/annotation-overlap/grouped.png) demonstrates the region colors, shared outline, individual result symbols, and separate legend entries agreed in T22.
+Earlier comparison images remain exploratory references, not the current specification.
+These illustrations use synthetic UI and local AppKit drawing scripts; they do not validate the production font, renderer, collision algorithm, or platform coordinate mapping.
+
+## External actions
+
+Upstream issue drafts and vendor-export proposals may be prepared locally.
+Posting issues, opening pull requests, pushing, and publishing each require the user's explicit go-ahead.
+The day-one upstream issue remains unposted.

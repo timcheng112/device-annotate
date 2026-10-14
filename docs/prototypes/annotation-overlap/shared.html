@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>device-proof: shared color for identical bounds</title>
+<style>
+body { margin: 20px; background: #eef0f2; color: #202428; font: 17px/1.5 system-ui, sans-serif; }
+header { max-width: 78ch; } h1 { font-size: 25px; }
+button { font: inherit; padding: 8px 14px; cursor: pointer; }
+img { display: block; width: 1120px; max-width: 100%; height: auto; margin-top: 20px; }
+img.full { max-width: none; }
+</style>
+<header>
+<h1>Identical bounds can share one color and outline</h1>
+<p>Numbers and individual results stay separate. The shared outline is solid when all attached checks pass and dashed when any check fails. This is a proposed drawing rule, not a merger of the underlying components or checks.</p>
+<button onclick="document.querySelector('img').classList.toggle('full'); this.textContent = document.querySelector('img').classList.contains('full') ? 'Fit to pane' : 'Show full size'">Show full size</button>
+<a href="identity.html">Color comparison</a> · <a href="dense.html">Dense fallback</a>
+</header>
+<img src="shared.png" alt="Same color and single outline for identical bounds, with all-pass and mixed-result examples">
+</html>

@@ -65,7 +65,8 @@ Playwright's screenshots do not show which element was checked or what was expec
    They are evaluated against the same snapshot as the image.
    No predicates beyond what agent-device supports.
 6. **Two outcomes.**
-   - **Failed** (the app is wrong): the annotated image marks the assertion in red with expected and actual values.
+   - **Failed** (the app is wrong): the annotated image marks the assertion with a cross and explicit FAIL text, showing expected and actual values.
+     Region colors identify annotations; result symbols and border styles communicate outcomes (DESIGN.md, T22).
      Exit code 1.
    - **Error** (the evidence could not be produced): raw screenshot plus a diagnosis, such as nearest candidate elements.
      Exit code 2.

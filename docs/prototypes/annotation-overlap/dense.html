@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>device-proof: five overlapping annotations</title>
+<style>
+  body { margin: 20px; background: #eef0f2; color: #202428; font: 17px/1.5 system-ui, sans-serif; }
+  header { max-width: 75ch; }
+  h1 { font-size: 24px; }
+  button { font: inherit; padding: 8px 14px; cursor: pointer; }
+  img { display: block; width: 1100px; max-width: 100%; height: auto; margin-top: 20px; }
+  img.full { max-width: none; }
+</style>
+<header>
+  <h1>Proposal: five overlapping annotations</h1>
+  <p>The overview locates all five targets. Below it, each detail view shows only one target's outline and its check. All views would come from the same captured frame and remain in one evidence image.</p>
+  <p>This proposal trades a taller image for clearer target identification. Nearby-target placement is agreed; this dense-overlap treatment is still awaiting review.</p>
+  <button onclick="document.querySelector('img').classList.toggle('full'); this.textContent = document.querySelector('img').classList.contains('full') ? 'Fit to pane' : 'Show full size'">Show full size</button>
+  <a href="preview.html">Earlier three examples</a>
+</header>
+<img src="dense.png" alt="Five nested overlapping targets shown in an overview and five individually highlighted detail views">
+</html>
