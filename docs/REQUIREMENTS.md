@@ -58,6 +58,7 @@ Playwright's screenshots do not show which element was checked or what was expec
    Targets use agent-device selectors and resolve to screenshot pixels.
    Zero matches, multiple matches, or a fully off-screen target is an error.
    A partly off-screen target is a warning.
+   When upstream bounds are already clipped, allow edge-touching targets with a warning that their full extent is unknown, as defined in DESIGN.md, T31.
 4. **Annotations.**
    Box, arrow with text, numbered marker, text callout, `mask` (solid box, as in Playwright), and crop to targets with padding.
 5. **Assertions.**

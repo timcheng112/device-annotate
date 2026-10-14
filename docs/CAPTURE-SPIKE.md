@@ -1,6 +1,6 @@
 # M0 capture compatibility spike
 
-Status: runtime experiments complete on both platforms; the partial-visibility behavior refinement is awaiting user review.
+Status: M0 complete; the user approved the partial-visibility refinement on 2026-10-15, recorded as T31 in [DESIGN.md](DESIGN.md).
 M1 and dependent production work have not started.
 The authoritative product decisions remain in [DESIGN.md](DESIGN.md); this document records observations and unresolved consequences.
 Experiments ran on 2026-10-14 UTC, crossing into 2026-10-15 in Asia/Singapore.
@@ -221,11 +221,12 @@ The command sequence intentionally drives only the neutral fixture; production d
 `verify-geometry.mjs` is offline and also verifies the retained compatibility diagnostic without requiring its earlier mislinked app to be reinstalled.
 The compatibility pair records the initial SDK-linking experiment, not the corrected builder's current output.
 
-## Remaining gate
+## Gate resolution and next milestone
 
 The partial-visibility requirement cannot be implemented literally from the observed Android rectangles.
-The pending recommendation is to keep regular snapshots and upstream check semantics, draw the reported visible bounds, and issue a precise uncertainty warning for targets touching a viewport edge.
-Such a warning would also cover intentionally edge-aligned targets and must not falsely assert proven clipping.
-The user was asked to approve this refinement after the rendered results were shown in cmux.
-Until resolved, M0's foundational-assumption gate remains open and dependent production implementation must wait.
+The user approved keeping regular snapshots and upstream check semantics, drawing the reported visible bounds, and warning when a target touches a viewport edge and its original extent is unknown.
+T31 records the exact behavior, including intentionally edge-aligned targets and the distinction between uncertainty and proven clipping.
+This resolves M0's foundational-assumption gate.
+The user also asked whether the spike's visual styling replaced the previously agreed annotation design.
+It does not: the spike shows coordinate diagnostics, while T11 and T19-T25 remain the visual source of truth for M3 and M4.
 Build identity and supplemental environment fields remain the explicitly assigned M1 contract review work, supported by the findings above.

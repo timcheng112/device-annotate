@@ -1,7 +1,7 @@
 # device-proof: implementation plan
 
-Status: M0 runtime spike executed on both platforms; partial-visibility refinement awaiting review.
-See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and the open M0 gate.
+Status: M0 complete following approval of T31; M1 is next and has not started.
+See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
 Runtime findings and remaining contract details are assigned to M0 and M1; they must be resolved before dependent implementation rather than assumed to be settled.
@@ -126,7 +126,8 @@ The application-driving fixture harness may use agent-device; device-proof's pro
 
 Runtime evidence is recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md), with the [coordinate preview](prototypes/capture-spike/index.html) shown in cmux.
 Native geometry, implicit/named sessions, and a real daemon-version mismatch have been exercised on both target platforms where applicable.
-Android's already-clipped bounds require a focused partial-visibility decision before this milestone can be marked complete.
+The user approved the edge-uncertainty warning on 2026-10-15, recorded as T31 in [DESIGN.md](DESIGN.md), resolving the partial-visibility gate.
+M0 is complete within its documented platform and environment limits.
 M1 has not started.
 
 ### Work
@@ -200,6 +201,7 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 
 - Run the vendored upstream parity tests.
 - Unit tests cover zero, one, and multiple matches; React Native duplicate reporting; off-screen targets; and iOS and Android coordinate transforms.
+- Verify T31's warning for edge-touching targets with unknown original bounds, including intentionally edge-aligned targets, without changing assertion results or manufacturing an evidence error.
 - Unit tests cover every supported predicate and the upstream restrictions on proving absence from incomplete snapshots.
 - Verify expected and actual values for failed checks.
 - Test aggregate precedence: error, failed, incomplete, then passed.
@@ -316,7 +318,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T30 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T31 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

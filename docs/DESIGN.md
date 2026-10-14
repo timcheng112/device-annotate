@@ -408,6 +408,21 @@ Report the busy error to the caller without overwriting evidence owned by the ac
 Hold exclusive access through the command's safe completion, including manifest updates and automatic history cleanup.
 This prevents lost updates and avoids silently delaying a capture until the app may have moved to a different screen.
 
+### T31. Uncertain clipping at screen edges
+
+Agreed on 2026-10-15 after reviewing the M0 capture findings.
+Keep regular snapshots and the upstream check semantics.
+Draw the visible bounds reported by the snapshot and allow captures of targets touching a viewport edge.
+When the original extent is unavailable, show the warning "Touches screen edge; full extent unknown" for those targets.
+This warning also applies to intentionally edge-aligned elements because the available bounds cannot distinguish them from partially off-screen elements.
+It describes uncertainty and must not assert that clipping is proven.
+The warning alone does not fail an assertion or turn a capture into an evidence error.
+Missing or fully off-screen annotation targets retain the existing evidence-error behavior.
+Where the captured geometry proves partial clipping, retain the existing partial-visibility warning.
+
+The M0 HTML uses coordinate diagnostics rather than the production annotation design.
+T11 and T19-T25 remain the approved visual rules for M3 and M4, including region colors, grouped result tags, INFO presentation, and the legend below the capture.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.
