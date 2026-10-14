@@ -757,6 +757,24 @@ The implemented fragment defines evaluation results and errors, not a complete s
 Generated record schemas validate structure; the complete evaluation validator additionally checks consistency with the numbered step and between expected, actual, and reported outcomes.
 M2 must implement continued evaluation and diagnostic candidate details; M5 must preserve available raw artifacts and apply any later rendering or persistence errors.
 
+### T50. Partial annotated images with explicit errors
+
+Agreed on 2026-10-15 during M1 contract review.
+When some annotation/check entries fail, still render the usable entries if the screenshot and effective crop are usable.
+The image must show an ERROR outcome badge and explicit error rows in the legend.
+Keep T48's original numbers, including legend-only unresolved entries, and never invent markers for missing, ambiguous, or fully off-screen targets.
+Completed assertion results remain available under T49.
+
+If any requested mask cannot be applied, omit the entire annotated image.
+Require positive drawable readiness for every mask before attempting rendering; an absent error record alone does not prove that a mask can be applied.
+A failed or unavailable assertion attached to an otherwise drawable mask does not prevent masking; retain its failed/error outcome while applying the mask.
+The renderer must also fail the whole image if mask application fails during rendering, and persistence must never publish an intermediate image with a missing mask.
+
+An unusable screenshot or crop likewise suppresses the annotated image instead of silently substituting another view.
+Preserve available raw evidence and diagnostics under the existing error contract.
+An omitted current image must have no image path in its result and must never reuse an earlier capture's image path.
+The pure image policy determines eligibility only; actual rendering, visual verification, and atomic saving remain M3-M5 work.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.

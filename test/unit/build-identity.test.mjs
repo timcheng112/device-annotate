@@ -70,6 +70,7 @@ test("validation works with device-client and all built-in module imports blocke
   const ownerSchemaURL = new URL("dist/manifest/owner.js", root).href;
   const numberingURL = new URL("dist/spec/numbered-entries.js", root).href;
   const evaluationURL = new URL("dist/manifest/evaluation.js", root).href;
+  const imagePolicyURL = new URL("dist/layout/image-policy.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -126,6 +127,9 @@ test("validation works with device-client and all built-in module imports blocke
     const { summarizeStepEvaluation } = await import(${JSON.stringify(evaluationURL)});
     const evaluated = summarizeStepEvaluation({ checks: [{ target: 'id="error"', expect: { absent: true } }] }, { checks: [], errors: [{ n: 1, code: "CHECK_UNAVAILABLE", message: "Snapshot cannot prove absence." }] });
     if (evaluated.result !== "error" || evaluated.checkCounts.total !== 0) throw new Error("Incorrect partial evaluation");
+    const { decideAnnotatedImage } = await import(${JSON.stringify(imagePolicyURL)});
+    const policy = decideAnnotatedImage({ annotate: [{ mask: { target: 'id="private-field"' } }] }, { checks: [], errors: [] }, { screenshotUsable: true, cropUsable: true, drawableNumbers: [] });
+    if (policy.kind !== "omit" || policy.reasons[0].code !== "MASK_UNUSABLE") throw new Error("Unresolved mask allowed an image");
     console.log("offline validation passed");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {

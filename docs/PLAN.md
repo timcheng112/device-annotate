@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T49 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T50 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -177,6 +177,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T47](DESIGN.md#t47-one-owner-per-evidence-folder) reserves each evidence folder for one spec file or one one-off capture name.
 [T48](DESIGN.md#t48-shared-numbering-for-annotations-and-standalone-checks) defines one per-step number sequence, annotations first and standalone checks second.
 [T49](DESIGN.md#t49-preserve-completed-checks-alongside-entry-errors) retains completed assertions alongside entry errors while preserving error precedence.
+[T50](DESIGN.md#t50-partial-annotated-images-with-explicit-errors) permits partial images with explicit errors while suppressing images with unusable screenshots, crops, or masks.
 The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
@@ -224,8 +225,12 @@ The thirteenth slice adds [completed-check and entry-error schemas with a pure e
 The summary preserves completed checks, excludes INFO and unevaluated assertions from counts, and gives entry errors precedence over pass/fail.
 Complete semantic validation rejects unknown entry numbers, duplicate completed assertions, changed expectations, contradictory outcomes, and silently missing asserted entries.
 These are evaluation fragments rather than a full manifest; selector evaluation and continuing after individual resolution errors remain M2 work.
-On 2026-10-15, `npm run check` passed type checking, all 360 tests, and all thirteen generated-schema freshness checks.
-Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+The fourteenth slice adds the pure [annotated-image policy](../src/layout/image-policy.ts).
+It keeps original entry numbers and error rows for usable partial images, requires positive drawable readiness for every mask, and suppresses output when screenshot/crop/mask readiness fails.
+It rejects contradictory drawable numbers, including markers for targets proven absent or hidden, and refuses silently dropped annotations.
+This determines eligibility only; actual geometry, mask application, ERROR-badge rendering, visual review, and atomic saving remain M3-M5 work.
+On 2026-10-15, `npm run check` passed type checking, all 370 tests, and all thirteen generated-schema freshness checks.
+Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, image eligibility and mask suppression, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
 This verifies offline schema validation and step normalization; YAML loading, public validation entry points, capture preflight, multi-step enforcement, and manifest reconciliation remain to be integrated.
 
 Full-spec validation review has identified a JSON Schema export limitation.
@@ -305,6 +310,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Bundle the Inter font with its required license and measure text using its glyph metrics.
 - Implement deterministic numbered markers, region colors, boxes, arrows, masks, crop projection, and the legend panel according to T11 and T19-T25.
 - Consume T48's shared numbering rather than renumbering drawable targets during layout or grouping.
+- Apply T50's partial-image policy, retain unresolved entries as error rows without invented markers, and require drawable mask geometry before rendering.
 - Group identical bounds for drawing, preserving per-check results, and apply the agreed dense-overlap fallback.
 - Wrap criteria, annotation text, and expected and actual values without truncating evidence.
 - Define deterministic collision handling, edge placement, padding, and contrast treatment.
@@ -336,6 +342,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Cover both platforms, dense annotations, long text, edge placement, masks, crops, and mixed passing and failing checks.
 - Include text containing XML-sensitive characters to verify safe rendering.
 - Include matching-color app backgrounds, grouped tags with mixed results, long tags, and dense-overlap detail views in the reviewed golden images.
+- Visually verify partial images with an ERROR badge and diagnostic legend rows; verify that any mask-application failure aborts image production.
 - Confirm that tests use the bundled font rather than host fonts.
 - Measure added processing time on representative captures against the less-than-one-second requirement, recording the environment and measurement boundary.
 
@@ -374,6 +381,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Verify T35 with missing environment metadata, including actionable multi-step errors, allowed fresh single-step captures, and exclusion of evidence with unknown compatibility from reuse.
 - Verify that failed saves cannot trigger history pruning, referenced current artifacts remain intact, repeated cleanup is safe, and cleanup touches only eligible package-managed files.
 - Verify that missing or unreadable recordings fail before device calls, and that capture writes and cleanup preserve referenced caller-owned files, including aliases of output paths.
+- Verify that omitted annotated images have no current image path, preserve available raw evidence, and never expose an intermediate image with a missing mask or reuse an earlier capture's image.
 - Test capture-versus-capture and capture-versus-cleanup contention, path aliases for the same folder, normal lock release, and recovery after an interrupted owner.
 - Verify that a busy caller neither contacts the device nor overwrites the active command's manifest, and that it receives exit code 2 with a structured diagnosis.
 - Verify that owner mismatches and missing/malformed saved owners preserve the manifest and artifacts, while spec symlink aliases resolve to the same owner.
@@ -413,7 +421,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T49 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T50 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.
