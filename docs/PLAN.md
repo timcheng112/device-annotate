@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with the build-identity contract approved in T32-T34.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with build-identity and missing-environment behavior approved in T32-T35.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -162,6 +162,7 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 
 Contract review has established the verification-flow boundary in [DESIGN.md, T32](DESIGN.md#t32-one-verification-flow-per-spec) and missing-build-identity behavior in [T33](DESIGN.md#t33-build-identity-required-for-multi-step-captures).
 [T34](DESIGN.md#t34-separate-caller-supplied-build-identity) defines the separate build JSON file and matching Node API object.
+[T35](DESIGN.md#t35-complete-environment-identity-for-multi-step-captures) defines behavior when environment compatibility cannot be established.
 The package foundation and offline build-identity schema are implemented; remaining spec, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
@@ -226,6 +227,7 @@ This verifies offline build-identity validation only; capture preflight and mult
 - Verify that invalidated passes and their check counts cannot contribute to current outcomes, and that reused evidence retains its original capture time and provenance.
 - Verify that evidence with unknown build identity is never automatically reused, as required by T33.
 - Test that device/platform, OS, display-configuration, and tool-version changes invalidate old results, while ordinary navigation does not.
+- Verify that unknown environment values never establish reuse compatibility under T35.
 - Use a controlled clock to test just before and at the seven-day boundary, as well as count and size limits, oldest-first pruning, current-attempt protection, and INFO/error attempt history.
 
 ## M3. Pure layout
@@ -284,6 +286,7 @@ This verifies offline build-identity validation only; capture preflight and mult
 - Implement cleanup preview and explicit application, protecting current evidence during automatic pruning and excluding caller-owned recordings.
 - Check app/build provenance before reusing evidence and apply the agreed affected-flow recapture rule when the build changes.
 - Enforce T28's environment compatibility rule before accepting existing evidence into the current run.
+- Apply T35 when required environment metadata is unavailable: stop multi-step captures with a diagnosis, and record unknown details for otherwise viable fresh single-step captures.
 - List caller-supplied local recordings without annotating them.
 - Complete `capture()` and the capture CLI, JSON stdout, diagnostics, and exit codes.
 
@@ -295,6 +298,7 @@ This verifies offline build-identity validation only; capture preflight and mult
 - End-to-end tests drive the neutral fixture app with agent-device, then capture evidence on both platforms.
 - Demonstrate a passing criterion, a real assertion failure, and an evidence error with their distinct artifacts and outcomes.
 - Verify multi-step aggregation and replacement of a previously captured step.
+- Verify T35 with missing environment metadata, including actionable multi-step errors, allowed fresh single-step captures, and exclusion of evidence with unknown compatibility from reuse.
 - Verify that failed saves cannot trigger history pruning, referenced current artifacts remain intact, repeated cleanup is safe, and cleanup touches only eligible package-managed files.
 - Test capture-versus-capture and capture-versus-cleanup contention, path aliases for the same folder, normal lock release, and recovery after an interrupted owner.
 - Verify that a busy caller neither contacts the device nor overwrites the active command's manifest, and that it receives exit code 2 with a structured diagnosis.
@@ -334,7 +338,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T34 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T35 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

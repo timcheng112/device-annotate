@@ -471,6 +471,20 @@ Schema validation checks the supplied structure and required values; it cannot p
 For example, `device-proof capture cart.yaml --step before --build build.json` supplies the flow's identity for that capture.
 Automated generation of this file, including convenient integration with development builds, has not been implemented or specified.
 
+### T35. Complete environment identity for multi-step captures
+
+Agreed on 2026-10-15 during M1 contract review.
+Multi-step captures stop with an actionable error when device configuration cannot be established reliably for the compatibility checks in T28.
+Report which required details are unavailable, such as persistent device identity, OS, or text-size settings.
+Fresh single-step captures remain allowed where capture itself is possible, recording unavailable details as unknown.
+Evidence whose environment compatibility cannot be established is never automatically reused.
+Unknown values must not compare as evidence of an unchanged environment.
+
+Unlike the caller-supplied build identity checked offline under T33, environment identity may require device metadata collection.
+This rule does not promise detection before contacting the device.
+It also does not relax the geometry requirements needed to produce correctly anchored evidence.
+The exact environment fields and unavailable-metadata representation remain M1 contract work.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.
