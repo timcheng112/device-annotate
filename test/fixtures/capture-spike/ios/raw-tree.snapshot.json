@@ -1,0 +1,242 @@
+{
+  "nodes": [
+    {
+      "index": 0,
+      "type": "Application",
+      "role": "UIApplication",
+      "label": "Device Proof Fixture",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 402,
+        "height": 874
+      },
+      "enabled": true,
+      "depth": 0,
+      "hittable": false,
+      "pid": 1173,
+      "ref": "e1",
+      "kind": "application"
+    },
+    {
+      "index": 1,
+      "parentIndex": 0,
+      "type": "Window",
+      "role": "UIWindow",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 402,
+        "height": 874
+      },
+      "enabled": true,
+      "depth": 1,
+      "hittable": true,
+      "pid": 1173,
+      "ref": "e2",
+      "kind": "window"
+    },
+    {
+      "index": 2,
+      "parentIndex": 1,
+      "type": "Other",
+      "role": "UITransitionView",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 402,
+        "height": 874
+      },
+      "enabled": true,
+      "depth": 2,
+      "hittable": true,
+      "pid": 1173,
+      "ref": "e3",
+      "kind": "other"
+    },
+    {
+      "index": 3,
+      "parentIndex": 2,
+      "type": "Other",
+      "role": "UIDropShadowView",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 402,
+        "height": 874
+      },
+      "enabled": true,
+      "depth": 3,
+      "hittable": true,
+      "pid": 1173,
+      "ref": "e4",
+      "kind": "other"
+    },
+    {
+      "index": 4,
+      "parentIndex": 3,
+      "type": "Other",
+      "role": "UIView",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 402,
+        "height": 874
+      },
+      "enabled": true,
+      "depth": 4,
+      "hittable": true,
+      "pid": 1173,
+      "ref": "e5",
+      "kind": "other"
+    },
+    {
+      "index": 5,
+      "parentIndex": 4,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "top-left",
+      "identifier": "top-left",
+      "rect": {
+        "x": 8,
+        "y": 70,
+        "width": 120,
+        "height": 48
+      },
+      "enabled": true,
+      "depth": 5,
+      "hittable": true,
+      "pid": 1173,
+      "ref": "e6",
+      "kind": "text"
+    },
+    {
+      "index": 6,
+      "parentIndex": 4,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "top-right",
+      "identifier": "top-right",
+      "rect": {
+        "x": 274,
+        "y": 70,
+        "width": 120,
+        "height": 48
+      },
+      "enabled": true,
+      "depth": 5,
+      "hittable": true,
+      "pid": 1173,
+      "ref": "e7",
+      "kind": "text"
+    },
+    {
+      "index": 7,
+      "parentIndex": 4,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "center",
+      "identifier": "center",
+      "rect": {
+        "x": 40,
+        "y": 200,
+        "width": 322,
+        "height": 100
+      },
+      "enabled": true,
+      "depth": 5,
+      "hittable": true,
+      "pid": 1173,
+      "ref": "e8",
+      "kind": "text"
+    },
+    {
+      "index": 8,
+      "parentIndex": 4,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "partial-left",
+      "identifier": "partial-left",
+      "rect": {
+        "x": -20,
+        "y": 360,
+        "width": 120,
+        "height": 60
+      },
+      "enabled": true,
+      "depth": 5,
+      "hittable": true,
+      "pid": 1173,
+      "ref": "e9",
+      "kind": "text"
+    },
+    {
+      "index": 9,
+      "parentIndex": 4,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "bottom-right",
+      "identifier": "bottom-right",
+      "rect": {
+        "x": 274,
+        "y": 774,
+        "width": 120,
+        "height": 48
+      },
+      "enabled": true,
+      "depth": 5,
+      "hittable": true,
+      "pid": 1173,
+      "ref": "e10",
+      "kind": "text"
+    },
+    {
+      "index": 10,
+      "parentIndex": 4,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "partial-bottom",
+      "identifier": "partial-bottom",
+      "rect": {
+        "x": 40,
+        "y": 854,
+        "width": 160,
+        "height": 60
+      },
+      "enabled": true,
+      "depth": 5,
+      "hittable": false,
+      "pid": 1173,
+      "ref": "e11",
+      "kind": "text"
+    }
+  ],
+  "truncated": false,
+  "appName": "dev.deviceproof.fixture",
+  "appBundleId": "dev.deviceproof.fixture",
+  "visibility": {
+    "partial": false,
+    "visibleNodeCount": 11,
+    "totalNodeCount": 11,
+    "reasons": []
+  },
+  "snapshotDiagnostics": {
+    "stats": {
+      "count": 12,
+      "p50Ms": 70,
+      "p95Ms": 964,
+      "maxMs": 964,
+      "slowThresholdMs": 1500,
+      "platform": "ios",
+      "backends": {
+        "xctest": 12
+      }
+    }
+  },
+  "refsGeneration": 482547,
+  "identifiers": {
+    "session": "default",
+    "appId": "dev.deviceproof.fixture",
+    "appBundleId": "dev.deviceproof.fixture"
+  }
+}

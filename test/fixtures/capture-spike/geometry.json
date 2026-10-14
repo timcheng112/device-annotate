@@ -1,0 +1,575 @@
+[
+  {
+    "platform": "ios",
+    "png": {
+      "width": 1206,
+      "height": 2622
+    },
+    "viewport": {
+      "width": 402,
+      "height": 874
+    },
+    "scale": {
+      "x": 3,
+      "y": 3
+    },
+    "rows": [
+      {
+        "id": "top-left",
+        "sourceBounds": {
+          "x": 8,
+          "y": 70,
+          "width": 120,
+          "height": 48
+        },
+        "snapshotBounds": {
+          "x": 8,
+          "y": 70,
+          "width": 120,
+          "height": 48
+        },
+        "projected": {
+          "x": 24,
+          "y": 210,
+          "width": 360,
+          "height": 144
+        },
+        "measured": {
+          "x": 24,
+          "y": 210,
+          "width": 360,
+          "height": 144
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "top-right",
+        "sourceBounds": {
+          "x": 274,
+          "y": 70,
+          "width": 120,
+          "height": 48
+        },
+        "snapshotBounds": {
+          "x": 274,
+          "y": 70,
+          "width": 120,
+          "height": 48
+        },
+        "projected": {
+          "x": 822,
+          "y": 210,
+          "width": 360,
+          "height": 144
+        },
+        "measured": {
+          "x": 822,
+          "y": 210,
+          "width": 360,
+          "height": 144
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "center",
+        "sourceBounds": {
+          "x": 40,
+          "y": 200,
+          "width": 322,
+          "height": 100
+        },
+        "snapshotBounds": {
+          "x": 40,
+          "y": 200,
+          "width": 322,
+          "height": 100
+        },
+        "projected": {
+          "x": 120,
+          "y": 600,
+          "width": 966,
+          "height": 300
+        },
+        "measured": {
+          "x": 120,
+          "y": 600,
+          "width": 966,
+          "height": 300
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "partial-left",
+        "sourceBounds": {
+          "x": -20,
+          "y": 360,
+          "width": 120,
+          "height": 60
+        },
+        "snapshotBounds": {
+          "x": 0,
+          "y": 360,
+          "width": 100,
+          "height": 60
+        },
+        "projected": {
+          "x": 0,
+          "y": 1080,
+          "width": 300,
+          "height": 180
+        },
+        "measured": {
+          "x": 0,
+          "y": 1080,
+          "width": 300,
+          "height": 180
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": true
+      },
+      {
+        "id": "bottom-right",
+        "sourceBounds": {
+          "x": 274,
+          "y": 774,
+          "width": 120,
+          "height": 48
+        },
+        "snapshotBounds": {
+          "x": 274,
+          "y": 774,
+          "width": 120,
+          "height": 48
+        },
+        "projected": {
+          "x": 822,
+          "y": 2322,
+          "width": 360,
+          "height": 144
+        },
+        "measured": {
+          "x": 822,
+          "y": 2322,
+          "width": 360,
+          "height": 144
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "partial-bottom",
+        "sourceBounds": {
+          "x": 40,
+          "y": 854,
+          "width": 160,
+          "height": 60
+        },
+        "snapshotBounds": {
+          "x": 40,
+          "y": 854,
+          "width": 160,
+          "height": 20
+        },
+        "projected": {
+          "x": 120,
+          "y": 2562,
+          "width": 480,
+          "height": 60
+        },
+        "measured": {
+          "x": 120,
+          "y": 2562,
+          "width": 480,
+          "height": 60
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": true
+      }
+    ]
+  },
+  {
+    "platform": "android",
+    "png": {
+      "width": 1080,
+      "height": 2220
+    },
+    "viewport": {
+      "width": 1080,
+      "height": 2220
+    },
+    "scale": {
+      "x": 1,
+      "y": 1
+    },
+    "rows": [
+      {
+        "id": "top-left",
+        "sourceBounds": {
+          "x": 8,
+          "y": 100,
+          "width": 240,
+          "height": 96
+        },
+        "snapshotBounds": {
+          "x": 8,
+          "y": 100,
+          "width": 240,
+          "height": 96
+        },
+        "projected": {
+          "x": 8,
+          "y": 100,
+          "width": 240,
+          "height": 96
+        },
+        "measured": {
+          "x": 8,
+          "y": 100,
+          "width": 240,
+          "height": 96
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "top-right",
+        "sourceBounds": {
+          "x": 832,
+          "y": 100,
+          "width": 240,
+          "height": 96
+        },
+        "snapshotBounds": {
+          "x": 832,
+          "y": 100,
+          "width": 240,
+          "height": 96
+        },
+        "projected": {
+          "x": 832,
+          "y": 100,
+          "width": 240,
+          "height": 96
+        },
+        "measured": {
+          "x": 832,
+          "y": 100,
+          "width": 240,
+          "height": 96
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "center",
+        "sourceBounds": {
+          "x": 80,
+          "y": 400,
+          "width": 920,
+          "height": 200
+        },
+        "snapshotBounds": {
+          "x": 80,
+          "y": 400,
+          "width": 920,
+          "height": 200
+        },
+        "projected": {
+          "x": 80,
+          "y": 400,
+          "width": 920,
+          "height": 200
+        },
+        "measured": {
+          "x": 80,
+          "y": 400,
+          "width": 920,
+          "height": 200
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "partial-left",
+        "sourceBounds": {
+          "x": -40,
+          "y": 720,
+          "width": 240,
+          "height": 120
+        },
+        "snapshotBounds": {
+          "x": 0,
+          "y": 720,
+          "width": 200,
+          "height": 120
+        },
+        "projected": {
+          "x": 0,
+          "y": 720,
+          "width": 200,
+          "height": 120
+        },
+        "measured": {
+          "x": 0,
+          "y": 720,
+          "width": 200,
+          "height": 120
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": true
+      },
+      {
+        "id": "bottom-right",
+        "sourceBounds": {
+          "x": 832,
+          "y": 2000,
+          "width": 240,
+          "height": 96
+        },
+        "snapshotBounds": {
+          "x": 832,
+          "y": 2000,
+          "width": 240,
+          "height": 96
+        },
+        "projected": {
+          "x": 832,
+          "y": 2000,
+          "width": 240,
+          "height": 96
+        },
+        "measured": {
+          "x": 832,
+          "y": 2000,
+          "width": 240,
+          "height": 96
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "partial-bottom",
+        "sourceBounds": {
+          "x": 80,
+          "y": 2180,
+          "width": 320,
+          "height": 120
+        },
+        "snapshotBounds": {
+          "x": 80,
+          "y": 2180,
+          "width": 320,
+          "height": 40
+        },
+        "projected": {
+          "x": 80,
+          "y": 2180,
+          "width": 320,
+          "height": 40
+        },
+        "measured": {
+          "x": 80,
+          "y": 2180,
+          "width": 320,
+          "height": 40
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": true
+      }
+    ]
+  },
+  {
+    "platform": "ios-compat",
+    "png": {
+      "width": 1206,
+      "height": 2622
+    },
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "scale": {
+      "x": 3.0923076923076924,
+      "y": 3.1066350710900474
+    },
+    "rows": [
+      {
+        "id": "top-left",
+        "sourceBounds": {
+          "x": 8,
+          "y": 70,
+          "width": 120,
+          "height": 48
+        },
+        "snapshotBounds": {
+          "x": 8,
+          "y": 70,
+          "width": 120,
+          "height": 48
+        },
+        "projected": {
+          "x": 25,
+          "y": 217,
+          "width": 371,
+          "height": 149
+        },
+        "measured": {
+          "x": 25,
+          "y": 217,
+          "width": 371,
+          "height": 150
+        },
+        "maximumErrorPixels": 1,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "top-right",
+        "sourceBounds": {
+          "x": 262,
+          "y": 70,
+          "width": 120,
+          "height": 48
+        },
+        "snapshotBounds": {
+          "x": 262,
+          "y": 70,
+          "width": 120,
+          "height": 48
+        },
+        "projected": {
+          "x": 810,
+          "y": 217,
+          "width": 371,
+          "height": 149
+        },
+        "measured": {
+          "x": 810,
+          "y": 217,
+          "width": 371,
+          "height": 150
+        },
+        "maximumErrorPixels": 1,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "center",
+        "sourceBounds": {
+          "x": 40,
+          "y": 200,
+          "width": 310,
+          "height": 100
+        },
+        "snapshotBounds": {
+          "x": 40,
+          "y": 200,
+          "width": 310,
+          "height": 100
+        },
+        "projected": {
+          "x": 124,
+          "y": 621,
+          "width": 959,
+          "height": 311
+        },
+        "measured": {
+          "x": 124,
+          "y": 621,
+          "width": 958,
+          "height": 311
+        },
+        "maximumErrorPixels": 1,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "partial-left",
+        "sourceBounds": {
+          "x": -20,
+          "y": 360,
+          "width": 120,
+          "height": 60
+        },
+        "snapshotBounds": {
+          "x": 0,
+          "y": 360,
+          "width": 100,
+          "height": 60
+        },
+        "projected": {
+          "x": 0,
+          "y": 1118,
+          "width": 309,
+          "height": 186
+        },
+        "measured": {
+          "x": 0,
+          "y": 1118,
+          "width": 309,
+          "height": 187
+        },
+        "maximumErrorPixels": 1,
+        "sourceIsClipped": true
+      },
+      {
+        "id": "bottom-right",
+        "sourceBounds": {
+          "x": 262,
+          "y": 744,
+          "width": 120,
+          "height": 48
+        },
+        "snapshotBounds": {
+          "x": 262,
+          "y": 744,
+          "width": 120,
+          "height": 48
+        },
+        "projected": {
+          "x": 810,
+          "y": 2311,
+          "width": 371,
+          "height": 149
+        },
+        "measured": {
+          "x": 810,
+          "y": 2311,
+          "width": 371,
+          "height": 149
+        },
+        "maximumErrorPixels": 0,
+        "sourceIsClipped": false
+      },
+      {
+        "id": "partial-bottom",
+        "sourceBounds": {
+          "x": 40,
+          "y": 824,
+          "width": 160,
+          "height": 60
+        },
+        "snapshotBounds": {
+          "x": 40,
+          "y": 824,
+          "width": 160,
+          "height": 20
+        },
+        "projected": {
+          "x": 124,
+          "y": 2560,
+          "width": 495,
+          "height": 62
+        },
+        "measured": {
+          "x": 124,
+          "y": 2560,
+          "width": 494,
+          "height": 62
+        },
+        "maximumErrorPixels": 1,
+        "sourceIsClipped": true
+      }
+    ]
+  }
+]

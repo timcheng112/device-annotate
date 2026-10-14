@@ -1,0 +1,121 @@
+{
+  "recordedAt": "2026-10-14T16:05:05Z",
+  "host": {
+    "macOS": "14.6.1",
+    "architecture": "arm64",
+    "node": "v24.21.0",
+    "npm": "11.19.0",
+    "xcode": "Xcode 16.2\nBuild version 16C5032a",
+    "iosSDK": "18.2",
+    "java": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home",
+    "androidSDKPlatform": "33",
+    "androidBuildTools": "33.0.1"
+  },
+  "sourceSHA256": {
+    "fixture.swift": "cc346a6e3e74ecca7ef271df4b31f3a2c04a2e9312c00dcb5322230dd045c085",
+    "FixtureActivity.java": "da20d18bcc744a1f725e71c8b23baf03458f7d7c3f2fcf3c14389e43e3f7eb43",
+    "build-fixtures.py": "104debd755a728f727bd8687e676952c21f5e61bacc9ae0608008139cd885baa",
+    "prepare-android.py": "353c12d604a2cecf22fef3a6d95e679487a2ea6f85f83626a9950c64b179847d"
+  },
+  "ios": {
+    "device": {
+      "platform": "ios",
+      "target": "mobile",
+      "kind": "simulator",
+      "id": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+      "name": "Device Proof M0",
+      "booted": true,
+      "appleOs": "ios",
+      "model": "iPhone 16 Pro",
+      "osVersion": "18.3.1",
+      "identifiers": {
+        "deviceId": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+        "deviceName": "Device Proof M0",
+        "udid": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E"
+      },
+      "claimedBy": {
+        "session": "cwd:6bf4e15d240bc0da:ios",
+        "workspace": "/Users/timcheng112/Downloads/device-proof"
+      },
+      "ios": {
+        "udid": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E"
+      }
+    },
+    "build": {
+      "CFBundleIdentifier": "dev.deviceproof.fixture",
+      "CFBundleVersion": "1",
+      "CFBundleShortVersionString": "1.0"
+    },
+    "installedExecutableSHA256": "1b99c6bc5f8e9795b914c7903fc4fcf4ad1f82d8c1e7e60d0a319bfdd73af928",
+    "installedInfoPlistSHA256": "e09ad1e30eab2781f35f09182c1733a34d4eebee55a6b497abf8fb434377b310",
+    "display": {
+      "lcd": "Screen ID: 1\n        Name: LCD\n        Seed: 6\n        Screen Type: Integrated\n        Pixel Size: {1206, 2622}\n        Dot Pitch: 460\n        Mask URL: file:///Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone%2016%20Pro.simdevicetype/Contents/Resources/4E5532ED-1470-47D1-BDF4-7AA90C26957A.pdf\n        Preferred UI Scale: 3\n        Pixel Format: 'BGRA'\n        Colorspace: sRGB\n        HDR Mode: SDR\n        Refresh Rate: 6000",
+      "appearance": "light",
+      "contentSize": "large"
+    },
+    "capture": {
+      "path": "capture.raw.png",
+      "width": 1206,
+      "height": 2622,
+      "logicalWidth": 402,
+      "logicalHeight": 874,
+      "pixelDensity": 3,
+      "identifiers": {
+        "session": "default"
+      }
+    }
+  },
+  "android": {
+    "device": {
+      "platform": "android",
+      "target": "mobile",
+      "kind": "emulator",
+      "id": "emulator-5580",
+      "name": "DeviceProofM0",
+      "booted": true,
+      "model": "sdk_gphone64_arm64",
+      "osVersion": "13",
+      "identifiers": {
+        "deviceId": "emulator-5580",
+        "deviceName": "DeviceProofM0",
+        "serial": "emulator-5580"
+      },
+      "claimedBy": {
+        "session": "cwd:6bf4e15d240bc0da:android",
+        "workspace": "/Users/timcheng112/Downloads/device-proof"
+      },
+      "android": {
+        "serial": "emulator-5580"
+      }
+    },
+    "build": {
+      "versionCode": "1 minSdk=30 targetSdk=33",
+      "versionName": "1.0",
+      "firstInstallTime": "2026-10-14 23:57:42",
+      "lastUpdateTime": "2026-10-14 23:57:42"
+    },
+    "installedAPKSHA256": "de9492f3d7f2bef7ef15c99bf824049fd65a3e1dea014cc3a626e8cc119a04ae",
+    "builtAPKSHA256": "de9492f3d7f2bef7ef15c99bf824049fd65a3e1dea014cc3a626e8cc119a04ae",
+    "display": {
+      "size": "Physical size: 1080x2220",
+      "density": "Physical density: 440",
+      "fontScale": "null",
+      "rotation": "0",
+      "autoRotation": "0"
+    },
+    "os": {
+      "release": "13",
+      "sdk": "33",
+      "fingerprint": "google/sdk_gphone64_arm64/emu64a:13/TPB4.220624.004/8808248:userdebug/dev-keys"
+    },
+    "capture": {
+      "path": "capture.raw.png",
+      "width": 1080,
+      "height": 2220,
+      "displayRotation": "portrait",
+      "identifiers": {
+        "session": "default"
+      }
+    }
+  }
+}

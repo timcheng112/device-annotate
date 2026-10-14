@@ -1,0 +1,88 @@
+{
+  "capturedAt": "2026-10-14T16:05:02.677Z",
+  "agentDevice": "0.21.27",
+  "daemonBefore": {
+    "version": "0.21.27",
+    "pid": 93398,
+    "processStartTime": "Wed Oct 14 23:50:15 2026",
+    "codeOrigin": "installed"
+  },
+  "daemonAfter": {
+    "version": "0.21.27",
+    "pid": 93398,
+    "processStartTime": "Wed Oct 14 23:50:15 2026",
+    "codeOrigin": "installed"
+  },
+  "platform": "android",
+  "requestedSession": null,
+  "sessions": [
+    {
+      "name": "default",
+      "address": "cwd:6bf4e15d240bc0da:android",
+      "createdAt": 1791993829785,
+      "device": {
+        "platform": "android",
+        "target": "mobile",
+        "id": "emulator-5580",
+        "name": "DeviceProofM0",
+        "identifiers": {
+          "session": "default",
+          "deviceId": "emulator-5580",
+          "deviceName": "DeviceProofM0",
+          "serial": "emulator-5580"
+        },
+        "android": {
+          "serial": "emulator-5580"
+        }
+      },
+      "identifiers": {
+        "session": "default",
+        "deviceId": "emulator-5580",
+        "deviceName": "DeviceProofM0",
+        "serial": "emulator-5580"
+      }
+    }
+  ],
+  "screenshotOptions": {
+    "stabilize": false,
+    "normalizeStatusBar": false
+  },
+  "screenshot": {
+    "path": "capture.raw.png",
+    "width": 1080,
+    "height": 2220,
+    "displayRotation": "portrait",
+    "identifiers": {
+      "session": "default"
+    }
+  },
+  "png": {
+    "width": 1080,
+    "height": 2220
+  },
+  "devices": [
+    {
+      "platform": "android",
+      "target": "mobile",
+      "kind": "emulator",
+      "id": "emulator-5580",
+      "name": "DeviceProofM0",
+      "booted": true,
+      "model": "sdk_gphone64_arm64",
+      "osVersion": "13",
+      "identifiers": {
+        "deviceId": "emulator-5580",
+        "deviceName": "DeviceProofM0",
+        "serial": "emulator-5580"
+      },
+      "claimedBy": {
+        "session": "cwd:6bf4e15d240bc0da:android",
+        "workspace": "/Users/timcheng112/Downloads/device-proof"
+      },
+      "android": {
+        "serial": "emulator-5580"
+      }
+    }
+  ],
+  "stableIgnoringRefs": true
+}

@@ -1,0 +1,91 @@
+{
+  "options": {},
+  "screenshot": {
+    "path": "extra.raw.png",
+    "width": 402,
+    "height": 874,
+    "logicalWidth": 402,
+    "logicalHeight": 874,
+    "pixelDensity": 1,
+    "identifiers": {
+      "session": "default"
+    }
+  },
+  "actualPng": {
+    "width": 402,
+    "height": 874
+  },
+  "appState": {
+    "platform": "ios",
+    "appName": "dev.deviceproof.fixture",
+    "appBundleId": "dev.deviceproof.fixture",
+    "source": "runner",
+    "state": "runningForeground",
+    "surface": "app",
+    "device_udid": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+    "ios_simulator_device_set": null
+  },
+  "rawTree": {
+    "viewport": null,
+    "root": {
+      "index": 0,
+      "type": "Application",
+      "role": "UIApplication",
+      "label": "Device Proof Fixture",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 402,
+        "height": 874
+      },
+      "enabled": true,
+      "depth": 0,
+      "hittable": false,
+      "pid": 1173,
+      "ref": "e1",
+      "kind": "application"
+    },
+    "partialTargets": [
+      {
+        "index": 8,
+        "parentIndex": 4,
+        "type": "StaticText",
+        "role": "UILabel",
+        "label": "partial-left",
+        "identifier": "partial-left",
+        "rect": {
+          "x": -20,
+          "y": 360,
+          "width": 120,
+          "height": 60
+        },
+        "enabled": true,
+        "depth": 5,
+        "hittable": true,
+        "pid": 1173,
+        "ref": "e9",
+        "kind": "text"
+      },
+      {
+        "index": 10,
+        "parentIndex": 4,
+        "type": "StaticText",
+        "role": "UILabel",
+        "label": "partial-bottom",
+        "identifier": "partial-bottom",
+        "rect": {
+          "x": 40,
+          "y": 854,
+          "width": 160,
+          "height": 60
+        },
+        "enabled": true,
+        "depth": 5,
+        "hittable": false,
+        "pid": 1173,
+        "ref": "e11",
+        "kind": "text"
+      }
+    ]
+  }
+}

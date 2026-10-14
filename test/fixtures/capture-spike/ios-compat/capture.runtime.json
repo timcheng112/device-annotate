@@ -1,0 +1,85 @@
+{
+  "capturedAt": "2026-10-14T15:54:14.159Z",
+  "agentDevice": "0.21.27",
+  "daemonBefore": {
+    "version": "0.21.27",
+    "pid": 93398,
+    "processStartTime": "Wed Oct 14 23:50:15 2026",
+    "codeOrigin": "installed"
+  },
+  "daemonAfter": {
+    "version": "0.21.27",
+    "pid": 93398,
+    "processStartTime": "Wed Oct 14 23:50:15 2026",
+    "codeOrigin": "installed"
+  },
+  "platform": "ios",
+  "requestedSession": null,
+  "sessions": [
+    {
+      "name": "default",
+      "address": "cwd:6bf4e15d240bc0da:ios",
+      "createdAt": 1791993222922,
+      "device": {
+        "platform": "ios",
+        "target": "mobile",
+        "id": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+        "name": "Device Proof M0",
+        "appleOs": "ios",
+        "identifiers": {
+          "session": "default",
+          "deviceId": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+          "deviceName": "Device Proof M0",
+          "udid": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E"
+        },
+        "ios": {
+          "udid": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+          "simulatorSetPath": null
+        }
+      },
+      "identifiers": {
+        "session": "default",
+        "deviceId": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+        "deviceName": "Device Proof M0",
+        "udid": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E"
+      }
+    }
+  ],
+  "screenshot": {
+    "path": "capture.raw.png",
+    "width": 1206,
+    "height": 2622,
+    "logicalWidth": 402,
+    "logicalHeight": 874,
+    "pixelDensity": 3,
+    "identifiers": {
+      "session": "default"
+    }
+  },
+  "png": {
+    "width": 1206,
+    "height": 2622
+  },
+  "devices": [
+    {
+      "platform": "ios",
+      "target": "mobile",
+      "kind": "simulator",
+      "id": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+      "name": "Device Proof M0",
+      "booted": true,
+      "appleOs": "ios",
+      "model": "iPhone 16 Pro",
+      "osVersion": "18.3.1",
+      "identifiers": {
+        "deviceId": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+        "deviceName": "Device Proof M0",
+        "udid": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E"
+      },
+      "ios": {
+        "udid": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E"
+      }
+    }
+  ],
+  "stableIgnoringRefs": true
+}

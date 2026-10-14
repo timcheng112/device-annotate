@@ -1,0 +1,25 @@
+{
+  "clientVersion": "0.21.27",
+  "daemonVersion": "0.21.26",
+  "refusal": {
+    "code": "DAEMON_VERSION_MISMATCH",
+    "message": "Daemon version 0.21.26; client version 0.21.27. Capture refused before any agent-device call."
+  },
+  "daemonBefore": {
+    "version": "0.21.26",
+    "pid": 7252,
+    "processStartTime": "Thu Oct 15 00:01:53 2026",
+    "codeOrigin": "installed"
+  },
+  "daemonAfter": {
+    "version": "0.21.26",
+    "pid": 7252,
+    "processStartTime": "Thu Oct 15 00:01:53 2026",
+    "codeOrigin": "installed"
+  },
+  "metadataBytesUnchanged": true,
+  "sessionInventoryUnchanged": true,
+  "sessionRemainsUsable": true,
+  "otherDaemonUnchanged": true,
+  "session": "m0-disposable-mismatch"
+}

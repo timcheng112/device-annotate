@@ -1,0 +1,101 @@
+{
+  "options": {
+    "overlayRefs": true,
+    "scale": 0.5
+  },
+  "screenshot": {
+    "path": "extra.raw.png",
+    "width": 540,
+    "height": 1110,
+    "displayRotation": "portrait",
+    "overlayRefs": [],
+    "identifiers": {
+      "session": "default"
+    }
+  },
+  "actualPng": {
+    "width": 540,
+    "height": 1110
+  },
+  "appState": {
+    "platform": "android",
+    "package": "dev.deviceproof.fixture",
+    "activity": "dev.deviceproof.fixture.FixtureActivity"
+  },
+  "rawTree": {
+    "viewport": {
+      "width": 1080,
+      "height": 2220
+    },
+    "root": {
+      "index": 0,
+      "type": "android.widget.FrameLayout",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "bundleId": "com.android.systemui",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1080,
+        "height": 66
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e1",
+      "kind": "group"
+    },
+    "partialTargets": [
+      {
+        "index": 31,
+        "type": "android.widget.TextView",
+        "label": "partial-left",
+        "value": "partial-left",
+        "enabled": true,
+        "selected": false,
+        "editable": false,
+        "password": false,
+        "hintShowing": false,
+        "identifier": "dev.deviceproof.fixture:id/partial_left",
+        "bundleId": "dev.deviceproof.fixture",
+        "rect": {
+          "x": 0,
+          "y": 720,
+          "width": 200,
+          "height": 120
+        },
+        "visibleToUser": true,
+        "depth": 4,
+        "parentIndex": 27,
+        "ref": "e32",
+        "kind": "text"
+      },
+      {
+        "index": 33,
+        "type": "android.widget.TextView",
+        "label": "partial-bottom",
+        "value": "partial-bottom",
+        "enabled": true,
+        "selected": false,
+        "editable": false,
+        "password": false,
+        "hintShowing": false,
+        "identifier": "dev.deviceproof.fixture:id/partial_bottom",
+        "bundleId": "dev.deviceproof.fixture",
+        "rect": {
+          "x": 80,
+          "y": 2180,
+          "width": 320,
+          "height": 40
+        },
+        "visibleToUser": true,
+        "depth": 4,
+        "parentIndex": 27,
+        "ref": "e34",
+        "kind": "text"
+      }
+    ]
+  }
+}

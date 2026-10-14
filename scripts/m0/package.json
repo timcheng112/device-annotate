@@ -1,0 +1,10 @@
+{
+  "name": "device-proof-capture-spike",
+  "private": true,
+  "type": "module",
+  "description": "Isolated M0 runtime experiments, not the production package",
+  "dependencies": {
+    "agent-device": "0.21.27",
+    "pngjs": "7.0.0"
+  }
+}

@@ -1,0 +1,357 @@
+{
+  "nodes": [
+    {
+      "index": 0,
+      "type": "android.widget.TextView",
+      "label": "12:05",
+      "value": "12:05",
+      "contentDescription": "12:05 AM",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "com.android.systemui:id/clock",
+      "bundleId": "com.android.systemui",
+      "rect": {
+        "x": 22,
+        "y": 0,
+        "width": 103,
+        "height": 66
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e1",
+      "kind": "text"
+    },
+    {
+      "index": 1,
+      "type": "android.widget.FrameLayout",
+      "label": "Wifi signal full.",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "com.android.systemui:id/wifi_combo",
+      "bundleId": "com.android.systemui",
+      "rect": {
+        "x": 876,
+        "y": 2,
+        "width": 48,
+        "height": 61
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e2",
+      "kind": "group"
+    },
+    {
+      "index": 2,
+      "type": "android.widget.ImageView",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "com.android.systemui:id/wifi_signal",
+      "bundleId": "com.android.systemui",
+      "rect": {
+        "x": 883,
+        "y": 12,
+        "width": 41,
+        "height": 41
+      },
+      "visibleToUser": true,
+      "depth": 1,
+      "parentIndex": 1,
+      "ref": "e3",
+      "kind": "image"
+    },
+    {
+      "index": 3,
+      "type": "android.widget.FrameLayout",
+      "label": "Phone three bars.",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "com.android.systemui:id/mobile_combo",
+      "bundleId": "com.android.systemui",
+      "rect": {
+        "x": 924,
+        "y": 2,
+        "width": 41,
+        "height": 61
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e4",
+      "kind": "group"
+    },
+    {
+      "index": 4,
+      "type": "android.widget.ImageView",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "com.android.systemui:id/mobile_signal",
+      "bundleId": "com.android.systemui",
+      "rect": {
+        "x": 924,
+        "y": 12,
+        "width": 41,
+        "height": 41
+      },
+      "visibleToUser": true,
+      "depth": 1,
+      "parentIndex": 3,
+      "ref": "e5",
+      "kind": "image"
+    },
+    {
+      "index": 5,
+      "type": "android.widget.LinearLayout",
+      "label": "Battery charging, 100 percent.",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "com.android.systemui:id/battery",
+      "bundleId": "com.android.systemui",
+      "rect": {
+        "x": 982,
+        "y": 0,
+        "width": 21,
+        "height": 66
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e6",
+      "kind": "group"
+    },
+    {
+      "index": 6,
+      "type": "android.widget.ImageView",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "bundleId": "com.android.systemui",
+      "rect": {
+        "x": 982,
+        "y": 15,
+        "width": 21,
+        "height": 36
+      },
+      "visibleToUser": true,
+      "depth": 1,
+      "parentIndex": 5,
+      "ref": "e7",
+      "kind": "image"
+    },
+    {
+      "index": 7,
+      "type": "android.widget.TextView",
+      "label": "top-left",
+      "value": "top-left",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "dev.deviceproof.fixture:id/top_left",
+      "bundleId": "dev.deviceproof.fixture",
+      "rect": {
+        "x": 8,
+        "y": 100,
+        "width": 240,
+        "height": 96
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e8",
+      "kind": "text"
+    },
+    {
+      "index": 8,
+      "type": "android.widget.TextView",
+      "label": "top-right",
+      "value": "top-right",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "dev.deviceproof.fixture:id/top_right",
+      "bundleId": "dev.deviceproof.fixture",
+      "rect": {
+        "x": 832,
+        "y": 100,
+        "width": 240,
+        "height": 96
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e9",
+      "kind": "text"
+    },
+    {
+      "index": 9,
+      "type": "android.widget.TextView",
+      "label": "center",
+      "value": "center",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "dev.deviceproof.fixture:id/center",
+      "bundleId": "dev.deviceproof.fixture",
+      "rect": {
+        "x": 80,
+        "y": 400,
+        "width": 920,
+        "height": 200
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e10",
+      "kind": "text"
+    },
+    {
+      "index": 10,
+      "type": "android.widget.TextView",
+      "label": "partial-left",
+      "value": "partial-left",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "dev.deviceproof.fixture:id/partial_left",
+      "bundleId": "dev.deviceproof.fixture",
+      "rect": {
+        "x": 0,
+        "y": 720,
+        "width": 200,
+        "height": 120
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e11",
+      "kind": "text"
+    },
+    {
+      "index": 11,
+      "type": "android.widget.TextView",
+      "label": "bottom-right",
+      "value": "bottom-right",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "dev.deviceproof.fixture:id/bottom_right",
+      "bundleId": "dev.deviceproof.fixture",
+      "rect": {
+        "x": 832,
+        "y": 2000,
+        "width": 240,
+        "height": 96
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e12",
+      "kind": "text"
+    },
+    {
+      "index": 12,
+      "type": "android.widget.TextView",
+      "label": "partial-bottom",
+      "value": "partial-bottom",
+      "enabled": true,
+      "selected": false,
+      "editable": false,
+      "password": false,
+      "hintShowing": false,
+      "identifier": "dev.deviceproof.fixture:id/partial_bottom",
+      "bundleId": "dev.deviceproof.fixture",
+      "rect": {
+        "x": 80,
+        "y": 2180,
+        "width": 320,
+        "height": 40
+      },
+      "visibleToUser": true,
+      "depth": 0,
+      "ref": "e13",
+      "kind": "text"
+    }
+  ],
+  "truncated": false,
+  "appName": "dev.deviceproof.fixture",
+  "appBundleId": "dev.deviceproof.fixture",
+  "keyboard": {
+    "kind": "absent"
+  },
+  "viewport": {
+    "width": 1080,
+    "height": 2220
+  },
+  "visibility": {
+    "partial": false,
+    "visibleNodeCount": 13,
+    "totalNodeCount": 13,
+    "reasons": []
+  },
+  "androidSnapshot": {
+    "backend": "android-helper",
+    "pixelDensity": 2.75,
+    "helperVersion": "0.21.27",
+    "helperApiVersion": "2",
+    "helperTransport": "persistent-session",
+    "helperSessionReused": true,
+    "installReason": "current",
+    "waitForIdleTimeoutMs": 500,
+    "waitForIdleQuietMs": 100,
+    "timeoutMs": 2000,
+    "maxDepth": 128,
+    "maxNodes": 5000,
+    "rootPresent": true,
+    "captureMode": "interactive-windows",
+    "windowCount": 2,
+    "missingRootWindowTypes": [],
+    "nodeCount": 34,
+    "helperTruncated": false,
+    "elapsedMs": 10
+  },
+  "snapshotQuality": {
+    "state": "healthy",
+    "backend": "android-helper"
+  },
+  "snapshotDiagnostics": {
+    "stats": {
+      "count": 9,
+      "p50Ms": 20,
+      "p95Ms": 331,
+      "maxMs": 331,
+      "slowThresholdMs": 1500,
+      "platform": "android",
+      "backends": {
+        "android": 9
+      }
+    }
+  },
+  "refsGeneration": 415963,
+  "identifiers": {
+    "session": "default",
+    "appId": "dev.deviceproof.fixture",
+    "appBundleId": "dev.deviceproof.fixture"
+  }
+}

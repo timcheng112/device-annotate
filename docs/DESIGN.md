@@ -1,9 +1,10 @@
 # device-proof: technical design
 
-Status: implementation plan ready; runtime verification and remaining contract work are tracked in [PLAN.md](PLAN.md).
+Status: M0 runtime findings are recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md); remaining gates and contract work are tracked in [PLAN.md](PLAN.md).
 Requirements live in [REQUIREMENTS.md](REQUIREMENTS.md).
 Facts about agent-device come from reading its source at commit `3d48bb99` (2026-10-14).
-Nothing below has been verified at runtime yet.
+The findings below preserve that initial source review; [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) distinguishes verified 0.21.27 behavior from assumptions and limitations.
+In particular, viewport projection, already-clipped target bounds, screenshot stabilization, and supplemental provenance require the refinements documented there.
 
 ## Findings from agent-device source
 

@@ -1,6 +1,7 @@
 # device-proof: implementation plan
 
-Status: ready to begin M0 following question-round review.
+Status: M0 runtime spike executed on both platforms; partial-visibility refinement awaiting review.
+See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and the open M0 gate.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
 Runtime findings and remaining contract details are assigned to M0 and M1; they must be resolved before dependent implementation rather than assumed to be settled.
@@ -122,6 +123,11 @@ The application-driving fixture harness may use agent-device; device-proof's pro
 | M6 | Complete CLI help, agent skill, local package smoke-test evidence, and release-readiness notes |
 
 ## M0. Capture compatibility and neutral fixtures
+
+Runtime evidence is recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md), with the [coordinate preview](prototypes/capture-spike/index.html) shown in cmux.
+Native geometry, implicit/named sessions, and a real daemon-version mismatch have been exercised on both target platforms where applicable.
+Android's already-clipped bounds require a focused partial-visibility decision before this milestone can be marked complete.
+M1 has not started.
 
 ### Work
 

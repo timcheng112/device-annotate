@@ -1,0 +1,38 @@
+{
+  "daemonBefore": {
+    "version": "0.21.27",
+    "pid": 93398,
+    "processStartTime": "Wed Oct 14 23:50:15 2026",
+    "codeOrigin": "installed"
+  },
+  "daemonAfter": {
+    "version": "0.21.27",
+    "pid": 93398,
+    "processStartTime": "Wed Oct 14 23:50:15 2026",
+    "codeOrigin": "installed"
+  },
+  "results": [
+    {
+      "platform": "ios",
+      "implicitAddress": "cwd:6bf4e15d240bc0da:ios",
+      "explicitName": "m0-ios-named",
+      "explicitAddress": "m0-ios-named",
+      "deviceId": "AB4DDFFF-D9C3-4A5F-9753-136F764E318E",
+      "createdAt": 1791993903302,
+      "snapshotSession": "m0-ios-named",
+      "screenshotSession": "m0-ios-named",
+      "neutralTargetPresent": true
+    },
+    {
+      "platform": "android",
+      "implicitAddress": "cwd:6bf4e15d240bc0da:android",
+      "explicitName": "m0-android-named",
+      "explicitAddress": "m0-android-named",
+      "deviceId": "emulator-5580",
+      "createdAt": 1791993904810,
+      "snapshotSession": "m0-android-named",
+      "screenshotSession": "m0-android-named",
+      "neutralTargetPresent": true
+    }
+  ]
+}

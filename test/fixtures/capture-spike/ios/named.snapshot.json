@@ -1,0 +1,174 @@
+{
+  "nodes": [
+    {
+      "index": 0,
+      "type": "Application",
+      "role": "UIApplication",
+      "label": "Device Proof Fixture",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 402,
+        "height": 874
+      },
+      "enabled": true,
+      "depth": 0,
+      "pid": 1173,
+      "hittable": false,
+      "ref": "e1",
+      "kind": "application"
+    },
+    {
+      "index": 1,
+      "parentIndex": 0,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "top-left",
+      "identifier": "top-left",
+      "rect": {
+        "x": 8,
+        "y": 70,
+        "width": 120,
+        "height": 48
+      },
+      "enabled": true,
+      "depth": 1,
+      "pid": 1173,
+      "hittable": true,
+      "ref": "e2",
+      "kind": "text"
+    },
+    {
+      "index": 2,
+      "parentIndex": 0,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "top-right",
+      "identifier": "top-right",
+      "rect": {
+        "x": 274,
+        "y": 70,
+        "width": 120,
+        "height": 48
+      },
+      "enabled": true,
+      "depth": 1,
+      "pid": 1173,
+      "hittable": true,
+      "ref": "e3",
+      "kind": "text"
+    },
+    {
+      "index": 3,
+      "parentIndex": 0,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "center",
+      "identifier": "center",
+      "rect": {
+        "x": 40,
+        "y": 200,
+        "width": 322,
+        "height": 100
+      },
+      "enabled": true,
+      "depth": 1,
+      "pid": 1173,
+      "hittable": true,
+      "ref": "e4",
+      "kind": "text"
+    },
+    {
+      "index": 4,
+      "parentIndex": 0,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "partial-left",
+      "identifier": "partial-left",
+      "rect": {
+        "x": 0,
+        "y": 360,
+        "width": 100,
+        "height": 60
+      },
+      "enabled": true,
+      "depth": 1,
+      "pid": 1173,
+      "hittable": true,
+      "ref": "e5",
+      "kind": "text"
+    },
+    {
+      "index": 5,
+      "parentIndex": 0,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "bottom-right",
+      "identifier": "bottom-right",
+      "rect": {
+        "x": 274,
+        "y": 774,
+        "width": 120,
+        "height": 48
+      },
+      "enabled": true,
+      "depth": 1,
+      "pid": 1173,
+      "hittable": true,
+      "ref": "e6",
+      "kind": "text"
+    },
+    {
+      "index": 6,
+      "parentIndex": 0,
+      "type": "StaticText",
+      "role": "UILabel",
+      "label": "partial-bottom",
+      "identifier": "partial-bottom",
+      "rect": {
+        "x": 40,
+        "y": 854,
+        "width": 160,
+        "height": 20
+      },
+      "enabled": true,
+      "depth": 1,
+      "pid": 1173,
+      "hittable": false,
+      "ref": "e7",
+      "kind": "text"
+    }
+  ],
+  "truncated": false,
+  "appName": "dev.deviceproof.fixture",
+  "appBundleId": "dev.deviceproof.fixture",
+  "viewport": {
+    "width": 402,
+    "height": 874
+  },
+  "visibility": {
+    "partial": false,
+    "visibleNodeCount": 7,
+    "totalNodeCount": 7,
+    "reasons": []
+  },
+  "snapshotDiagnostics": {
+    "stats": {
+      "count": 1,
+      "p50Ms": 56,
+      "p95Ms": 56,
+      "maxMs": 56,
+      "slowThresholdMs": 1500,
+      "platform": "ios",
+      "backends": {
+        "xctest": 1
+      }
+    }
+  },
+  "refsGeneration": 552428,
+  "identifiers": {
+    "session": "m0-ios-named",
+    "appId": "dev.deviceproof.fixture",
+    "appBundleId": "dev.deviceproof.fixture"
+  }
+}

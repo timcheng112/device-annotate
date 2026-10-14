@@ -1,6 +1,10 @@
 node_modules/
 .DS_Store
 
+# Reproducible M0 build outputs, upstream source, and private daemon state
+scripts/m0/.local/
+__pycache__/
+
 # Captures of fortress-mobile-app (employer app); kept locally, never committed
 docs/prototypes/annotation-style/*.png
 docs/prototypes/annotation-style/*.snapshot.json
