@@ -181,7 +181,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T51](DESIGN.md#t51-public-offline-validation-api-and-cli) defines the public offline validator and its CLI, with YAML and parsed-object inputs.
 The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
 The public `validate()` API, YAML parsing, and validation CLI are implemented for the current spec contract.
-Capture preflight, remaining manifest/environment contracts, and complete persistence records still require work before M1 is complete.
+Offline capture-input preparation is implemented; device/environment preflight, remaining manifest contracts, and complete persistence records still require work before M1 is complete.
 
 The first implementation slice contains the [zod build schema](../src/spec/build-identity.ts), its [generated JSON Schema](../src/spec/build.schema.json), and neutral [embedded](../examples/build.embedded.json) and [external-runtime](../examples/build.external.json) examples.
 The example identifiers are illustrative and do not identify a captured app.
@@ -235,9 +235,16 @@ The fifteenth slice adds the [public validation API](../src/index.ts), [YAML/obj
 The package exports typed ESM validation and pins `yaml` 2.9.0; the CLI returns the same JSON result as the API and adds readable stderr diagnostics on failure.
 YAML syntax and field diagnostics include source locations, duplicate keys cannot silently replace steps, and validation preserves schema defaults without reading device or output state.
 Run `npm run build` and `./bin/device-proof.mjs validate examples/cart.yaml` to exercise it locally.
-On 2026-10-15, `npm run check` passed type checking, all 396 tests, and all thirteen generated-schema freshness checks.
+The sixteenth slice adds pure [capture-input preparation](../src/spec/capture-input.ts) under the already approved T23, T33, T34, T40, T41, T42, and T46 rules.
+Spec-based captures pass through the public complete validator before selecting a step, so invalid unselected steps and duplicate names still fail.
+One-off captures require a portable step name and nonblank criterion, preserve the criterion verbatim, and normalize through the same spec and effective-step path.
+Every capture from a multi-step spec requires complete build identity, counting steps across all criteria; single-step and one-off captures may omit it, while any supplied identity must validate.
+Missing identity remains absent rather than becoming a synthetic reusable identity.
+Structured errors retain known step/criterion context and identify invalid build fields.
+These internal functions run with device and host built-in imports blocked; wiring the public capture API, file loading, recording checks, ownership checks, and environment collection together remains M5 work.
+On 2026-10-15, `npm run check` passed type checking, all 410 tests, and all thirteen generated-schema freshness checks.
 Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, image eligibility and mask suppression, YAML parsing and source locations, CLI/API agreement and exit codes, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
-This verifies offline validation and step normalization; capture preflight, multi-step enforcement, the complete manifest contract, and manifest reconciliation remain to be integrated.
+This verifies offline validation, shared capture normalization, and multi-step build enforcement; the complete manifest/environment contract and integration with capture and reconciliation remain outstanding.
 
 Full-spec validation review has identified a JSON Schema export limitation.
 With pinned zod 4.6.7 and Ajv 8.18.0, a custom whole-file uniqueness refinement rejects duplicate step names across criteria at runtime, but its generated JSON Schema accepts the same input.
