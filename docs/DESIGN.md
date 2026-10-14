@@ -423,6 +423,19 @@ Where the captured geometry proves partial clipping, retain the existing partial
 The M0 HTML uses coordinate diagnostics rather than the production annotation design.
 T11 and T19-T25 remain the approved visual rules for M3 and M4, including region colors, grouped result tags, INFO presentation, and the legend below the capture.
 
+### T32. One verification flow per spec
+
+Agreed on 2026-10-15 during M1 contract review.
+Each spec file represents one verification flow with a shared app-build identity.
+The caller identifies the native build and any separately delivered JavaScript or OTA bundle.
+A change to either identity invalidates every captured step in that spec, across all its criteria.
+Other spec files remain independent verification flows.
+Spec-only edits retain the selective invalidation rules in T27.
+
+For example, changing the app build between a cart's `before` and `after` captures requires recapturing both steps.
+Editing only the `after` assertion invalidates only `after`.
+The exact provenance fields, input mechanism, and behavior when identity is unavailable remain open M1 contract work.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.

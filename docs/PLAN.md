@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 is next and has not started.
+Status: M0 complete following approval of T31; M1 contract review is in progress, with the verification-flow boundary approved in T32.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -128,7 +128,7 @@ Runtime evidence is recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md), with the [
 Native geometry, implicit/named sessions, and a real daemon-version mismatch have been exercised on both target platforms where applicable.
 The user approved the edge-uncertainty warning on 2026-10-15, recorded as T31 in [DESIGN.md](DESIGN.md), resolving the partial-visibility gate.
 M0 is complete within its documented platform and environment limits.
-M1 has not started.
+M1 contract review is in progress; T32 defines one verification flow per spec with a shared app-build identity.
 
 ### Work
 
@@ -159,6 +159,9 @@ Employer-app captures and snapshots remain ignored and must never become committ
 The existing prototype is a visual reference only; its hard-coded targets and estimated text widths are not implementation foundations.
 
 ## M1. Spec contract and offline validation
+
+Contract review has established the verification-flow boundary in [DESIGN.md, T32](DESIGN.md#t32-one-verification-flow-per-spec).
+Provenance fields and missing-identity behavior remain unresolved; the production package and schema have not been implemented.
 
 ### Work
 
@@ -314,11 +317,11 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 - M0: establish reliable app/build and environment identity metadata, and determine how an affected verification flow can be identified when runtime metadata is insufficient.
 - M1, before freezing the schema: define exact annotation/check/crop/recording fields, check counts, grouped-number representation, provenance, and managed history records.
 - M1, before implementing persistence: define partial and pre-capture error records, including optional artifact paths and unavailable device metadata.
-- M1, before enabling reuse: specify step/criterion matching, removed and renamed steps, inherited settings, and any caller-provided build provenance required by M0's findings.
+- M1, before enabling reuse: specify step/criterion matching, removed and renamed steps, inherited settings, and caller-provided build provenance within the per-spec flow boundary approved in T32, including behavior when identity is unavailable.
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T31 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T32 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.
