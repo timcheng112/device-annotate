@@ -700,6 +700,24 @@ T16's exit code 2 remains the capture error outcome.
 The [pre-capture error example](../examples/pre-capture-error.json) demonstrates known step and criterion context without device or artifact claims.
 Partial errors after capture, additional error codes, and manifest persistence remain separate M1/M5 work.
 
+### T47. One owner per evidence folder
+
+Agreed on 2026-10-15 during M1 contract review.
+Each evidence folder belongs to one spec file or one one-off capture name.
+Reject a capture from a different owner before device access or evidence changes, with an actionable error directing the caller to another output folder.
+A spec capture and a one-off capture are different owners even when their step names match.
+Repeated captures by the same owner remain allowed under the existing reuse and retention rules.
+
+Represent ownership as `{ kind: "spec", specPath }` or `{ kind: "one-off", step }`.
+Identify a spec by its canonical absolute path, resolving symlinks at the filesystem boundary before comparing owners.
+Edits at that path preserve ownership; copying or moving the spec to another canonical path creates a different owner.
+Ownership compatibility alone never establishes evidence reuse: T27/T28 still govern configuration, build, and environment compatibility.
+
+Malformed saved ownership must fail closed instead of making a folder appear unowned.
+The implementation reports `OUTPUT_OWNER_MISMATCH` or `OUTPUT_OWNER_INVALID`; unavailable spec paths report `SPEC_UNAVAILABLE`.
+M5 must check and persist ownership while holding T30's exclusive folder lock, preserve existing evidence on refusal, and never infer a reusable empty folder from a malformed existing manifest.
+Actual folder claiming, manifest persistence, and filesystem alias checks for output folders remain M5 work.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.

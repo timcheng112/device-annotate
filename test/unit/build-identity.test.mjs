@@ -67,6 +67,7 @@ test("validation works with device-client and all built-in module imports blocke
   const specSchemaURL = new URL("dist/spec/schema.js", root).href;
   const recordingSchemaURL = new URL("dist/spec/recordings.js", root).href;
   const errorSchemaURL = new URL("dist/spec/errors.js", root).href;
+  const ownerSchemaURL = new URL("dist/manifest/owner.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -101,7 +102,6 @@ test("validation works with device-client and all built-in module imports blocke
     const retained = specSchema.parse({ criteria: [criterion], retention: { maxAttemptsPerStep: 0 } });
     if (retained.retention.maxAttemptsPerStep !== 0 || retained.retention.maxAgeDays !== 7 || retained.retention.maxBytes !== 500000000) throw new Error("Incorrect retention defaults");
     if (specSchema.safeParse({ criteria: [criterion], retention: { maxBytes: -1 } }).success) throw new Error("Invalid retention accepted");
-    console.log("offline validation passed");
     const { recordingOptionsSchema } = await import(${JSON.stringify(recordingSchemaURL)});
     if (recordingOptionsSchema.parse({}).recordings.length !== 0) throw new Error("Incorrect recording defaults");
     if (!recordingOptionsSchema.safeParse({ recordings: ["clip.mp4"] }).success) throw new Error("Valid recording input rejected");
@@ -110,6 +110,15 @@ test("validation works with device-client and all built-in module imports blocke
     const invalidRecording = recordingOptionsSchema.safeParse({ recordings: [""] });
     const diagnostic = inputErrorResult(invalidRecording.error);
     if (diagnostic.result !== "error" || diagnostic.error.issues[0].path[1] !== 0 || "image" in diagnostic) throw new Error("Incorrect pre-capture error");
+    const { assertOutputOwner } = await import(${JSON.stringify(ownerSchemaURL)});
+    assertOutputOwner({ owner: { kind: "one-off", step: "after" } }, { kind: "one-off", step: "after" });
+    try {
+      assertOutputOwner({ owner: { kind: "one-off", step: "after" } }, { kind: "one-off", step: "before" });
+      throw new Error("Different owner accepted");
+    } catch (error) {
+      if (error.result?.error.code !== "OUTPUT_OWNER_MISMATCH") throw error;
+    }
+    console.log("offline validation passed");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {
     cwd: fileURLToPath(root),

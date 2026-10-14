@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T46 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T47 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -174,6 +174,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T44](DESIGN.md#t44-output-paths-relative-to-the-spec) defines spec-relative output paths and invocation-relative CLI path arguments.
 [T45](DESIGN.md#t45-per-capture-video-references) defines per-capture references to caller-owned videos and file preflight.
 [T46](DESIGN.md#t46-errors-before-evidence-capture) defines pre-capture errors with known context and omitted unavailable evidence.
+[T47](DESIGN.md#t47-one-owner-per-evidence-folder) reserves each evidence folder for one spec file or one one-off capture name.
 The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
@@ -209,9 +210,13 @@ Tests use opaque synthetic bytes to check file access, not video decoding; actua
 The tenth slice adds the [pre-capture error schema and conversion](../src/spec/errors.ts), its [generated JSON Schema](../src/spec/pre-capture-error.schema.json), and an [example](../examples/pre-capture-error.json).
 Input diagnostics retain every issue's field location and include only validated context; recording file failures now expose `RECORDING_UNAVAILABLE` with the attachment position.
 JSON serialization excludes internal causes, stacks, and unavailable device/artifact fields.
-The implemented error codes cover schema validation and recording file access; YAML, other capture failures, and partial-evidence records remain to be added.
-On 2026-10-15, `npm run check` passed type checking, all 323 tests, and all ten generated-schema freshness checks.
-Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+The implemented error codes cover schema validation, recording file access, spec identification, and folder ownership; YAML, other capture failures, and partial-evidence records remain to be added.
+The eleventh slice adds the [owner schema and pure ownership gate](../src/manifest/owner.ts), its [generated JSON Schema](../src/manifest/owner.schema.json), and [canonical spec identification](../src/capture/owner.ts).
+The gate inspects ownership within an existing manifest, so a missing or malformed owner cannot be mistaken for an unclaimed folder.
+Canonical spec identification resolves symlink aliases and preserves identity across edits at the same path.
+The full manifest schema and enforcing/persisting ownership under an exclusive output-folder lock remain later work.
+On 2026-10-15, `npm run check` passed type checking, all 339 tests, and all eleven generated-schema freshness checks.
+Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
 This verifies offline schema validation and step normalization; YAML loading, public validation entry points, capture preflight, multi-step enforcement, and manifest reconciliation remain to be integrated.
 
 Full-spec validation review has identified a JSON Schema export limitation.
@@ -333,6 +338,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Preserve available raw evidence and structured diagnostics when evidence production fails.
 - Make manifest writes resilient to interruption and define safe behavior when captures target the same output directory.
 - Acquire exclusive access for capture and cleanup before device work or evidence mutation; return T30's busy error immediately to concurrent callers.
+- Check and persist T47's folder ownership under that lock, rejecting unrelated owners and malformed ownership before device work or evidence writes.
 - Implement interruption recovery without treating a merely slow command as a dead owner.
 - Preserve superseded attempts in managed history and prune only after the new attempt and manifest are safely saved, according to T29.
 - Implement cleanup preview and explicit application, protecting current evidence during automatic pruning and excluding caller-owned recordings.
@@ -357,6 +363,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Verify that missing or unreadable recordings fail before device calls, and that capture writes and cleanup preserve referenced caller-owned files, including aliases of output paths.
 - Test capture-versus-capture and capture-versus-cleanup contention, path aliases for the same folder, normal lock release, and recovery after an interrupted owner.
 - Verify that a busy caller neither contacts the device nor overwrites the active command's manifest, and that it receives exit code 2 with a structured diagnosis.
+- Verify that owner mismatches and missing/malformed saved owners preserve the manifest and artifacts, while spec symlink aliases resolve to the same owner.
 - Run iOS simulator tests on macOS CI and Android emulator tests in CI, as required by T10.
 
 ## M6. Help, skill, and package verification
@@ -393,7 +400,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T46 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T47 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

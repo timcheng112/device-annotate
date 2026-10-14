@@ -51,7 +51,10 @@
           "type": "string",
           "enum": [
             "INVALID_INPUT",
-            "RECORDING_UNAVAILABLE"
+            "RECORDING_UNAVAILABLE",
+            "SPEC_UNAVAILABLE",
+            "OUTPUT_OWNER_INVALID",
+            "OUTPUT_OWNER_MISMATCH"
           ]
         },
         "message": {

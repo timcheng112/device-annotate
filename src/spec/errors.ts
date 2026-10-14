@@ -14,7 +14,7 @@ export const preCaptureErrorSchema = z.strictObject({
   step: stepNameSchema.optional(),
   criterion: criterionSchema.optional(),
   error: z.strictObject({
-    code: z.enum(["INVALID_INPUT", "RECORDING_UNAVAILABLE"]),
+    code: z.enum(["INVALID_INPUT", "RECORDING_UNAVAILABLE", "SPEC_UNAVAILABLE", "OUTPUT_OWNER_INVALID", "OUTPUT_OWNER_MISMATCH"]),
     message: messageSchema,
     issues: z.array(issueSchema).min(1).optional(),
   }),
