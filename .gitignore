@@ -1,0 +1,6 @@
+node_modules/
+.DS_Store
+
+# Captures of fortress-mobile-app (employer app); kept locally, never committed
+docs/prototypes/annotation-style/*.png
+docs/prototypes/annotation-style/*.snapshot.json
