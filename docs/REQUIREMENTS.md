@@ -52,7 +52,8 @@ Playwright's screenshots do not show which element was checked or what was expec
    Snapshot and screenshot together through agent-device's Node API, with a stability check (snapshot, screenshot, snapshot, compare).
    Retry a bounded number of times, then return an error.
 2. **Spec.**
-   A YAML file validated against a JSON Schema, plus CLI flags for one-off captures.
+   A YAML file with a generated JSON Schema for structural checks, plus CLI flags for one-off captures.
+   Complete offline validation additionally checks whole-file rules such as unique step names, as defined in DESIGN.md, T41.
    Each capture group requires a `criterion` (an acceptance criterion, copied word for word from the plan where one exists).
 3. **Selector anchoring.**
    Targets use agent-device selectors and resolve to screenshot pixels.

@@ -601,6 +601,18 @@ A step's own crop object replaces the entire default crop.
 Omitted padding in that object uses T38's default of 24 screenshot pixels, regardless of padding in the shared default.
 Changing the shared default invalidates only steps whose effective crop changes.
 
+### T41. Structural JSON Schema and complete offline validation
+
+Agreed on 2026-10-15 during M1 contract review after verifying the JSON Schema export limitation recorded in [PLAN.md](PLAN.md).
+Generated JSON Schema checks fields, types, required values, and annotation combinations.
+The shared offline validator additionally checks rules spanning the file, including unique step names across criteria.
+The CLI and capture preflight use that complete validator.
+An editor's JSON Schema check may therefore accept a file that `device-proof validate` rejects.
+Document this distinction explicitly in the generated schema and validation guidance.
+
+Keep parity tests for structural rules and separate tests proving complete validation rejects semantic errors that the structural schema accepts.
+This qualifies M1's original unqualified zod/JSON Schema parity requirement without relaxing the unique-step-name rule or the requirement that validation work offline.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.

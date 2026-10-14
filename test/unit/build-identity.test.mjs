@@ -64,6 +64,7 @@ test("validation works with device-client and all built-in module imports blocke
   const annotationSchemaURL = new URL("dist/spec/annotation.js", root).href;
   const cropSchemaURL = new URL("dist/spec/crop.js", root).href;
   const effectiveStepURL = new URL("dist/spec/effective-step.js", root).href;
+  const specSchemaURL = new URL("dist/spec/schema.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -91,6 +92,10 @@ test("validation works with device-client and all built-in module imports blocke
     const { normalizeStep } = await import(${JSON.stringify(effectiveStepURL)});
     const step = normalizeStep({ criterion: " Exact wording ", step: {}, defaults: { crop: { targets: ['id="cart"'] } } });
     if (step.criterion !== " Exact wording " || step.crop.padding !== 24 || step.checks.length !== 0) throw new Error("Incorrect effective step");
+    const { specSchema } = await import(${JSON.stringify(specSchemaURL)});
+    const criterion = { criterion: "Cart total updates", steps: { after: {} } };
+    if (!specSchema.safeParse({ criteria: [criterion] }).success) throw new Error("Valid spec rejected");
+    if (specSchema.safeParse({ criteria: [criterion, criterion] }).success) throw new Error("Duplicate step name accepted");
     console.log("offline validation passed");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {
