@@ -65,10 +65,33 @@ test("complete validation rejects all repeated names with the first occurrence i
 });
 
 test("step matching handles ordinary object-property names without false duplicates", () => {
-  const input = { criteria: [{ ...group, steps: { constructor: {}, toString: {}, hasOwnProperty: {} } }] };
+  const input = { criteria: [{ ...group, steps: { constructor: {}, tostring: {}, hasownproperty: {} } }] };
   const result = specSchema.parse(input);
-  assert.deepEqual(Object.keys(result.criteria[0].steps), ["constructor", "toString", "hasOwnProperty"]);
+  assert.deepEqual(Object.keys(result.criteria[0].steps), ["constructor", "tostring", "hasownproperty"]);
 });
+
+const stepNames = [
+  ...["a", "before", "after", "cart-total-2", "cart_total_2", "a".repeat(64), "con-cart", "com0", "com10", "lpt0", "lpt10"].map((name) => [name, true]),
+  ...["", "a".repeat(65), "After", "cartTotal", "2after", "_after", "-after", "after.raw", "after.snapshot", "../after", "cart/after", "cart\\after", " after", "after ", "after\n", "after\r", "after\r\n", "after\u2028", "after\u2029", "after\u0000", "café", "com¹", "lpt²", "__proto__", "con", "prn", "aux", "nul"].map((name) => [name, false]),
+  ...Array.from({ length: 9 }, (_, index) => [`com${index + 1}`, false]),
+  ...Array.from({ length: 9 }, (_, index) => [`lpt${index + 1}`, false]),
+];
+
+for (const [name, valid] of stepNames) {
+  test(`portable step name ${JSON.stringify(name)} is ${valid ? "accepted" : "rejected"}`, () => {
+    const input = { criteria: [{ ...group, steps: { [name]: {} } }] };
+    const original = structuredClone(input);
+    const result = specSchema.safeParse(input);
+    assert.equal(result.success, valid, result.success ? "unexpected success" : result.error.message);
+    assert.equal(validateJSON(input), valid, JSON.stringify(validateJSON.errors));
+    assert.deepEqual(input, original);
+    if (result.success) {
+      assert.deepEqual(Object.keys(result.data.criteria[0].steps), [name], "preserve the supplied name verbatim");
+    } else {
+      assert.ok(result.error.issues.some((issue) => JSON.stringify(issue.path) === JSON.stringify(["criteria", 0, "steps", name])), "locate the invalid step key");
+    }
+  });
+}
 
 test("a reserved prototype key is rejected instead of silently losing a step", () => {
   const input = JSON.parse('{"criteria":[{"criterion":"All steps survive validation","steps":{"before":{},"__proto__":{}}}]}');

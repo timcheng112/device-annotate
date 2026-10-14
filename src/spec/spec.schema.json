@@ -106,12 +106,14 @@
     },
     "__schema10": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
       "allOf": [
         {
-          "pattern": "\\S"
+          "pattern": "^[a-z][a-z0-9_-]*(?![\\s\\S])"
         },
         {
-          "pattern": "^(?!__proto__$)"
+          "pattern": "^(?!(?:con|prn|aux|nul|com[1-9]|lpt[1-9])$)"
         }
       ]
     },

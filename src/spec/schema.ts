@@ -1,10 +1,7 @@
 import * as z from "zod";
 import { defaultsSchema, stepSchema } from "./step.js";
+import { stepNameSchema } from "./step-name.js";
 import { criterionSchema } from "./values.js";
-
-const stepNameSchema = z.string()
-  .regex(/\S/, "Supply a non-blank step name.")
-  .regex(/^(?!__proto__$)/, "The step name __proto__ is reserved; choose another name.");
 
 const minimumSteps = 1;
 const stepsSchema = z.record(stepNameSchema, stepSchema)

@@ -94,6 +94,7 @@ criteria:
 ```
 
 Step names are unique across the file.
+T42 defines their portable filename format.
 The spec never contains actions.
 
 ### T7. Output per step
@@ -612,6 +613,20 @@ Document this distinction explicitly in the generated schema and validation guid
 
 Keep parity tests for structural rules and separate tests proving complete validation rejects semantic errors that the structural schema accepts.
 This qualifies M1's original unqualified zod/JSON Schema parity requirement without relaxing the unique-step-name rule or the requirement that validation work offline.
+
+### T42. Portable step names
+
+Agreed on 2026-10-15 during M1 contract review.
+Step names contain 1 to 64 ASCII characters, start with a lowercase letter, and otherwise contain only lowercase letters, digits, hyphens, and underscores.
+Examples include `before`, `after`, and `cart-total-2`.
+Reject reserved filenames: `con`, `prn`, `aux`, `nul`, `com1` through `com9`, and `lpt1` through `lpt9`.
+These names remain reserved when an extension is appended, as documented in [Microsoft's filename rules](https://learn.microsoft.com/windows/win32/fileio/naming-a-file).
+Other reserved forms containing punctuation or non-ASCII digits already fail the character rule.
+
+Apply the same rule to spec step keys and one-off capture names.
+Reject invalid names with a field location; preserve valid names verbatim instead of silently renaming them.
+Lowercase names prevent case-only collisions, and excluding dots and path separators prevents artifact-suffix collisions and directory traversal through step names.
+T39's uniqueness and evidence-matching rules remain in force.
 
 ## Upstream candidates
 

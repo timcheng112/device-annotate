@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T41 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T42 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -169,6 +169,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T39](DESIGN.md#t39-match-evidence-by-unique-step-name) defines step matching, renaming, removal, and reordering for evidence reuse.
 [T40](DESIGN.md#t40-shared-crop-defaults-and-explicit-step-overrides) defines shared crop defaults, whole-object step overrides, and explicit full-frame captures.
 [T41](DESIGN.md#t41-structural-json-schema-and-complete-offline-validation) distinguishes structural JSON Schema checks from complete offline validation.
+[T42](DESIGN.md#t42-portable-step-names) defines portable step names for artifact filenames.
 The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
@@ -191,9 +192,9 @@ It normalizes omitted annotation/check lists to empty lists without manufacturin
 The sixth slice adds the [root spec validator](../src/spec/schema.ts) and its [generated structural JSON Schema](../src/spec/spec.schema.json).
 It requires nonempty criteria and step groups, rejects unknown fields, and reports repeated step names at their later occurrences with the first occurrence identified.
 It rejects the reserved `__proto__` step key before parsing because the pinned zod version otherwise silently removes that entry.
-The portable step-name policy remains to be reviewed before names become artifact filenames.
-On 2026-10-15, `npm run check` passed type checking, all 180 tests, and all seven generated-schema freshness checks.
-Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+The shared [step-name schema](../src/spec/step-name.ts) enforces T42's portable names, rejects reserved filenames, and preserves valid names verbatim.
+On 2026-10-15, `npm run check` passed type checking, all 237 tests, and all seven generated-schema freshness checks.
+Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
 This verifies offline schema validation and step normalization; YAML loading, public validation entry points, capture preflight, multi-step enforcement, and manifest reconciliation remain to be integrated.
 
 Full-spec validation review has identified a JSON Schema export limitation.
@@ -373,7 +374,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T41 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T42 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.
