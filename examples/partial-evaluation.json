@@ -1,0 +1,21 @@
+{
+  "step": {
+    "annotate": [
+      { "marker": { "target": "id=\"cart\"" } },
+      { "box": { "target": "id=\"cart-total\"", "expect": { "text": "£12.00" } } }
+    ],
+    "checks": [
+      { "target": "id=\"checkout\"", "expect": { "visible": true } },
+      { "target": "id=\"error-message\"", "expect": { "absent": true } }
+    ]
+  },
+  "evaluation": {
+    "checks": [
+      { "n": 2, "expect": { "text": "£12.00" }, "actual": { "text": "£6.00" }, "result": "fail" },
+      { "n": 4, "expect": { "absent": true }, "actual": { "absent": true }, "result": "pass" }
+    ],
+    "errors": [
+      { "n": 3, "code": "TARGET_AMBIGUOUS", "message": "Two targets match checkout; use a unique selector." }
+    ]
+  }
+}

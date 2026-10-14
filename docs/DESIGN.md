@@ -214,7 +214,7 @@ Humans read the annotated images.
 
 - `rect` is in screenshot pixels.
 - `n` matches a number in the image marker and its individual legend row; T22 allows several numbers to share one marker.
-- A step that errored carries `"error": { "code", "message", "candidates" }` instead of annotation results.
+- A step that errored carries a structured error; T49 refines this contract to retain completed check results alongside entry errors.
 - `capture` prints the step object as JSON to stdout, so the agent need not read the file mid-run.
 
 Result precedence, first match wins, for criteria and for the whole manifest:
@@ -733,6 +733,29 @@ Reordering entries changes their numbers and remains a semantic step edit under 
 
 The [numbering example](../examples/numbering.json) assigns 1 to the informational cart marker, 2 to the total assertion's box, 3 to the standalone absence check, and 4 to the standalone hidden check.
 The pure numbering helper is shared input for subsequent evaluation, manifest construction, and layout; those integrations remain M2/M3 work.
+
+### T49. Preserve completed checks alongside entry errors
+
+Agreed on 2026-10-15 during M1 contract review.
+If an entry cannot resolve, continue evaluating independent entries against the same accepted snapshot and retain all completed assertion results.
+The overall step remains `error` whenever an entry has an evidence-production error, even if other assertions passed or failed.
+This supersedes T16's original statement that an error replaces annotation results.
+
+Store completed assertions separately from entry errors, linking both to T48's entry number `n`.
+Completed assertions retain `expect`, `actual`, and `result: pass | fail`.
+Entry errors retain `n`, a machine-readable `code`, and an actionable `message`.
+An assertion that completed before a drawing error may appear in both collections under the same number.
+Never turn an unresolved or unevaluated assertion into a pass or fail.
+Every asserted entry must have a completed result or an explicit error before producing its evaluation summary.
+
+T26's counts include completed assertions only; INFO entries and assertions that could not run contribute zero.
+Check totals remain `passed + failed`, and each assertion contributes at most once per attempt.
+Preserve original expectations and actual values, and reject inconsistent records instead of silently repairing their result.
+The [partial-evaluation example](../examples/partial-evaluation.json) retains one failing text check and one passing absence check around an ambiguous-target error: total 2, passed 1, failed 1, overall error.
+
+The implemented fragment defines evaluation results and errors, not a complete saved manifest or a claim that capture/render/save succeeded.
+Generated record schemas validate structure; the complete evaluation validator additionally checks consistency with the numbered step and between expected, actual, and reported outcomes.
+M2 must implement continued evaluation and diagnostic candidate details; M5 must preserve available raw artifacts and apply any later rendering or persistence errors.
 
 ## Upstream candidates
 

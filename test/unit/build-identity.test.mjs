@@ -69,6 +69,7 @@ test("validation works with device-client and all built-in module imports blocke
   const errorSchemaURL = new URL("dist/spec/errors.js", root).href;
   const ownerSchemaURL = new URL("dist/manifest/owner.js", root).href;
   const numberingURL = new URL("dist/spec/numbered-entries.js", root).href;
+  const evaluationURL = new URL("dist/manifest/evaluation.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -119,10 +120,13 @@ test("validation works with device-client and all built-in module imports blocke
     } catch (error) {
       if (error.result?.error.code !== "OUTPUT_OWNER_MISMATCH") throw error;
     }
-    console.log("offline validation passed");
     const { numberStepEntries } = await import(${JSON.stringify(numberingURL)});
     const numbered = numberStepEntries({ annotate: [{ marker: { target: 'id="cart"' } }], checks: [{ target: 'id="error"', expect: { absent: true } }] });
     if (numbered[0].n !== 1 || numbered[1].n !== 2 || numbered[1].kind !== "check") throw new Error("Incorrect shared numbering");
+    const { summarizeStepEvaluation } = await import(${JSON.stringify(evaluationURL)});
+    const evaluated = summarizeStepEvaluation({ checks: [{ target: 'id="error"', expect: { absent: true } }] }, { checks: [], errors: [{ n: 1, code: "CHECK_UNAVAILABLE", message: "Snapshot cannot prove absence." }] });
+    if (evaluated.result !== "error" || evaluated.checkCounts.total !== 0) throw new Error("Incorrect partial evaluation");
+    console.log("offline validation passed");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {
     cwd: fileURLToPath(root),

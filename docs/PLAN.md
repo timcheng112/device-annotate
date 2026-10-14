@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T48 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T49 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -176,6 +176,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T46](DESIGN.md#t46-errors-before-evidence-capture) defines pre-capture errors with known context and omitted unavailable evidence.
 [T47](DESIGN.md#t47-one-owner-per-evidence-folder) reserves each evidence folder for one spec file or one one-off capture name.
 [T48](DESIGN.md#t48-shared-numbering-for-annotations-and-standalone-checks) defines one per-step number sequence, annotations first and standalone checks second.
+[T49](DESIGN.md#t49-preserve-completed-checks-alongside-entry-errors) retains completed assertions alongside entry errors while preserving error precedence.
 The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
@@ -219,8 +220,12 @@ The full manifest schema and enforcing/persisting ownership under an exclusive o
 The twelfth slice adds [shared entry numbering](../src/spec/numbered-entries.ts) and a [mixed-entry example](../examples/numbering.json).
 It preserves each annotation/check entry and its array order, including INFO entries and checks that may appear only in the legend, without assigning outcomes or geometry.
 M2/M3 will carry these numbers into evaluation results, manifest records, and layout.
-On 2026-10-15, `npm run check` passed type checking, all 346 tests, and all eleven generated-schema freshness checks.
-Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+The thirteenth slice adds [completed-check and entry-error schemas with a pure evaluation summary](../src/manifest/evaluation.ts), generated [check-result](../src/manifest/completed-check.schema.json) and [entry-error](../src/manifest/entry-error.schema.json) schemas, and a [partial-evaluation example](../examples/partial-evaluation.json).
+The summary preserves completed checks, excludes INFO and unevaluated assertions from counts, and gives entry errors precedence over pass/fail.
+Complete semantic validation rejects unknown entry numbers, duplicate completed assertions, changed expectations, contradictory outcomes, and silently missing asserted entries.
+These are evaluation fragments rather than a full manifest; selector evaluation and continuing after individual resolution errors remain M2 work.
+On 2026-10-15, `npm run check` passed type checking, all 360 tests, and all thirteen generated-schema freshness checks.
+Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
 This verifies offline schema validation and step normalization; YAML loading, public validation entry points, capture preflight, multi-step enforcement, and manifest reconciliation remain to be integrated.
 
 Full-spec validation review has identified a JSON Schema export limitation.
@@ -268,6 +273,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Produce actionable candidate diagnostics for unresolved or ambiguous targets.
 - Evaluate checks against the supplied capture snapshot without triggering another device capture.
 - Carry T48's shared entry numbers into evaluation and manifest results, retaining INFO and legend-only entries.
+- Continue independent entry evaluation under T49 after a target-resolution error, preserving completed checks and all available entry diagnostics from the same accepted snapshot.
 - Implement pure manifest updates and result aggregation; keep filesystem operations in `capture/` or `cli/` as required by T17.
 - Compute step, criterion, and manifest check counts from recorded pass/fail results, excluding INFO entries and uncaptured checks.
 - Reconcile existing evidence against the current spec, retaining unaffected steps and marking affected or newly added steps incomplete according to T27.
@@ -283,6 +289,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Test aggregate precedence: error, failed, incomplete, then passed.
 - Test that an uncaptured step remains incomplete and that replacing one step's result preserves other steps.
 - Test zero checks, all-pass and mixed results, INFO exclusion, uncaptured steps, and recapture replacement without double counting.
+- Verify that unresolved entries do not prevent later independent checks from running, error dominates mixed pass/fail results, and completed assertions survive errors affecting their drawable evidence.
 - Test selector/check/annotation edits affecting one step, criterion and shared-setting changes affecting dependent steps, new steps, and formatting-only edits.
 - Verify T39: renamed steps are incomplete, removed steps leave current counts and enter bounded history, and step/criterion reordering preserves compatible evidence.
 - Verify that invalidated passes and their check counts cannot contribute to current outcomes, and that reused evidence retains its original capture time and provenance.
@@ -406,7 +413,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T48 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T49 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.
