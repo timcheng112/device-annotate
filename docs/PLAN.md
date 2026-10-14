@@ -1,8 +1,9 @@
 # device-proof: implementation plan
 
-Status: draft, under question-round review.
+Status: ready to begin M0 following question-round review.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
-This plan proposes implementation milestones and their verification; proposed details are not new agreed decisions.
+This plan records the agreed behavior, implementation order, deliverables, and verification gates.
+Runtime findings and remaining contract details are assigned to M0 and M1; they must be resolved before dependent implementation rather than assumed to be settled.
 
 ## Agreed planning decisions
 
@@ -30,7 +31,7 @@ T22 defines the approved color and identical-bounds treatment.
 
 Agreed on 2026-10-14 and recorded as T21 in [DESIGN.md](DESIGN.md).
 Use a numbered overview plus individual detail views from the same capture, within one evidence image, for dense overlap.
-The user also agreed to the threshold of three or more distinct targets in a connected overlap group, detailed below.
+The user also agreed to the threshold of three or more distinct targets in a connected overlap group, detailed in T21.
 
 ### P5. Region colors and grouped tags with individual results
 
@@ -89,7 +90,14 @@ Protect current evidence from automatic pruning and leave referenced external re
 Run pruning after safely saving a capture and through the cleanup command; provide a preview before applying explicit finished-run deletion.
 M1 defines retention configuration, M2 tests eligibility as pure logic, M5 implements safe archival and cleanup, and M6 documents the lifecycle.
 
-## Proposed build order
+### P13. Fail immediately when an evidence folder is busy
+
+Agreed on 2026-10-14 and recorded as T30 in [DESIGN.md](DESIGN.md).
+Allow only one capture or cleanup command at a time per output folder.
+A concurrent command returns a clear busy error without waiting, capturing, or modifying the active command's evidence.
+M5 must verify exclusive access, error reporting, and interruption recovery.
+
+## Build order
 
 1. M0: verify the capture assumptions on both platforms.
 2. M1: define the complete spec contract and implement offline validation.
@@ -100,7 +108,18 @@ M1 defines retention configuration, M2 tests eligibility as pure logic, M5 imple
 7. M6: finish CLI help, the agent skill, packaging, and release verification.
 
 Each milestone must satisfy its verification criteria before its dependent work is considered complete.
-The milestone details below remain proposals pending review.
+M0 is the first delivery: reproducible neutral captures and documented compatibility findings on both platforms.
+The application-driving fixture harness may use agent-device; device-proof's production code continues to capture and verify only.
+
+| Milestone | Reviewable deliverable |
+|---|---|
+| M0 | Neutral fixture app and capture pairs, coordinate overlays, reproducible spike scripts, and `docs/CAPTURE-SPIKE.md` with verified versions and findings |
+| M1 | Contract examples, reviewed spec/manifest/error shapes, zod schema, generated JSON Schema, and offline `validate()`/CLI |
+| M2 | Pure selector/check/outcome/reuse/retention modules with upstream parity and behavioral tests |
+| M3 | Deterministic layout data and layout tests covering the accepted visual rules |
+| M4 | Production SVG/WASM rendering, reviewed neutral golden images, and recorded performance measurements |
+| M5 | Working capture and cleanup commands, safe persistence and history, and iOS/Android end-to-end CI definitions and results |
+| M6 | Complete CLI help, agent skill, local package smoke-test evidence, and release-readiness notes |
 
 ## M0. Capture compatibility and neutral fixtures
 
@@ -127,6 +146,7 @@ The milestone details below remain proposals pending review.
 - Demonstrate the daemon-version safeguard without disturbing the user's active sessions.
 - Identify whether the public capture response supplies all metadata needed for stability checks and the manifest.
 - Treat a failed foundational assumption as a blocker requiring an explicit resolution before proceeding with dependent code.
+- Record reproducible commands and supported versus unverified behaviors in `docs/CAPTURE-SPIKE.md`; source inspection alone does not satisfy runtime verification.
 
 Employer-app captures and snapshots remain ignored and must never become committed fixtures.
 The existing prototype is a visual reference only; its hard-coded targets and estimated text widths are not implementation foundations.
@@ -138,6 +158,7 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Establish the TypeScript package, test commands, and the module boundaries in T17.
 - Define the zod schema for criteria, unique step names, all annotation primitives, checks, crop settings, and output configuration.
 - Define retention configuration and managed attempt metadata, including capture times, current/history status, artifact ownership, and artifact references needed for safe cleanup.
+- Define manifest and CLI error representations for failures before a screenshot, snapshot, device description, or valid step is available; never claim a missing artifact exists.
 - Resolve outstanding spec details through review before treating the schema as stable.
 - Generate the JSON Schema from zod, keeping generated files under script control.
 - Implement YAML loading and actionable validation errors with field locations.
@@ -233,6 +254,8 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Write annotated images, raw images, snapshots, and the shared manifest according to T7 and T16.
 - Preserve available raw evidence and structured diagnostics when evidence production fails.
 - Make manifest writes resilient to interruption and define safe behavior when captures target the same output directory.
+- Acquire exclusive access for capture and cleanup before device work or evidence mutation; return T30's busy error immediately to concurrent callers.
+- Implement interruption recovery without treating a merely slow command as a dead owner.
 - Preserve superseded attempts in managed history and prune only after the new attempt and manifest are safely saved, according to T29.
 - Implement cleanup preview and explicit application, protecting current evidence during automatic pruning and excluding caller-owned recordings.
 - Check app/build provenance before reusing evidence and apply the agreed affected-flow recapture rule when the build changes.
@@ -249,6 +272,8 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Demonstrate a passing criterion, a real assertion failure, and an evidence error with their distinct artifacts and outcomes.
 - Verify multi-step aggregation and replacement of a previously captured step.
 - Verify that failed saves cannot trigger history pruning, referenced current artifacts remain intact, repeated cleanup is safe, and cleanup touches only eligible package-managed files.
+- Test capture-versus-capture and capture-versus-cleanup contention, path aliases for the same folder, normal lock release, and recovery after an interrupted owner.
+- Verify that a busy caller neither contacts the device nor overwrites the active command's manifest, and that it receives exit code 2 with a structured diagnosis.
 - Run iOS simulator tests on macOS CI and Android emulator tests in CI, as required by T10.
 
 ## M6. Help, skill, and package verification
@@ -273,15 +298,25 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 - Run the completed unit, golden-image, and platform end-to-end suites.
 - Record remaining limitations and release evidence without overstating untested platform support.
 
-## Review queue
+## Remaining contract work and its gates
 
-The following details need clarification before the affected contracts are implemented.
-They are questions, not recorded decisions.
+These tasks are part of the implementation sequence, not additional settled decisions.
+Investigate runtime facts directly and review any resulting user-visible behavior choices before implementing the affected contract.
 
-- What are the precise fields and combinations for each annotation, standalone check, crop, and recording reference?
-- How are pre-capture errors represented when no raw image or device metadata exists?
-- How are app-build changes and affected verification flows identified when runtime metadata is insufficient?
-- What is the intended behavior for concurrent captures or cleanup commands targeting the same output folder?
+- M0: establish reliable app/build and environment identity metadata, and determine how an affected verification flow can be identified when runtime metadata is insufficient.
+- M1, before freezing the schema: define exact annotation/check/crop/recording fields, check counts, grouped-number representation, provenance, and managed history records.
+- M1, before implementing persistence: define partial and pre-capture error records, including optional artifact paths and unavailable device metadata.
+- M1, before enabling reuse: specify step/criterion matching, removed and renamed steps, inherited settings, and any caller-provided build provenance required by M0's findings.
+
+## Completion criteria
+
+- All v1 requirements and package behavior from T1-T30 are represented in the package, help, and skill where applicable.
+- Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
+- End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
+- The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.
+- A locally packed package works in an isolated consumer with its required runtime assets and licenses.
+- No employer-app captures or snapshots enter fixtures, commits, or the package.
+- Remaining limitations are explicit; publishing and external handoff remain separately authorized actions.
 
 ## Accepted visual references
 

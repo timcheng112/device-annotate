@@ -1,6 +1,6 @@
 # device-proof: technical design
 
-Status: in progress.
+Status: implementation plan ready; runtime verification and remaining contract work are tracked in [PLAN.md](PLAN.md).
 Requirements live in [REQUIREMENTS.md](REQUIREMENTS.md).
 Facts about agent-device come from reading its source at commit `3d48bb99` (2026-10-14).
 Nothing below has been verified at runtime yet.
@@ -397,6 +397,16 @@ Provide a dedicated cleanup command with a deletion preview before applying expl
 Delete only managed artifacts eligible for the selected cleanup scope and preserve artifacts still referenced by protected current attempts.
 Document retention configuration, opportunistic cleanup, and finished-run cleanup in CLI help and the agent skill.
 
+### T30. Exclusive access to an evidence folder
+
+Agreed on 2026-10-14 during implementation-plan review.
+Allow one capture or cleanup command at a time per evidence output folder.
+A second command targeting the same folder fails immediately with a clear folder-busy error and exit code 2.
+It does not wait silently, capture from the device, or change that folder's manifest or artifacts.
+Report the busy error to the caller without overwriting evidence owned by the active command.
+Hold exclusive access through the command's safe completion, including manifest updates and automatic history cleanup.
+This prevents lost updates and avoids silently delaying a capture until the app may have moved to a different screen.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.
@@ -406,5 +416,5 @@ Document retention configuration, opportunistic cleanup, and finished-run cleanu
 
 ## Still to design
 
-Implementation planning is in progress in [PLAN.md](PLAN.md).
-Its review queue tracks remaining contract clarifications.
+The implementation sequence and verification gates are recorded in [PLAN.md](PLAN.md).
+Its remaining contract work is assigned to M0 and M1 and must be resolved before dependent implementation.
