@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review is in progress, with the verification-flow boundary approved in T32.
+Status: M0 complete following approval of T31; M1 contract review is in progress, with the verification-flow boundary and missing-build-identity behavior approved in T32-T33.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -160,8 +160,8 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 
 ## M1. Spec contract and offline validation
 
-Contract review has established the verification-flow boundary in [DESIGN.md, T32](DESIGN.md#t32-one-verification-flow-per-spec).
-Provenance fields and missing-identity behavior remain unresolved; the production package and schema have not been implemented.
+Contract review has established the verification-flow boundary in [DESIGN.md, T32](DESIGN.md#t32-one-verification-flow-per-spec) and missing-build-identity behavior in [T33](DESIGN.md#t33-build-identity-required-for-multi-step-captures).
+Provenance fields and their input mechanism remain unresolved; the production package and schema have not been implemented.
 
 ### Work
 
@@ -183,6 +183,7 @@ Provenance fields and missing-identity behavior remain unresolved; the productio
 - Verify that zod validation and generated JSON Schema agree on representative valid and invalid documents.
 - Verify that validation works with no running daemon or device.
 - Verify that one-off captures with missing or blank criteria fail before any device-client call and that supplied criterion text is preserved.
+- Verify that multi-step captures with missing or incomplete build identity fail before any device-client call, while single-step and one-off captures may omit identity under T33.
 - Validate the examples that will later ship in CLI help.
 
 ## M2. Resolution, checks, and outcomes
@@ -212,6 +213,7 @@ Provenance fields and missing-identity behavior remain unresolved; the productio
 - Test zero checks, all-pass and mixed results, INFO exclusion, uncaptured steps, and recapture replacement without double counting.
 - Test selector/check/annotation edits affecting one step, criterion and shared-setting changes affecting dependent steps, new steps, and formatting-only edits.
 - Verify that invalidated passes and their check counts cannot contribute to current outcomes, and that reused evidence retains its original capture time and provenance.
+- Verify that evidence with unknown build identity is never automatically reused, as required by T33.
 - Test that device/platform, OS, display-configuration, and tool-version changes invalidate old results, while ordinary navigation does not.
 - Use a controlled clock to test just before and at the seven-day boundary, as well as count and size limits, oldest-first pruning, current-attempt protection, and INFO/error attempt history.
 
@@ -317,11 +319,11 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 - M0: establish reliable app/build and environment identity metadata, and determine how an affected verification flow can be identified when runtime metadata is insufficient.
 - M1, before freezing the schema: define exact annotation/check/crop/recording fields, check counts, grouped-number representation, provenance, and managed history records.
 - M1, before implementing persistence: define partial and pre-capture error records, including optional artifact paths and unavailable device metadata.
-- M1, before enabling reuse: specify step/criterion matching, removed and renamed steps, inherited settings, and caller-provided build provenance within the per-spec flow boundary approved in T32, including behavior when identity is unavailable.
+- M1, before enabling reuse: specify step/criterion matching, removed and renamed steps, inherited settings, and caller-provided build provenance within the per-spec flow boundary approved in T32 and missing-identity behavior approved in T33.
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T32 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T33 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

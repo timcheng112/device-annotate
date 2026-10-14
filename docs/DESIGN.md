@@ -434,7 +434,17 @@ Spec-only edits retain the selective invalidation rules in T27.
 
 For example, changing the app build between a cart's `before` and `after` captures requires recapturing both steps.
 Editing only the `after` assertion invalidates only `after`.
-The exact provenance fields, input mechanism, and behavior when identity is unavailable remain open M1 contract work.
+T33 defines behavior when identity is unavailable.
+The exact provenance fields and input mechanism remain open M1 contract work.
+
+### T33. Build identity required for multi-step captures
+
+Agreed on 2026-10-15 during M1 contract review.
+Capturing a step from a spec containing multiple steps requires complete build identity for the flow defined in T32.
+Missing or incomplete identity produces an actionable validation error before contacting the device, explaining what is missing.
+A single-step spec or one-off capture may omit build identity because it produces fresh evidence without combining observations from different captures.
+Evidence with unknown build identity is never automatically reused.
+The exact representation of complete identity remains open M1 contract work.
 
 ## Upstream candidates
 
