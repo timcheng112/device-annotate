@@ -41,7 +41,7 @@ const admittedSpecSchema = z.preprocess((input, context) => {
   return input;
 }, specStructureSchema);
 
-/** Shared complete spec validation for future CLI, Node API, and capture preflight. */
+/** Shared spec rules for the offline CLI/Node API and future capture preflight. */
 export const specSchema = admittedSpecSchema.superRefine((spec, context) => {
   const firstCriterionByStep = new Map<string, number>();
   for (const [index, group] of spec.criteria.entries()) {

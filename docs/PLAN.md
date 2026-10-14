@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T50 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T51 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -178,8 +178,10 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T48](DESIGN.md#t48-shared-numbering-for-annotations-and-standalone-checks) defines one per-step number sequence, annotations first and standalone checks second.
 [T49](DESIGN.md#t49-preserve-completed-checks-alongside-entry-errors) retains completed assertions alongside entry errors while preserving error precedence.
 [T50](DESIGN.md#t50-partial-annotated-images-with-explicit-errors) permits partial images with explicit errors while suppressing images with unusable screenshots, crops, or masks.
+[T51](DESIGN.md#t51-public-offline-validation-api-and-cli) defines the public offline validator and its CLI, with YAML and parsed-object inputs.
 The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
-The full `validate()` API, YAML loader, and CLI are not implemented yet.
+The public `validate()` API, YAML parsing, and validation CLI are implemented for the current spec contract.
+Capture preflight, remaining manifest/environment contracts, and complete persistence records still require work before M1 is complete.
 
 The first implementation slice contains the [zod build schema](../src/spec/build-identity.ts), its [generated JSON Schema](../src/spec/build.schema.json), and neutral [embedded](../examples/build.embedded.json) and [external-runtime](../examples/build.external.json) examples.
 The example identifiers are illustrative and do not identify a captured app.
@@ -229,9 +231,13 @@ The fourteenth slice adds the pure [annotated-image policy](../src/layout/image-
 It keeps original entry numbers and error rows for usable partial images, requires positive drawable readiness for every mask, and suppresses output when screenshot/crop/mask readiness fails.
 It rejects contradictory drawable numbers, including markers for targets proven absent or hidden, and refuses silently dropped annotations.
 This determines eligibility only; actual geometry, mask application, ERROR-badge rendering, visual review, and atomic saving remain M3-M5 work.
-On 2026-10-15, `npm run check` passed type checking, all 370 tests, and all thirteen generated-schema freshness checks.
-Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, image eligibility and mask suppression, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
-This verifies offline schema validation and step normalization; YAML loading, public validation entry points, capture preflight, multi-step enforcement, and manifest reconciliation remain to be integrated.
+The fifteenth slice adds the [public validation API](../src/index.ts), [YAML/object validator](../src/spec/validate.ts), [validation CLI](../src/cli/main.ts), executable [development entry point](../bin/device-proof.mjs), and [YAML example](../examples/cart.yaml).
+The package exports typed ESM validation and pins `yaml` 2.9.0; the CLI returns the same JSON result as the API and adds readable stderr diagnostics on failure.
+YAML syntax and field diagnostics include source locations, duplicate keys cannot silently replace steps, and validation preserves schema defaults without reading device or output state.
+Run `npm run build` and `./bin/device-proof.mjs validate examples/cart.yaml` to exercise it locally.
+On 2026-10-15, `npm run check` passed type checking, all 396 tests, and all thirteen generated-schema freshness checks.
+Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, image eligibility and mask suppression, YAML parsing and source locations, CLI/API agreement and exit codes, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+This verifies offline validation and step normalization; capture preflight, multi-step enforcement, the complete manifest contract, and manifest reconciliation remain to be integrated.
 
 Full-spec validation review has identified a JSON Schema export limitation.
 With pinned zod 4.6.7 and Ajv 8.18.0, a custom whole-file uniqueness refinement rejects duplicate step names across criteria at runtime, but its generated JSON Schema accepts the same input.
@@ -421,7 +427,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T50 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T51 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

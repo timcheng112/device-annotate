@@ -775,6 +775,49 @@ Preserve available raw evidence and diagnostics under the existing error contrac
 An omitted current image must have no image path in its result and must never reuse an earlier capture's image path.
 The pure image policy determines eligibility only; actual rendering, visual verification, and atomic saving remain M3-M5 work.
 
+### T51. Public offline validation API and CLI
+
+Agreed on 2026-10-15 during M1 contract review.
+Node's `validate(input)` accepts YAML text or a parsed spec object and returns a synchronous discriminated result:
+
+```ts
+import { validate } from "device-proof";
+
+const result = validate(yamlText); // A parsed object is also accepted.
+if (result.valid) {
+  // result.spec contains validated fields and schema defaults.
+} else {
+  // result.error contains code, message, and optional field issues.
+}
+```
+
+The API performs no file or device access and does not log diagnostics.
+Ordinary invalid specs return `{ valid: false, error }` rather than throwing.
+Success returns `{ valid: true, spec }` with schema defaults applied and caller input preserved.
+Shared crop inheritance remains represented by `defaults`; capture obtains each effective configuration through T40's normalization.
+Relative paths stay as supplied until T44's path-resolution boundary.
+
+`device-proof validate <spec.yaml>` reads one local UTF-8 file and calls that same validator.
+It writes one JSON result to stdout, writes readable diagnostics to stderr on failure, and exits 0 for valid input or 2 for validation, argument, or file-access errors.
+Use `--` before a filename that starts with a hyphen.
+Validation creates no evidence files and never loads or contacts the device client.
+The [cart example](../examples/cart.yaml) is executable with the local development entry point after building:
+
+```sh
+npm run build
+./bin/device-proof.mjs validate examples/cart.yaml
+```
+
+Use YAML 1.2 core syntax with exactly one document, string mapping keys, and unique keys.
+The pinned `yaml` 2.9.0 parser supplies source locations and parser diagnostics; its configuration follows the [parser documentation](https://eemeli.org/yaml/).
+Reject parser errors and warnings, including duplicate keys and unresolved tags, instead of silently dropping or reinterpreting content.
+Ordinary anchors/aliases are supported with the parser's alias-expansion limit of 100; merge-key inheritance is disabled in favor of T40's explicit defaults.
+YAML failures use `INVALID_YAML`, schema and semantic failures use `INVALID_INPUT`, and CLI file-access failures use `SPEC_UNAVAILABLE`.
+Issues retain their field paths and, for YAML where available, a one-based `location: { line, column }`.
+Missing fields use the nearest available parent location; object inputs do not receive invented source positions.
+
+This API validates the current spec contract offline; selector resolution, capture preflight, and the complete persisted manifest remain their assigned milestone work.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.

@@ -1,0 +1,23 @@
+out: evidence/cart
+defaults:
+  crop:
+    targets: ['id="cart"']
+    padding: 24
+criteria:
+  - criterion: "Cart total updates when quantity changes"
+    steps:
+      before:
+        annotate:
+          - marker:
+              target: 'id="cart-total"'
+              text: "Total before quantity changes"
+      after:
+        annotate:
+          - box:
+              target: 'id="cart-total"'
+              expect:
+                text: "£12.00"
+        checks:
+          - target: 'id="error-message"'
+            expect:
+              absent: true

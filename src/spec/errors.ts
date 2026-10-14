@@ -6,18 +6,23 @@ const messageSchema = z.string().regex(/\S/, "Supply a diagnostic message.");
 const issueSchema = z.strictObject({
   path: z.array(z.union([z.string(), z.number().int().nonnegative()])),
   message: messageSchema,
+  location: z.strictObject({ line: z.number().int().positive(), column: z.number().int().positive() }).optional(),
 });
+
+export const diagnosticSchema = z.strictObject({
+  code: z.enum(["INVALID_INPUT", "INVALID_YAML", "RECORDING_UNAVAILABLE", "SPEC_UNAVAILABLE", "OUTPUT_OWNER_INVALID", "OUTPUT_OWNER_MISMATCH"]),
+  message: messageSchema,
+  issues: z.array(issueSchema).min(1).optional(),
+});
+export type Diagnostic = z.output<typeof diagnosticSchema>;
+export type DiagnosticIssue = z.output<typeof issueSchema>;
 
 /** Initial pre-capture failures; post-capture errors and device provenance are separate contracts. */
 export const preCaptureErrorSchema = z.strictObject({
   result: z.literal("error"),
   step: stepNameSchema.optional(),
   criterion: criterionSchema.optional(),
-  error: z.strictObject({
-    code: z.enum(["INVALID_INPUT", "RECORDING_UNAVAILABLE", "SPEC_UNAVAILABLE", "OUTPUT_OWNER_INVALID", "OUTPUT_OWNER_MISMATCH"]),
-    message: messageSchema,
-    issues: z.array(issueSchema).min(1).optional(),
-  }),
+  error: diagnosticSchema,
 }).describe("Failure before evidence capture. Unknown step/criterion and unavailable device or artifact fields are omitted.");
 
 export type PreCaptureErrorResult = z.output<typeof preCaptureErrorSchema>;
@@ -33,10 +38,12 @@ export function inputErrorResult(error: z.ZodError, context: { step?: unknown; c
     error: {
       code: "INVALID_INPUT",
       message: "Input validation failed. Correct the fields listed in issues.",
-      issues: error.issues.map((issue) => ({
-        path: issue.path.map((part) => typeof part === "symbol" ? String(part) : part),
-        message: issue.message,
-      })),
+      issues: error.issues.flatMap((issue) => {
+        const path = issue.path.map((part) => typeof part === "symbol" ? String(part) : part);
+        return issue.code === "unrecognized_keys"
+          ? issue.keys.map((key) => ({ path: [...path, key], message: `Unknown field ${JSON.stringify(key)}.` }))
+          : [{ path, message: issue.message }];
+      }),
     },
   });
 }
