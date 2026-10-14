@@ -669,6 +669,21 @@ Reject blank paths and embedded null characters before filesystem or device work
 The internal resolver takes an explicit absolute working directory and performs lexical resolution only.
 It does not read files, create folders, or resolve symlinks; M5 remains responsible for recognizing filesystem aliases when locking an output folder.
 
+### T45. Per-capture video references
+
+Agreed on 2026-10-15 during M1 contract review.
+Attach existing local video recordings to a capture with repeatable `--recording <path>` flags or the matching Node API `recordings` array of paths.
+Omitting recordings means an empty list.
+Recordings are per-capture inputs, separate from YAML and effective step configuration.
+CLI recording paths resolve from the invocation directory under T44.
+
+The manifest references the caller's existing files; device-proof does not copy, annotate, or modify them.
+Caller-owned recordings remain excluded from history cleanup even if a referenced file sits inside the evidence folder.
+Missing, unreadable, or non-regular files fail preflight before device access.
+Input validation reports the recording's list position and preflight identifies the path that failed.
+This check establishes file readability at preflight time; it does not decode or validate video content, and external files remain under caller control afterwards.
+Video annotation is outside the v1 milestone plan.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.

@@ -7,6 +7,7 @@ import { cropSchema } from "../dist/spec/crop.js";
 import { defaultsSchema, stepSchema } from "../dist/spec/step.js";
 import { specStructureSchema } from "../dist/spec/schema.js";
 import { retentionSchema } from "../dist/spec/retention.js";
+import { recordingOptionsSchema } from "../dist/spec/recordings.js";
 
 const args = process.argv.slice(2);
 if (args.length > 1 || (args.length === 1 && args[0] !== "--check")) {
@@ -22,6 +23,7 @@ const schemas = [
   { name: "step", source: "step", schema: stepSchema },
   { name: "spec", source: "schema", schema: specStructureSchema },
   { name: "retention", source: "retention", schema: retentionSchema },
+  { name: "recordings", source: "recordings", schema: recordingOptionsSchema },
 ];
 
 for (const { name, source, schema } of schemas) {

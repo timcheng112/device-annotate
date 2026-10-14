@@ -65,6 +65,7 @@ test("validation works with device-client and all built-in module imports blocke
   const cropSchemaURL = new URL("dist/spec/crop.js", root).href;
   const effectiveStepURL = new URL("dist/spec/effective-step.js", root).href;
   const specSchemaURL = new URL("dist/spec/schema.js", root).href;
+  const recordingSchemaURL = new URL("dist/spec/recordings.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -100,6 +101,10 @@ test("validation works with device-client and all built-in module imports blocke
     if (retained.retention.maxAttemptsPerStep !== 0 || retained.retention.maxAgeDays !== 7 || retained.retention.maxBytes !== 500000000) throw new Error("Incorrect retention defaults");
     if (specSchema.safeParse({ criteria: [criterion], retention: { maxBytes: -1 } }).success) throw new Error("Invalid retention accepted");
     console.log("offline validation passed");
+    const { recordingOptionsSchema } = await import(${JSON.stringify(recordingSchemaURL)});
+    if (recordingOptionsSchema.parse({}).recordings.length !== 0) throw new Error("Incorrect recording defaults");
+    if (!recordingOptionsSchema.safeParse({ recordings: ["clip.mp4"] }).success) throw new Error("Valid recording input rejected");
+    if (recordingOptionsSchema.safeParse({ recordings: [""] }).success) throw new Error("Invalid recording path accepted");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {
     cwd: fileURLToPath(root),
