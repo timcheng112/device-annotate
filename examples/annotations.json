@@ -1,0 +1,30 @@
+[
+  {
+    "box": {
+      "target": "id=\"cart-total\"",
+      "expect": { "text": "£12.00" }
+    }
+  },
+  {
+    "marker": {
+      "target": "id=\"checkout\""
+    }
+  },
+  {
+    "arrow": {
+      "to": "id=\"quantity\"",
+      "text": "Quantity control"
+    }
+  },
+  {
+    "callout": {
+      "target": "id=\"delivery\"",
+      "text": "Selected delivery option"
+    }
+  },
+  {
+    "mask": {
+      "target": "id=\"account-number\""
+    }
+  }
+]

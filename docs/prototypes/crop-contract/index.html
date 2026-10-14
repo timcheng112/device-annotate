@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crop contract proposal | device-proof</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; color: #172033; background: #edf1f5; font: 16px/1.5 system-ui; }
+  main { max-width: 1100px; margin: auto; }
+  h1 { margin: 0; font-size: 28px; }
+  p { max-width: 80ch; }
+  .controls { display: flex; flex-wrap: wrap; align-items: end; gap: 20px; margin: 24px 0; }
+  label { display: grid; gap: 6px; }
+  .toggle { display: flex; align-items: center; padding-bottom: 8px; }
+  input, select { font: inherit; padding: 8px; }
+  input[type=number] { width: 100px; }
+  .grid { display: grid; grid-template-columns: minmax(240px, 320px) minmax(320px, 1fr); gap: 24px; }
+  article { background: white; padding: 18px; border: 1px solid #cdd5df; border-radius: 12px; min-width: 0; }
+  h2 { margin: 0 0 12px; font-size: 20px; }
+  canvas { display: block; max-width: 100%; height: auto; }
+  #original { max-height: 550px; width: auto; }
+  #cropped { max-height: 550px; width: auto; }
+  pre { overflow: auto; padding: 16px; background: #172033; color: #f1f5f9; border-radius: 8px; }
+  .note { padding: 12px 16px; border-left: 4px solid #51647d; background: #e1e8f0; }
+  #status { font-variant-numeric: tabular-nums; }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+</style>
+<main>
+  <h1>Crop around the evidence</h1>
+  <p>Proposal: include the selected crop targets and every drawable annotation or check, add padding, and keep the crop inside the screenshot.</p>
+  <p class="note">Neutral M0 captures. This preview shows crop geometry only. Production annotations and the legend retain the approved design.</p>
+  <div class="controls">
+    <label>Platform<select id="platform"><option value="ios">iOS</option><option value="android">Android</option></select></label>
+    <label>Crop target<select id="target"><option value="center">Center</option><option value="top-left">Top left</option><option value="partial-left">Left screen edge</option><option value="partial-bottom">Bottom screen edge</option></select></label>
+    <label>Padding (image pixels)<input id="padding" type="number" min="0" max="240" step="24" value="24"></label>
+    <label class="toggle"><input id="extra" type="checkbox">Also annotate/check the top-right target</label>
+  </div>
+  <div class="grid">
+    <article><h2>Original capture</h2><canvas id="original" role="img" aria-label="Original neutral capture with proposed crop boundary"></canvas></article>
+    <article><h2>Proposed cropped image</h2><canvas id="cropped" role="img" aria-label="Proposed crop of the neutral capture"></canvas><p id="status" aria-live="polite">Loading fixture...</p><pre id="spec"></pre><p>The raw screenshot and snapshot stay complete. The production legend sits below the cropped image.</p></article>
+  </div>
+</main>
+<script src="fixtures.js"></script>
+<script>
+  const element = (id) => document.getElementById(id);
+  const images = {};
+  let generation = 0;
+  async function render() {
+    const current = ++generation;
+    const platform = element("platform").value;
+    const fixture = fixtures[platform];
+    const selected = fixture.targets[element("target").value];
+    const padding = Math.max(0, Math.min(240, Number(element("padding").value) || 0));
+    const rects = [selected];
+    if (element("extra").checked) rects.push(fixture.targets["top-right"]);
+    const x = Math.max(0, Math.floor(Math.min(...rects.map((r) => r.x)) - padding));
+    const y = Math.max(0, Math.floor(Math.min(...rects.map((r) => r.y)) - padding));
+    const right = Math.min(fixture.width, Math.ceil(Math.max(...rects.map((r) => r.x + r.width)) + padding));
+    const bottom = Math.min(fixture.height, Math.ceil(Math.max(...rects.map((r) => r.y + r.height)) + padding));
+    const crop = { x, y, width: right - x, height: bottom - y };
+    if (!images[platform]) {
+      const image = new Image();
+      image.src = fixture.image;
+      images[platform] = image.decode().then(() => image);
+    }
+    const image = await images[platform];
+    if (current !== generation) return;
+    const original = element("original");
+    original.width = fixture.width;
+    original.height = fixture.height;
+    const context = original.getContext("2d");
+    context.drawImage(image, 0, 0);
+    context.strokeStyle = "white";
+    context.lineWidth = 12;
+    context.strokeRect(x + 3, y + 3, crop.width - 6, crop.height - 6);
+    context.strokeStyle = "#075cb8";
+    context.lineWidth = 6;
+    context.setLineDash([18, 12]);
+    context.strokeRect(x + 3, y + 3, crop.width - 6, crop.height - 6);
+    const cropped = element("cropped");
+    cropped.width = crop.width;
+    cropped.height = crop.height;
+    cropped.getContext("2d").drawImage(image, x, y, crop.width, crop.height, 0, 0, crop.width, crop.height);
+    element("status").textContent = `${crop.width} × ${crop.height} pixels; origin (${x}, ${y}). ${element("extra").checked ? "Expanded to include the additional evidence target." : "Selected target plus padding."}`;
+    element("spec").textContent = `crop:\n  targets: [${JSON.stringify(selected.selector)}]\n  padding: ${padding}`;
+    window.previewState = { platform, crop, padding, targetCount: rects.length, ready: true };
+  }
+  for (const id of ["platform", "target", "padding", "extra"]) element(id).addEventListener("input", () => render().catch(showError));
+  function showError(error) { element("status").textContent = error.message; window.previewState = { ready: false, error: error.message }; }
+  render().catch(showError);
+</script>
+</html>

@@ -509,6 +509,37 @@ The same single-check rule applies to expectations inside annotations.
 An annotation without `expect` remains INFO under T25.
 This defines the input shape without changing upstream predicate semantics or the drawing requirements in T19 and T24.
 
+### T37. Annotation input shapes
+
+Agreed on 2026-10-15 during M1 contract review.
+Steps accept annotations through an `annotate` array.
+Each entry contains exactly one of `box`, `marker`, `arrow`, `callout`, or `mask`, with the annotation settings nested beneath that key.
+
+```yaml
+annotate:
+  - box:
+      target: 'id="cart-total"'
+      expect: { text: "£12.00" }
+  - marker:
+      target: 'id="checkout"'
+  - arrow:
+      to: 'id="quantity"'
+      text: "Quantity control"
+  - callout:
+      target: 'id="delivery"'
+      text: "Selected delivery option"
+  - mask:
+      target: 'id="account-number"'
+```
+
+Boxes, markers, callouts, and masks identify their target with `target`; arrows use `to`, preserving T6's syntax.
+All five support an optional single-check `expect`, as defined in T36.
+`text` is required for arrows and callouts, and optional for boxes, markers, and masks.
+User-supplied text appears in the legend, following the approved visual rules in T11 and T19-T25.
+Annotations without expectations remain INFO.
+Every explicit annotation continues to require a drawable target, including when it carries an absence or hidden check.
+Mask rendering retains T11's fixed "masked" label.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.

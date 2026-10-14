@@ -4,117 +4,10 @@
   "type": "object",
   "properties": {
     "target": {
-      "type": "string",
-      "pattern": "\\S"
+      "$ref": "#/$defs/__schema0"
     },
     "expect": {
-      "anyOf": [
-        {
-          "type": "object",
-          "properties": {
-            "visible": {
-              "type": "boolean",
-              "const": true
-            }
-          },
-          "required": [
-            "visible"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "type": "object",
-          "properties": {
-            "hidden": {
-              "type": "boolean",
-              "const": true
-            }
-          },
-          "required": [
-            "hidden"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "type": "object",
-          "properties": {
-            "exists": {
-              "type": "boolean",
-              "const": true
-            }
-          },
-          "required": [
-            "exists"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "type": "object",
-          "properties": {
-            "absent": {
-              "type": "boolean",
-              "const": true
-            }
-          },
-          "required": [
-            "absent"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "type": "object",
-          "properties": {
-            "editable": {
-              "type": "boolean",
-              "const": true
-            }
-          },
-          "required": [
-            "editable"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "type": "object",
-          "properties": {
-            "selected": {
-              "type": "boolean",
-              "const": true
-            }
-          },
-          "required": [
-            "selected"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "type": "object",
-          "properties": {
-            "focused": {
-              "type": "boolean",
-              "const": true
-            }
-          },
-          "required": [
-            "focused"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "type": "object",
-          "properties": {
-            "text": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "text"
-          ],
-          "additionalProperties": false
-        }
-      ],
-      "description": "Exactly one predicate. State predicates take true; text takes the exact expected string."
+      "$ref": "#/$defs/__schema1"
     }
   },
   "required": [
@@ -122,5 +15,144 @@
     "expect"
   ],
   "additionalProperties": false,
-  "description": "A standalone check against the accepted capture snapshot."
+  "description": "A standalone check against the accepted capture snapshot.",
+  "$defs": {
+    "__schema0": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "__schema1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/__schema2"
+        },
+        {
+          "$ref": "#/$defs/__schema3"
+        },
+        {
+          "$ref": "#/$defs/__schema4"
+        },
+        {
+          "$ref": "#/$defs/__schema5"
+        },
+        {
+          "$ref": "#/$defs/__schema6"
+        },
+        {
+          "$ref": "#/$defs/__schema7"
+        },
+        {
+          "$ref": "#/$defs/__schema8"
+        },
+        {
+          "$ref": "#/$defs/__schema9"
+        }
+      ],
+      "description": "Exactly one predicate. State predicates take true; text takes the exact expected string."
+    },
+    "__schema2": {
+      "type": "object",
+      "properties": {
+        "visible": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "visible"
+      ],
+      "additionalProperties": false
+    },
+    "__schema3": {
+      "type": "object",
+      "properties": {
+        "hidden": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "hidden"
+      ],
+      "additionalProperties": false
+    },
+    "__schema4": {
+      "type": "object",
+      "properties": {
+        "exists": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "exists"
+      ],
+      "additionalProperties": false
+    },
+    "__schema5": {
+      "type": "object",
+      "properties": {
+        "absent": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "absent"
+      ],
+      "additionalProperties": false
+    },
+    "__schema6": {
+      "type": "object",
+      "properties": {
+        "editable": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "editable"
+      ],
+      "additionalProperties": false
+    },
+    "__schema7": {
+      "type": "object",
+      "properties": {
+        "selected": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "selected"
+      ],
+      "additionalProperties": false
+    },
+    "__schema8": {
+      "type": "object",
+      "properties": {
+        "focused": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "focused"
+      ],
+      "additionalProperties": false
+    },
+    "__schema9": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    }
+  }
 }

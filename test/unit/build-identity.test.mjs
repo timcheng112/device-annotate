@@ -61,6 +61,7 @@ test("incomplete external identity reports the missing field", () => {
 test("validation works with device-client and all built-in module imports blocked", () => {
   const schemaURL = new URL("dist/spec/build-identity.js", root).href;
   const checkSchemaURL = new URL("dist/spec/check.js", root).href;
+  const annotationSchemaURL = new URL("dist/spec/annotation.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -78,6 +79,10 @@ test("validation works with device-client and all built-in module imports blocke
     const { standaloneCheckSchema } = await import(${JSON.stringify(checkSchemaURL)});
     if (!standaloneCheckSchema.safeParse({ target: 'id="cart-total"', expect: { text: "£12.00" } }).success) throw new Error("Valid check rejected");
     if (standaloneCheckSchema.safeParse({ target: 'id="cart-total"', expect: { visible: true, selected: true } }).success) throw new Error("Combined check accepted");
+    const { annotationSchema } = await import(${JSON.stringify(annotationSchemaURL)});
+    const info = annotationSchema.parse({ marker: { target: 'id="cart-total"' } });
+    if ("expect" in info.marker) throw new Error("INFO gained an expectation");
+    if (annotationSchema.safeParse({ arrow: { to: 'id="cart-total"' } }).success) throw new Error("Missing arrow text accepted");
     console.log("offline validation passed");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {

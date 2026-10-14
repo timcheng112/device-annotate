@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { selectorSchema } from "./values.js";
 
 /** One invocation of an agent-device predicate, per DESIGN.md T36. */
 export const expectationSchema = z.union([
@@ -16,7 +17,7 @@ export const expectationSchema = z.union([
 
 /** Shape validation only; selector syntax and resolution are separate stages. */
 export const standaloneCheckSchema = z.strictObject({
-  target: z.string().regex(/\S/, "Supply a non-blank agent-device selector."),
+  target: selectorSchema,
   expect: expectationSchema,
 }).describe("A standalone check against the accepted capture snapshot.");
 

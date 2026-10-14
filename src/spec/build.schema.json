@@ -4,15 +4,36 @@
   "type": "object",
   "properties": {
     "appId": {
+      "$ref": "#/$defs/__schema0"
+    },
+    "native": {
+      "$ref": "#/$defs/__schema1"
+    },
+    "runtime": {
+      "$ref": "#/$defs/__schema3"
+    }
+  },
+  "required": [
+    "appId",
+    "native",
+    "runtime"
+  ],
+  "additionalProperties": false,
+  "description": "Caller-supplied build identity. Validation cannot verify that it matches the running app.",
+  "$defs": {
+    "__schema0": {
       "type": "string",
       "pattern": "\\S"
     },
-    "native": {
-      "type": "string",
-      "pattern": "\\S",
-      "description": "Content hash or immutable identifier of the installed native build."
+    "__schema1": {
+      "description": "Content hash or immutable identifier of the installed native build.",
+      "$ref": "#/$defs/__schema2"
     },
-    "runtime": {
+    "__schema2": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "__schema3": {
       "oneOf": [
         {
           "type": "object",
@@ -35,9 +56,8 @@
               "const": "external"
             },
             "revision": {
-              "type": "string",
-              "pattern": "\\S",
-              "description": "Content hash or immutable identifier of separately delivered runtime code."
+              "description": "Content hash or immutable identifier of separately delivered runtime code.",
+              "$ref": "#/$defs/__schema2"
             }
           },
           "required": [
@@ -48,12 +68,5 @@
         }
       ]
     }
-  },
-  "required": [
-    "appId",
-    "native",
-    "runtime"
-  ],
-  "additionalProperties": false,
-  "description": "Caller-supplied build identity. Validation cannot verify that it matches the running app."
+  }
 }
