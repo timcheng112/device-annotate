@@ -385,6 +385,7 @@ Default history limits per output folder:
 - Historical attempts expire seven days after their recorded capture time.
 - Historical artifacts have a combined 500 MB budget; remove oldest historical attempts first when over budget.
 
+T43 defines the spec fields for configuring these limits.
 All limits apply together, so the count or size limit may remove an attempt before it reaches seven days old.
 Current attempts are protected from automatic history cleanup, regardless of age or size.
 The history budget covers package-managed historical screenshots, snapshots, and any package-managed recording copies.
@@ -627,6 +628,30 @@ Apply the same rule to spec step keys and one-off capture names.
 Reject invalid names with a field location; preserve valid names verbatim instead of silently renaming them.
 Lowercase names prevent case-only collisions, and excluding dots and path separators prevents artifact-suffix collisions and directory traversal through step names.
 T39's uniqueness and evidence-matching rules remain in force.
+
+### T43. Spec-level history retention settings
+
+Agreed on 2026-10-15 during M1 contract review.
+Configure history once per spec using a top-level `retention` object:
+
+```yaml
+retention:
+  maxAttemptsPerStep: 3
+  maxAgeDays: 7
+  maxBytes: 500000000
+```
+
+Omitting the object or any field uses the defaults above.
+Values must be nonnegative safe integers, with no coercion from strings or other types.
+All limits apply together; setting any limit to zero disables history.
+`maxAttemptsPerStep` counts previous attempts only, excluding the current attempt.
+`maxAgeDays` uses elapsed 24-hour days from capture time, and `maxBytes` measures actual bytes across managed historical artifacts in the output folder.
+The default byte budget is 500 MB in decimal units.
+
+Current evidence and caller-owned recordings remain protected under T29.
+Retention settings control history cleanup and do not change a step's effective capture configuration or invalidate otherwise reusable evidence.
+Saving a spec alone never deletes history; T29's safe-save and explicit-cleanup triggers still apply.
+History eligibility and filesystem cleanup remain M2 and M5 work respectively.
 
 ## Upstream candidates
 

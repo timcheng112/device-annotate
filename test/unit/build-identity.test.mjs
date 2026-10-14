@@ -96,6 +96,9 @@ test("validation works with device-client and all built-in module imports blocke
     const criterion = { criterion: "Cart total updates", steps: { after: {} } };
     if (!specSchema.safeParse({ criteria: [criterion] }).success) throw new Error("Valid spec rejected");
     if (specSchema.safeParse({ criteria: [criterion, criterion] }).success) throw new Error("Duplicate step name accepted");
+    const retained = specSchema.parse({ criteria: [criterion], retention: { maxAttemptsPerStep: 0 } });
+    if (retained.retention.maxAttemptsPerStep !== 0 || retained.retention.maxAgeDays !== 7 || retained.retention.maxBytes !== 500000000) throw new Error("Incorrect retention defaults");
+    if (specSchema.safeParse({ criteria: [criterion], retention: { maxBytes: -1 } }).success) throw new Error("Invalid retention accepted");
     console.log("offline validation passed");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {

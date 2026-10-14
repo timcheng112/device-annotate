@@ -1,0 +1,16 @@
+{
+  "retention": {
+    "maxAttemptsPerStep": 3,
+    "maxAgeDays": 7,
+    "maxBytes": 500000000
+  },
+  "criteria": [
+    {
+      "criterion": "Cart total updates when quantity changes",
+      "steps": {
+        "before": {},
+        "after": {}
+      }
+    }
+  ]
+}

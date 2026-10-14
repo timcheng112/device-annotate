@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { retentionSchema } from "./retention.js";
 import { defaultsSchema, stepSchema } from "./step.js";
 import { stepNameSchema } from "./step-name.js";
 import { criterionSchema } from "./values.js";
@@ -13,6 +14,7 @@ const stepsSchema = z.record(stepNameSchema, stepSchema)
 export const specStructureSchema = z.strictObject({
   out: z.string().regex(/\S/, "Supply a non-blank output folder, or omit out for the default.").optional(),
   defaults: defaultsSchema.optional(),
+  retention: retentionSchema.prefault({}),
   criteria: z.array(z.strictObject({
     criterion: criterionSchema,
     steps: stepsSchema,

@@ -9,8 +9,11 @@
     "defaults": {
       "$ref": "#/$defs/__schema1"
     },
-    "criteria": {
+    "retention": {
       "$ref": "#/$defs/__schema8"
+    },
+    "criteria": {
+      "$ref": "#/$defs/__schema15"
     }
   },
   "required": [
@@ -74,13 +77,60 @@
       "maximum": 9007199254740991
     },
     "__schema8": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "maxAttemptsPerStep": {
+          "$ref": "#/$defs/__schema9"
+        },
+        "maxAgeDays": {
+          "$ref": "#/$defs/__schema11"
+        },
+        "maxBytes": {
+          "$ref": "#/$defs/__schema13"
+        }
+      },
+      "additionalProperties": false,
+      "description": "All limits apply together. Zero in any limit disables history; current evidence stays protected. Cleanup runs after a safe save or on explicit cleanup."
+    },
+    "__schema9": {
+      "default": 3,
+      "description": "Maximum previous attempts per step, excluding the current attempt.",
+      "$ref": "#/$defs/__schema10"
+    },
+    "__schema10": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "__schema11": {
+      "default": 7,
+      "description": "Maximum historical age measured in elapsed 24-hour days from capture time.",
+      "$ref": "#/$defs/__schema12"
+    },
+    "__schema12": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "__schema13": {
+      "default": 500000000,
+      "description": "Combined byte budget for package-managed historical artifacts in the output folder.",
+      "$ref": "#/$defs/__schema14"
+    },
+    "__schema14": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "__schema15": {
       "minItems": 1,
       "type": "array",
       "items": {
-        "$ref": "#/$defs/__schema9"
+        "$ref": "#/$defs/__schema16"
       }
     },
-    "__schema9": {
+    "__schema16": {
       "type": "object",
       "properties": {
         "criterion": {
@@ -90,10 +140,10 @@
         "steps": {
           "type": "object",
           "propertyNames": {
-            "$ref": "#/$defs/__schema10"
+            "$ref": "#/$defs/__schema17"
           },
           "additionalProperties": {
-            "$ref": "#/$defs/__schema11"
+            "$ref": "#/$defs/__schema18"
           },
           "minProperties": 1
         }
@@ -104,7 +154,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema10": {
+    "__schema17": {
       "type": "string",
       "minLength": 1,
       "maxLength": 64,
@@ -117,51 +167,51 @@
         }
       ]
     },
-    "__schema11": {
+    "__schema18": {
       "type": "object",
       "properties": {
         "annotate": {
-          "$ref": "#/$defs/__schema12"
+          "$ref": "#/$defs/__schema19"
         },
         "checks": {
-          "$ref": "#/$defs/__schema30"
+          "$ref": "#/$defs/__schema37"
         },
         "crop": {
-          "$ref": "#/$defs/__schema31"
+          "$ref": "#/$defs/__schema38"
         }
       },
       "additionalProperties": false,
       "description": "One capture step. Omit crop to inherit; use null for the full screenshot."
     },
-    "__schema12": {
+    "__schema19": {
       "default": [],
       "type": "array",
       "items": {
         "anyOf": [
           {
-            "$ref": "#/$defs/__schema13"
+            "$ref": "#/$defs/__schema20"
           },
           {
-            "$ref": "#/$defs/__schema26"
+            "$ref": "#/$defs/__schema33"
           },
           {
-            "$ref": "#/$defs/__schema27"
+            "$ref": "#/$defs/__schema34"
           },
           {
-            "$ref": "#/$defs/__schema28"
+            "$ref": "#/$defs/__schema35"
           },
           {
-            "$ref": "#/$defs/__schema29"
+            "$ref": "#/$defs/__schema36"
           }
         ],
         "description": "Exactly one annotation primitive. An omitted expectation means INFO, not a passing check."
       }
     },
-    "__schema13": {
+    "__schema20": {
       "type": "object",
       "properties": {
         "box": {
-          "$ref": "#/$defs/__schema14"
+          "$ref": "#/$defs/__schema21"
         }
       },
       "required": [
@@ -169,17 +219,17 @@
       ],
       "additionalProperties": false
     },
-    "__schema14": {
+    "__schema21": {
       "type": "object",
       "properties": {
         "target": {
           "$ref": "#/$defs/__schema5"
         },
         "text": {
-          "$ref": "#/$defs/__schema15"
+          "$ref": "#/$defs/__schema22"
         },
         "expect": {
-          "$ref": "#/$defs/__schema16"
+          "$ref": "#/$defs/__schema23"
         }
       },
       "required": [
@@ -187,43 +237,43 @@
       ],
       "additionalProperties": false
     },
-    "__schema15": {
+    "__schema22": {
       "type": "string",
       "pattern": "\\S"
     },
-    "__schema16": {
-      "$ref": "#/$defs/__schema17"
+    "__schema23": {
+      "$ref": "#/$defs/__schema24"
     },
-    "__schema17": {
+    "__schema24": {
       "anyOf": [
         {
-          "$ref": "#/$defs/__schema18"
-        },
-        {
-          "$ref": "#/$defs/__schema19"
-        },
-        {
-          "$ref": "#/$defs/__schema20"
-        },
-        {
-          "$ref": "#/$defs/__schema21"
-        },
-        {
-          "$ref": "#/$defs/__schema22"
-        },
-        {
-          "$ref": "#/$defs/__schema23"
-        },
-        {
-          "$ref": "#/$defs/__schema24"
-        },
-        {
           "$ref": "#/$defs/__schema25"
+        },
+        {
+          "$ref": "#/$defs/__schema26"
+        },
+        {
+          "$ref": "#/$defs/__schema27"
+        },
+        {
+          "$ref": "#/$defs/__schema28"
+        },
+        {
+          "$ref": "#/$defs/__schema29"
+        },
+        {
+          "$ref": "#/$defs/__schema30"
+        },
+        {
+          "$ref": "#/$defs/__schema31"
+        },
+        {
+          "$ref": "#/$defs/__schema32"
         }
       ],
       "description": "Exactly one predicate. State predicates take true; text takes the exact expected string."
     },
-    "__schema18": {
+    "__schema25": {
       "type": "object",
       "properties": {
         "visible": {
@@ -236,7 +286,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema19": {
+    "__schema26": {
       "type": "object",
       "properties": {
         "hidden": {
@@ -249,7 +299,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema20": {
+    "__schema27": {
       "type": "object",
       "properties": {
         "exists": {
@@ -262,7 +312,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema21": {
+    "__schema28": {
       "type": "object",
       "properties": {
         "absent": {
@@ -275,7 +325,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema22": {
+    "__schema29": {
       "type": "object",
       "properties": {
         "editable": {
@@ -288,7 +338,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema23": {
+    "__schema30": {
       "type": "object",
       "properties": {
         "selected": {
@@ -301,7 +351,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema24": {
+    "__schema31": {
       "type": "object",
       "properties": {
         "focused": {
@@ -314,7 +364,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema25": {
+    "__schema32": {
       "type": "object",
       "properties": {
         "text": {
@@ -327,11 +377,11 @@
       ],
       "additionalProperties": false
     },
-    "__schema26": {
+    "__schema33": {
       "type": "object",
       "properties": {
         "marker": {
-          "$ref": "#/$defs/__schema14"
+          "$ref": "#/$defs/__schema21"
         }
       },
       "required": [
@@ -339,7 +389,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema27": {
+    "__schema34": {
       "type": "object",
       "properties": {
         "arrow": {
@@ -349,10 +399,10 @@
               "$ref": "#/$defs/__schema5"
             },
             "text": {
-              "$ref": "#/$defs/__schema15"
+              "$ref": "#/$defs/__schema22"
             },
             "expect": {
-              "$ref": "#/$defs/__schema17"
+              "$ref": "#/$defs/__schema24"
             }
           },
           "required": [
@@ -367,7 +417,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema28": {
+    "__schema35": {
       "type": "object",
       "properties": {
         "callout": {
@@ -377,10 +427,10 @@
               "$ref": "#/$defs/__schema5"
             },
             "text": {
-              "$ref": "#/$defs/__schema15"
+              "$ref": "#/$defs/__schema22"
             },
             "expect": {
-              "$ref": "#/$defs/__schema16"
+              "$ref": "#/$defs/__schema23"
             }
           },
           "required": [
@@ -395,11 +445,11 @@
       ],
       "additionalProperties": false
     },
-    "__schema29": {
+    "__schema36": {
       "type": "object",
       "properties": {
         "mask": {
-          "$ref": "#/$defs/__schema14"
+          "$ref": "#/$defs/__schema21"
         }
       },
       "required": [
@@ -407,7 +457,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema30": {
+    "__schema37": {
       "default": [],
       "type": "array",
       "items": {
@@ -417,7 +467,7 @@
             "$ref": "#/$defs/__schema5"
           },
           "expect": {
-            "$ref": "#/$defs/__schema17"
+            "$ref": "#/$defs/__schema24"
           }
         },
         "required": [
@@ -428,7 +478,7 @@
         "description": "A standalone check against the accepted capture snapshot."
       }
     },
-    "__schema31": {
+    "__schema38": {
       "anyOf": [
         {
           "$ref": "#/$defs/__schema3"
