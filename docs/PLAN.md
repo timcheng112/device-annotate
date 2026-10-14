@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T47 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T48 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -175,6 +175,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T45](DESIGN.md#t45-per-capture-video-references) defines per-capture references to caller-owned videos and file preflight.
 [T46](DESIGN.md#t46-errors-before-evidence-capture) defines pre-capture errors with known context and omitted unavailable evidence.
 [T47](DESIGN.md#t47-one-owner-per-evidence-folder) reserves each evidence folder for one spec file or one one-off capture name.
+[T48](DESIGN.md#t48-shared-numbering-for-annotations-and-standalone-checks) defines one per-step number sequence, annotations first and standalone checks second.
 The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
@@ -215,8 +216,11 @@ The eleventh slice adds the [owner schema and pure ownership gate](../src/manife
 The gate inspects ownership within an existing manifest, so a missing or malformed owner cannot be mistaken for an unclaimed folder.
 Canonical spec identification resolves symlink aliases and preserves identity across edits at the same path.
 The full manifest schema and enforcing/persisting ownership under an exclusive output-folder lock remain later work.
-On 2026-10-15, `npm run check` passed type checking, all 339 tests, and all eleven generated-schema freshness checks.
-Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+The twelfth slice adds [shared entry numbering](../src/spec/numbered-entries.ts) and a [mixed-entry example](../examples/numbering.json).
+It preserves each annotation/check entry and its array order, including INFO entries and checks that may appear only in the legend, without assigning outcomes or geometry.
+M2/M3 will carry these numbers into evaluation results, manifest records, and layout.
+On 2026-10-15, `npm run check` passed type checking, all 346 tests, and all eleven generated-schema freshness checks.
+Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
 This verifies offline schema validation and step normalization; YAML loading, public validation entry points, capture preflight, multi-step enforcement, and manifest reconciliation remain to be integrated.
 
 Full-spec validation review has identified a JSON Schema export limitation.
@@ -263,6 +267,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Map rects into screenshot pixels and classify fully and partially off-screen targets.
 - Produce actionable candidate diagnostics for unresolved or ambiguous targets.
 - Evaluate checks against the supplied capture snapshot without triggering another device capture.
+- Carry T48's shared entry numbers into evaluation and manifest results, retaining INFO and legend-only entries.
 - Implement pure manifest updates and result aggregation; keep filesystem operations in `capture/` or `cli/` as required by T17.
 - Compute step, criterion, and manifest check counts from recorded pass/fail results, excluding INFO entries and uncaptured checks.
 - Reconcile existing evidence against the current spec, retaining unaffected steps and marking affected or newly added steps incomplete according to T27.
@@ -292,6 +297,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 
 - Bundle the Inter font with its required license and measure text using its glyph metrics.
 - Implement deterministic numbered markers, region colors, boxes, arrows, masks, crop projection, and the legend panel according to T11 and T19-T25.
+- Consume T48's shared numbering rather than renumbering drawable targets during layout or grouping.
 - Group identical bounds for drawing, preserving per-check results, and apply the agreed dense-overlap fallback.
 - Wrap criteria, annotation text, and expected and actual values without truncating evidence.
 - Define deterministic collision handling, edge placement, padding, and contrast treatment.
@@ -400,7 +406,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T47 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T48 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

@@ -1,0 +1,10 @@
+{
+  "annotate": [
+    { "marker": { "target": "id=\"cart\"", "text": "Cart overview" } },
+    { "box": { "target": "id=\"cart-total\"", "expect": { "text": "£12.00" } } }
+  ],
+  "checks": [
+    { "target": "id=\"error-message\"", "expect": { "absent": true } },
+    { "target": "id=\"loading-spinner\"", "expect": { "hidden": true } }
+  ]
+}

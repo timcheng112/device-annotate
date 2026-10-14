@@ -718,6 +718,22 @@ The implementation reports `OUTPUT_OWNER_MISMATCH` or `OUTPUT_OWNER_INVALID`; un
 M5 must check and persist ownership while holding T30's exclusive folder lock, preserve existing evidence on refusal, and never infer a reusable empty folder from a malformed existing manifest.
 Actual folder claiming, manifest persistence, and filesystem alias checks for output folders remain M5 work.
 
+### T48. Shared numbering for annotations and standalone checks
+
+Agreed on 2026-10-15 during M1 contract review.
+For each step, number annotations first in their array order, followed by standalone checks in their array order.
+Use one continuous sequence starting at 1, shared by image markers, legend entries, and manifest records.
+Numbering restarts for each step.
+
+Informational annotations receive numbers even though they carry no assertion or pass/fail result.
+Legend-only absence and hidden checks receive numbers even when they have no drawable target.
+Repeated targets retain separate entry numbers; T22's grouped tags list those numbers while keeping individual legend rows and results.
+Numbering alone does not imply that a target resolves, has visible bounds, or passes its assertion.
+Reordering entries changes their numbers and remains a semantic step edit under T27/T40.
+
+The [numbering example](../examples/numbering.json) assigns 1 to the informational cart marker, 2 to the total assertion's box, 3 to the standalone absence check, and 4 to the standalone hidden check.
+The pure numbering helper is shared input for subsequent evaluation, manifest construction, and layout; those integrations remain M2/M3 work.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.
