@@ -540,6 +540,26 @@ Annotations without expectations remain INFO.
 Every explicit annotation continues to require a drawable target, including when it carries an absence or hidden check.
 Mask rendering retains T11's fixed "masked" label.
 
+### T38. Crop to targets while preserving drawable evidence
+
+Agreed on 2026-10-15 during M1 contract review after reviewing the [neutral crop preview](prototypes/crop-contract/index.html).
+
+```yaml
+crop:
+  targets: ['id="cart-total"']
+  padding: 24
+```
+
+`crop.targets` requires at least one selector.
+Crop to the combined bounds of those targets and all drawable annotation/check targets, so cropping preserves the evidence.
+Add configurable padding of 24 screenshot pixels by default, limiting the crop to the screenshot bounds.
+Padding is a non-negative integer; zero is allowed.
+Missing, ambiguous, or fully off-screen explicit crop targets produce an evidence error.
+The existing partial-visibility and edge-uncertainty rules continue to apply.
+Omitting `crop` retains the full screenshot.
+Raw screenshots and snapshots remain complete, and the production legend sits below the cropped image under T11.
+The preview establishes crop geometry only; production annotation rendering remains governed by the previously approved visual rules.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.

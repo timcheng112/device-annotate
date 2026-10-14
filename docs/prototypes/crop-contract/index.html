@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Crop contract proposal | device-proof</title>
+<title>Crop contract | device-proof</title>
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; padding: 24px; color: #172033; background: #edf1f5; font: 16px/1.5 system-ui; }
@@ -27,7 +27,7 @@
 </style>
 <main>
   <h1>Crop around the evidence</h1>
-  <p>Proposal: include the selected crop targets and every drawable annotation or check, add padding, and keep the crop inside the screenshot.</p>
+  <p>Approved in T38: include the selected crop targets and every drawable annotation or check, add padding, and keep the crop inside the screenshot.</p>
   <p class="note">Neutral M0 captures. This preview shows crop geometry only. Production annotations and the legend retain the approved design.</p>
   <div class="controls">
     <label>Platform<select id="platform"><option value="ios">iOS</option><option value="android">Android</option></select></label>
@@ -36,8 +36,8 @@
     <label class="toggle"><input id="extra" type="checkbox">Also annotate/check the top-right target</label>
   </div>
   <div class="grid">
-    <article><h2>Original capture</h2><canvas id="original" role="img" aria-label="Original neutral capture with proposed crop boundary"></canvas></article>
-    <article><h2>Proposed cropped image</h2><canvas id="cropped" role="img" aria-label="Proposed crop of the neutral capture"></canvas><p id="status" aria-live="polite">Loading fixture...</p><pre id="spec"></pre><p>The raw screenshot and snapshot stay complete. The production legend sits below the cropped image.</p></article>
+    <article><h2>Original capture</h2><canvas id="original" role="img" aria-label="Original neutral capture with crop boundary"></canvas></article>
+    <article><h2>Cropped image</h2><canvas id="cropped" role="img" aria-label="Crop of the neutral capture"></canvas><p id="status" aria-live="polite">Loading fixture...</p><pre id="spec"></pre><p>The raw screenshot and snapshot stay complete. The production legend sits below the cropped image.</p></article>
   </div>
 </main>
 <script src="fixtures.js"></script>

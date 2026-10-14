@@ -62,6 +62,7 @@ test("validation works with device-client and all built-in module imports blocke
   const schemaURL = new URL("dist/spec/build-identity.js", root).href;
   const checkSchemaURL = new URL("dist/spec/check.js", root).href;
   const annotationSchemaURL = new URL("dist/spec/annotation.js", root).href;
+  const cropSchemaURL = new URL("dist/spec/crop.js", root).href;
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
     // Verify that the guard is active before exercising the validator.
@@ -83,6 +84,9 @@ test("validation works with device-client and all built-in module imports blocke
     const info = annotationSchema.parse({ marker: { target: 'id="cart-total"' } });
     if ("expect" in info.marker) throw new Error("INFO gained an expectation");
     if (annotationSchema.safeParse({ arrow: { to: 'id="cart-total"' } }).success) throw new Error("Missing arrow text accepted");
+    const { cropSchema } = await import(${JSON.stringify(cropSchemaURL)});
+    if (cropSchema.parse({ targets: ['id="cart-total"'] }).padding !== 24) throw new Error("Missing default crop padding");
+    if (cropSchema.safeParse({ targets: [] }).success) throw new Error("Empty crop targets accepted");
     console.log("offline validation passed");
   `;
   const output = execFileSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, "--input-type=module", "--eval", code], {

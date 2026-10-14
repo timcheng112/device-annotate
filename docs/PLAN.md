@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with build-identity, missing-environment, check, and annotation contracts approved in T32-T37.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with build-identity, missing-environment, check, annotation, and crop contracts approved in T32-T38.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -165,7 +165,8 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T35](DESIGN.md#t35-complete-environment-identity-for-multi-step-captures) defines behavior when environment compatibility cannot be established.
 [T36](DESIGN.md#t36-one-predicate-per-expectation) defines standalone checks and one predicate per expectation.
 [T37](DESIGN.md#t37-annotation-input-shapes) defines the five annotation input shapes.
-The package foundation and offline build-identity, check, and annotation schemas are implemented; remaining crop, spec, environment, manifest, and error contracts still require review.
+[T38](DESIGN.md#t38-crop-to-targets-while-preserving-drawable-evidence) defines crop targets, padding, and preservation of drawable evidence.
+The package foundation and offline build-identity, check, annotation, and crop schemas are implemented; remaining spec, environment, manifest, and error contracts still require review.
 The full `validate()` API, YAML loader, and CLI are not implemented yet.
 
 The first implementation slice contains the [zod build schema](../src/spec/build-identity.ts), its [generated JSON Schema](../src/spec/build.schema.json), and neutral [embedded](../examples/build.embedded.json) and [external-runtime](../examples/build.external.json) examples.
@@ -178,18 +179,16 @@ The inspected agent-device 0.21.27 command rejects empty expected text, while wh
 Selector validation currently checks for a non-blank string; syntax parsing and target resolution are separate work.
 The third slice adds the [annotation schema](../src/spec/annotation.ts), its [generated JSON Schema](../src/spec/annotation.schema.json), and [examples](../examples/annotations.json).
 Supplied annotation labels must contain non-whitespace text and retain their original wording.
-On 2026-10-15, `npm run check` passed type checking, all 89 schema tests, and all three generated-schema freshness checks.
-Tests cover agreement between zod and JSON Schema, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, unknown fields, actions, and validation with device-client and built-in module imports blocked.
-This verifies offline build-identity, check, and annotation shape validation only; capture preflight and multi-step enforcement remain to be integrated with the complete spec contract.
+The fourth slice adds the [crop schema](../src/spec/crop.ts), its [generated JSON Schema](../src/spec/crop.schema.json), and an [example](../examples/crop.json).
+Omitted and explicit default padding normalize identically, while zero padding remains zero.
+On 2026-10-15, `npm run check` passed type checking, all 116 schema tests, and all four generated-schema freshness checks.
+Tests cover agreement between zod and JSON Schema, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, unknown fields, actions, and validation with device-client and built-in module imports blocked.
+This verifies offline build-identity, check, annotation, and crop shape validation only; capture preflight and multi-step enforcement remain to be integrated with the complete spec contract.
 
-The [crop contract preview](prototypes/crop-contract/index.html) is a pending proposal, not an approved contract or production renderer.
-It proposes cropping to the combined bounds of explicit crop targets and all drawable annotation/check targets, adding configurable padding of 24 screenshot pixels by default, and limiting the result to the screenshot bounds.
-Omitting crop would retain the full screenshot; raw screenshots and snapshots would remain complete.
-Missing, ambiguous, or fully off-screen explicit crop targets would produce an evidence error.
-The proposed fields are `crop: { targets: [<selector>, ...], padding: 24 }`, with at least one target and non-negative integer padding.
+The [crop contract preview](prototypes/crop-contract/index.html) illustrates the geometry approved in T38 and remains separate from the production renderer.
 Regenerate its neutral image and geometry data with `node scripts/preview-crop.mjs`, then open the HTML in cmux.
 The preview was visually inspected, and 48 combinations of platform, target, padding, and additional evidence target passed containment and screen-bound checks in cmux on 2026-10-15.
-Production cropping and its geometry tests remain assigned to M2/M3 after contract approval.
+Production cropping and its geometry tests remain assigned to M2/M3.
 
 ### Work
 
@@ -261,6 +260,7 @@ Production cropping and its geometry tests remain assigned to M2/M3 after contra
 
 - Unit tests cover marker numbering, collision handling, long criteria, multiline text, and viewport edges.
 - Test crop coordinate translation and padding, including partially off-screen targets.
+- Verify T38's union of explicit crop targets and drawable annotation/check targets, default and zero padding, screen-bound limiting, and full-frame behavior when crop is omitted.
 - Test that legend text stays outside the app image and that mask geometry covers the intended region.
 - Verify repeatable layout for identical inputs.
 - Test overlap groups with containment, touching edges, transitive chains, repeated checks on one target, and distinct targets with identical bounds.
@@ -354,7 +354,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T37 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T38 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.
@@ -368,6 +368,7 @@ The [nearby-target example](prototypes/annotation-overlap/nearby.png) demonstrat
 The [dense-overlap example](prototypes/annotation-overlap/dense.png) demonstrates the overview and individual detail views agreed in T21; its old outcome colors are superseded by T22.
 The [grouped-tag example](prototypes/annotation-overlap/grouped.png) demonstrates the region colors, shared outline, individual result symbols, and separate legend entries agreed in T22.
 The [informational annotation example](prototypes/annotation-overlap/info.png) demonstrates the INFO-only and mixed regions agreed in T25.
+The [crop geometry preview](prototypes/crop-contract/index.html) demonstrates the target inclusion and padding behavior agreed in T38 using neutral M0 captures; production cropping remains M2/M3 work.
 Earlier comparison images remain exploratory references, not the current specification.
 These illustrations use synthetic UI and local AppKit drawing scripts; they do not validate the production font, renderer, collision algorithm, or platform coordinate mapping.
 
