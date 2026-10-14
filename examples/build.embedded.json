@@ -1,0 +1,5 @@
+{
+  "appId": "com.example.shop",
+  "native": "ci:example-native-build-001",
+  "runtime": { "kind": "embedded" }
+}

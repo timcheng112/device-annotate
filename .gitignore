@@ -1,4 +1,5 @@
 node_modules/
+dist/
 .DS_Store
 
 # Reproducible M0 build outputs, upstream source, and private daemon state

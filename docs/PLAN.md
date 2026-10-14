@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review is in progress, with the verification-flow boundary and missing-build-identity behavior approved in T32-T33.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with the build-identity contract approved in T32-T34.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -161,7 +161,18 @@ The existing prototype is a visual reference only; its hard-coded targets and es
 ## M1. Spec contract and offline validation
 
 Contract review has established the verification-flow boundary in [DESIGN.md, T32](DESIGN.md#t32-one-verification-flow-per-spec) and missing-build-identity behavior in [T33](DESIGN.md#t33-build-identity-required-for-multi-step-captures).
-Provenance fields and their input mechanism remain unresolved; the production package and schema have not been implemented.
+[T34](DESIGN.md#t34-separate-caller-supplied-build-identity) defines the separate build JSON file and matching Node API object.
+The package foundation and offline build-identity schema are implemented; remaining spec, environment, manifest, and error contracts still require review.
+The full `validate()` API, YAML loader, and CLI are not implemented yet.
+
+The first implementation slice contains the [zod build schema](../src/spec/build-identity.ts), its [generated JSON Schema](../src/spec/build.schema.json), and neutral [embedded](../examples/build.embedded.json) and [external-runtime](../examples/build.external.json) examples.
+The example identifiers are illustrative and do not identify a captured app.
+The root package pins the verified agent-device peer version and remains private during implementation.
+Run `npm ci --ignore-scripts --no-audit --no-fund` to install the pinned dependencies, `npm run generate:schema` to regenerate schemas, and `npm run check` to verify the implementation.
+The generator uses [zod's JSON Schema conversion](https://zod.dev/json-schema); generated files must not be edited manually.
+On 2026-10-15, `npm run check` passed type checking, all 27 build-identity tests, and the generated-schema freshness check.
+Tests cover agreement between zod and JSON Schema, field locations, input preservation, invalid runtime combinations, unknown fields, and validation with device-client and built-in module imports blocked.
+This verifies offline build-identity validation only; capture preflight and multi-step enforcement remain to be integrated with the complete spec contract.
 
 ### Work
 
@@ -323,7 +334,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T33 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T34 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

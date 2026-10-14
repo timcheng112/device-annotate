@@ -160,7 +160,8 @@ Neither a screenshot nor a package identifier identifies the semantic extent of 
 
 M1 must define caller-supplied immutable build/revision provenance, including runtime bundle identity where relevant, before automatic reuse is enabled.
 It must also define how that identity applies to the affected flow.
-No field names, fallback policy, or affected-flow boundaries have been approved in this spike.
+No field names, fallback policy, or affected-flow boundaries were approved during this spike.
+Subsequent M1 review established the per-spec flow boundary, missing-build-identity behavior, and separate build JSON contract in [DESIGN.md, T32-T34](DESIGN.md#t32-one-verification-flow-per-spec).
 Unknown identity must not be interpreted as an unchanged build.
 Likewise, absent appearance, text-size, native-density, or persistent device identity must not silently establish T28 compatibility.
 An emulator serial can be reused by a different AVD, so it is insufficient alone as durable identity.

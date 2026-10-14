@@ -434,8 +434,7 @@ Spec-only edits retain the selective invalidation rules in T27.
 
 For example, changing the app build between a cart's `before` and `after` captures requires recapturing both steps.
 Editing only the `after` assertion invalidates only `after`.
-T33 defines behavior when identity is unavailable.
-The exact provenance fields and input mechanism remain open M1 contract work.
+T33 defines behavior when identity is unavailable, and T34 defines the provenance fields and input mechanism.
 
 ### T33. Build identity required for multi-step captures
 
@@ -444,7 +443,33 @@ Capturing a step from a spec containing multiple steps requires complete build i
 Missing or incomplete identity produces an actionable validation error before contacting the device, explaining what is missing.
 A single-step spec or one-off capture may omit build identity because it produces fresh evidence without combining observations from different captures.
 Evidence with unknown build identity is never automatically reused.
-The exact representation of complete identity remains open M1 contract work.
+T34 defines the representation of complete identity.
+
+### T34. Separate caller-supplied build identity
+
+Agreed on 2026-10-15 during M1 contract review.
+The CLI accepts build identity through a separate JSON file supplied with `--build <file>`.
+The Node API accepts the same object directly.
+Keep this identity separate from the reusable verification spec.
+
+```json
+{
+  "appId": "com.example.shop",
+  "native": "sha256:<native-build-hash>",
+  "runtime": { "kind": "embedded" }
+}
+```
+
+`appId` identifies the app, and `native` identifies the installed native build.
+Use `runtime: { "kind": "embedded" }` when the native build identity covers the runtime code.
+For separately delivered JavaScript or OTA code, use `runtime: { "kind": "external", "revision": "sha256:<bundle-hash>" }`.
+Explicitly declaring the runtime kind prevents an omitted bundle identity from silently appearing complete.
+Identity values may be content hashes or immutable build-system identifiers.
+The caller must identify the actual installed build and running bundle; a version label or source revision alone does not establish unchanged runtime code.
+Schema validation checks the supplied structure and required values; it cannot prove that the supplied identities describe the running app.
+
+For example, `device-proof capture cart.yaml --step before --build build.json` supplies the flow's identity for that capture.
+Automated generation of this file, including convenient integration with development builds, has not been implemented or specified.
 
 ## Upstream candidates
 

@@ -1,0 +1,8 @@
+{
+  "appId": "com.example.shop",
+  "native": "ci:example-native-build-001",
+  "runtime": {
+    "kind": "external",
+    "revision": "ci:example-runtime-build-002"
+  }
+}
