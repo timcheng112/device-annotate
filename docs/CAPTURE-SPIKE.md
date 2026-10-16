@@ -167,6 +167,24 @@ Likewise, absent appearance, text-size, native-density, or persistent device ide
 An emulator serial can be reused by a different AVD, so it is insufficient alone as durable identity.
 The supplemental native probes demonstrate available local facts; they do not authorize a new production adapter interface or assume that physical/remote devices expose the same facts.
 
+Subsequent M1 review approved automatic read-only supplemental collection for the session-selected local simulator/emulator in [DESIGN.md, T52](DESIGN.md#t52-automatic-read-only-environment-collection).
+This authorizes collection while retaining T35's unknown-metadata behavior; production execution remains M5 work.
+
+Pinned-source review on 2026-10-16 identified additional constraints for that implementation:
+
+- `packages/platform-apple/src/core/settings-text-size.ts` calls `ensureBootedSimulator` before its text-size read; `core/simulator.ts` can boot a stopped simulator through that helper.
+  Device-proof must use a direct read-only query or a separately verified observation-only path to honor T52.
+- `packages/platform-android/src/settings.ts` maps font scales to the nearest shared text-size category while preserving the reported scale separately.
+  Compatibility must retain the exact scale, since two distinct scales can map to the same category.
+- The recorded Android `fontScale` value is the literal response `null`, meaning no stored settings row in the pinned upstream reader; upstream substitutes its default scale of 1.
+  This is distinct from empty output or a failed query and must not be treated as a successful direct measurement of the active app configuration.
+- Android's `cmd uimode night` read can report `auto`, which is a configured mode rather than proof of the currently active light/dark appearance.
+  Automatic mode requires an additional reliable observation of effective appearance or an unavailable-metadata diagnostic.
+- Device identity requires the actual selected target, including simulator-set/provider scope where relevant.
+  An emulator serial or display name alone remains insufficient to establish persistent identity.
+
+These are source findings against the recorded `v0.21.27` tag, not new live-device verification or a completed environment adapter.
+
 ## Reproduction
 
 Run commands from the repository root unless the block explicitly changes directory.

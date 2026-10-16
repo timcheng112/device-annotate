@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T51 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T52 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -179,6 +179,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T49](DESIGN.md#t49-preserve-completed-checks-alongside-entry-errors) retains completed assertions alongside entry errors while preserving error precedence.
 [T50](DESIGN.md#t50-partial-annotated-images-with-explicit-errors) permits partial images with explicit errors while suppressing images with unusable screenshots, crops, or masks.
 [T51](DESIGN.md#t51-public-offline-validation-api-and-cli) defines the public offline validator and its CLI, with YAML and parsed-object inputs.
+[T52](DESIGN.md#t52-automatic-read-only-environment-collection) approves automatic read-only supplemental metadata queries against the session-selected local simulator/emulator.
 The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
 The public `validate()` API, YAML parsing, and validation CLI are implemented for the current spec contract.
 Offline capture-input preparation is implemented; device/environment preflight, remaining manifest contracts, and complete persistence records still require work before M1 is complete.
@@ -256,6 +257,27 @@ The [crop contract preview](prototypes/crop-contract/index.html) illustrates the
 Regenerate its neutral image and geometry data with `node scripts/preview-crop.mjs`, then open the HTML in cmux.
 The preview was visually inspected, and 48 combinations of platform, target, padding, and additional evidence target passed containment and screen-bound checks in cmux on 2026-10-15.
 Production cropping and its geometry tests remain assigned to M2/M3.
+
+### Pending environment-record review
+
+T52 approves collection; the persisted representation of unavailable environment fields remains unapproved.
+The proposed representation keeps each required field explicit, uses `null` when its value cannot be established, and records a field-specific reason in `unavailable`.
+For example, this fragment describes an unavailable appearance reading:
+
+```json
+{
+  "display": { "appearance": null },
+  "unavailable": [
+    {
+      "path": ["display", "appearance"],
+      "message": "The device query did not establish the active light or dark appearance."
+    }
+  ]
+}
+```
+
+This is a review proposal, not the complete environment schema or an implemented manifest format.
+Under the existing T35 rule, a required `null` value prevents reuse even when both records contain `null`; a multi-step capture stops and a fresh single-step capture can retain the diagnosis.
 
 ### Work
 
@@ -380,6 +402,7 @@ Production cropping and its geometry tests remain assigned to M2/M3.
 - Apply T35 when required environment metadata is unavailable: stop multi-step captures with a diagnosis, and record unknown details for otherwise viable fresh single-step captures.
 - List caller-supplied local recordings without annotating them.
 - Integrate T45's recording preflight before device access and preserve caller ownership when writing manifest references.
+- Implement T52's bounded, read-only environment queries for the session-selected local simulator/emulator, preserving exact text-size values and diagnosing unavailable metadata under T35.
 - Complete `capture()` and the capture CLI, JSON stdout, diagnostics, and exit codes.
 
 ### Verification and exit criteria
@@ -434,7 +457,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T51 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T52 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

@@ -818,6 +818,23 @@ Missing fields use the nearest available parent location; object inputs do not r
 
 This API validates the current spec contract offline; selector resolution, capture preflight, and the complete persisted manifest remain their assigned milestone work.
 
+### T52. Automatic read-only environment collection
+
+Agreed on 2026-10-16 during M1 contract review.
+Automatically collect environment details missing from agent-device capture responses using local simulator/emulator tools.
+Bind every supplemental query to the device selected by the current agent-device session.
+For supported local targets, use read-only Apple simulator and Android ADB queries to establish settings such as appearance and text size.
+Keep collection behind the capture boundary in T17; offline spec validation continues to perform no device or filesystem access.
+
+Metadata collection must not boot a simulator, change device settings, navigate the app, or select a different device to make a query succeed.
+Use bounded commands and treat missing tools, unsupported targets, failed queries, and unrecognized responses as unavailable metadata with actionable diagnostics.
+An unavailable field is never evidence that the environment matches a previous capture.
+Apply T35 when required compatibility information remains unavailable: stop multi-step captures and allow fresh single-step captures where capture itself remains possible, recording the missing information.
+Local tooling does not establish metadata support for remote or physical targets automatically.
+
+The M0 evidence and additional pinned-source review are recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md#build-and-environment-provenance).
+The full environment record remains M1 contract work; production query execution and capture integration belong to M5.
+
 ## Upstream candidates
 
 1. Export `evaluateIsPredicate` and the visibility model from `agent-device/selectors`.
