@@ -833,7 +833,44 @@ Apply T35 when required compatibility information remains unavailable: stop mult
 Local tooling does not establish metadata support for remote or physical targets automatically.
 
 The M0 evidence and additional pinned-source review are recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md#build-and-environment-provenance).
-The full environment record remains M1 contract work; production query execution and capture integration belong to M5.
+T53 defines the environment compatibility record; production query execution and capture integration belong to M5.
+
+### T53. Explicit unknown environment fields and reasons
+
+Agreed on 2026-10-16 during M1 contract review.
+Keep every required environment field explicit and store `null` when its value cannot be established.
+Record exactly one field-specific reason for each null in `unavailable`, using `{ path, message }`.
+A reason must identify an actual null observation; duplicate reasons, missing reasons, and reasons contradicting known values are invalid.
+Two unknown values never establish compatible environments, even when their reasons are identical.
+Under T35, any required unknown prevents multi-step capture and automatic evidence reuse; a fresh single-step capture remains possible if its other capture requirements are satisfied.
+
+The [environment schema](../src/manifest/environment.ts) represents the compatibility facts required by T28, T35, and the M0 findings:
+
+| Field | Known representation |
+|---|---|
+| `device.platform` | Native platform identifier |
+| `device.identity` | `{ scope, id }`, a persistent identity scoped to its host/provider and simulator set as applicable |
+| `device.osVersion` | Observed OS version identifier |
+| `display.pixelWidth`, `display.pixelHeight` | Active display pixel dimensions at the observed rotation, before screenshot resizing or cropping |
+| `display.pixelDensity` | Native UI scale; separate from rectangle projection |
+| `display.rotation` | `portrait`, `portrait-upside-down`, `landscape-left`, or `landscape-right` |
+| `display.appearance` | Effective `light` or `dark` appearance |
+| `display.textSize` | Exact iOS content-size category or Android numeric font scale; other platforms retain a native unit and value |
+| `versions.deviceProof`, `versions.agentDevice` | Tool version identifiers |
+
+Every field above is required but nullable, including the compound identity and text-size observations.
+An incomplete compound observation is stored as one null with a reason at its field path.
+Identity scope and IDs must come from reliable capture metadata; a nonblank string passing schema validation does not prove that it identifies the actual device.
+An emulator port alone does not establish persistent identity.
+Preserve exact values instead of rounding text size to an upstream category or treating configured automatic appearance as an effective appearance reading.
+The full manifest can carry additional descriptive metadata separately from these compatibility facts.
+
+See the illustrative [complete record](../examples/environment.complete.json) and [partial record](../examples/environment.partial.json).
+These are contract examples, not new device observations.
+The generated [JSON Schema](../src/manifest/environment.schema.json) validates structure; `environmentSchema` additionally enforces null/reason agreement and native text-size representation, following T41's distinction between structural and complete validation.
+`assessEnvironment` returns validated observations, completeness, and admission through the environment gate for the supplied step count.
+`environmentsMatch` requires complete records and exact agreement across all compatibility facts, independently of object key order.
+This comparison covers environment compatibility only; build identity, effective step configuration, capture readiness, and manifest reconciliation remain separate requirements.
 
 ## Upstream candidates
 

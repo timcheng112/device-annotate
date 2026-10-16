@@ -1,0 +1,21 @@
+{
+  "device": {
+    "platform": "android",
+    "identity": null,
+    "osVersion": "13"
+  },
+  "display": {
+    "pixelWidth": 1080,
+    "pixelHeight": 2220,
+    "pixelDensity": 2.75,
+    "rotation": "portrait",
+    "appearance": null,
+    "textSize": null
+  },
+  "versions": { "deviceProof": "0.1.0", "agentDevice": "0.21.27" },
+  "unavailable": [
+    { "path": ["device", "identity"], "message": "Only an emulator port was available; persistent device identity was not established." },
+    { "path": ["display", "appearance"], "message": "Automatic night mode was reported without a reliable reading of the active appearance." },
+    { "path": ["display", "textSize"], "message": "The text-size query did not return a reliable effective font scale." }
+  ]
+}

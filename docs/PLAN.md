@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T52 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T53 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -180,7 +180,8 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T50](DESIGN.md#t50-partial-annotated-images-with-explicit-errors) permits partial images with explicit errors while suppressing images with unusable screenshots, crops, or masks.
 [T51](DESIGN.md#t51-public-offline-validation-api-and-cli) defines the public offline validator and its CLI, with YAML and parsed-object inputs.
 [T52](DESIGN.md#t52-automatic-read-only-environment-collection) approves automatic read-only supplemental metadata queries against the session-selected local simulator/emulator.
-The package foundation, component schemas, root spec validation, and effective step normalization are implemented; remaining root settings, environment, manifest, and error contracts still require review.
+[T53](DESIGN.md#t53-explicit-unknown-environment-fields-and-reasons) defines explicit null environment observations, field-specific reasons, and the compatibility record.
+The package foundation, component schemas, root spec validation, effective step normalization, and environment compatibility schema are implemented; complete manifest, attempt/history, and error contracts still require work.
 The public `validate()` API, YAML parsing, and validation CLI are implemented for the current spec contract.
 Offline capture-input preparation is implemented; device/environment preflight, remaining manifest contracts, and complete persistence records still require work before M1 is complete.
 
@@ -243,9 +244,14 @@ Every capture from a multi-step spec requires complete build identity, counting 
 Missing identity remains absent rather than becoming a synthetic reusable identity.
 Structured errors retain known step/criterion context and identify invalid build fields.
 These internal functions run with device and host built-in imports blocked; wiring the public capture API, file loading, recording checks, ownership checks, and environment collection together remains M5 work.
-On 2026-10-15, `npm run check` passed type checking, all 410 tests, and all thirteen generated-schema freshness checks.
+The seventeenth slice adds the pure [environment contract and gate](../src/manifest/environment.ts), its [generated structural schema](../src/manifest/environment.schema.json), and [complete](../examples/environment.complete.json) and [partial](../examples/environment.partial.json) examples.
+Complete validation enforces explicit nullable observations, exactly one reason for each null, no contradictory reasons, and exact native text-size representation.
+The environment gate permits partial records only for fresh single-step captures; compatibility rejects any unknown value and any changed environment fact.
+Tests exercise each nullable field and each compatibility field, malformed records, exact Android scales, scoped device identity, object key order, caller-data preservation, structural-schema agreement, and the offline import boundary.
+Production metadata collection and wiring this gate into capture remain M5 work; full manifest reconciliation remains M2/M5 work.
+On 2026-10-16, `npm run check` passed type checking, all 441 tests, and all fourteen generated-schema freshness checks.
 Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, image eligibility and mask suppression, YAML parsing and source locations, CLI/API agreement and exit codes, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
-This verifies offline validation, shared capture normalization, and multi-step build enforcement; the complete manifest/environment contract and integration with capture and reconciliation remain outstanding.
+This verifies offline validation, shared capture normalization, multi-step build enforcement, and the environment gate; the complete manifest contract and integration with capture and reconciliation remain outstanding.
 
 Full-spec validation review has identified a JSON Schema export limitation.
 With pinned zod 4.6.7 and Ajv 8.18.0, a custom whole-file uniqueness refinement rejects duplicate step names across criteria at runtime, but its generated JSON Schema accepts the same input.
@@ -258,26 +264,14 @@ Regenerate its neutral image and geometry data with `node scripts/preview-crop.m
 The preview was visually inspected, and 48 combinations of platform, target, padding, and additional evidence target passed containment and screen-bound checks in cmux on 2026-10-15.
 Production cropping and its geometry tests remain assigned to M2/M3.
 
-### Pending environment-record review
+### Pending attempt-artifact layout review
 
-T52 approves collection; the persisted representation of unavailable environment fields remains unapproved.
-The proposed representation keeps each required field explicit, uses `null` when its value cannot be established, and records a field-specific reason in `unavailable`.
-For example, this fragment describes an unavailable appearance reading:
-
-```json
-{
-  "display": { "appearance": null },
-  "unavailable": [
-    {
-      "path": ["display", "appearance"],
-      "message": "The device query did not establish the active light or dark appearance."
-    }
-  ]
-}
-```
-
-This is a review proposal, not the complete environment schema or an implemented manifest format.
-Under the existing T35 rule, a required `null` value prevents reuse even when both records contain `null`; a multi-step capture stops and a fresh single-step capture can retain the diagnosis.
+T29 requires retained attempts and safe replacement, but the permanent file layout for those attempts remains unapproved.
+The proposed layout gives each capture an immutable attempt ID and stores its managed artifacts beneath `attempts/<step>/<attempt-id>/`.
+The manifest identifies the current attempt and carries output-folder-relative paths to its artifacts; callers obtain image paths from the manifest or capture result.
+For example, an annotated image could be `attempts/after/<attempt-id>/image.png`, with `raw.png` and `snapshot.json` beside it when produced.
+Replacing the current result updates manifest references after the new files are safely written, while the previous files retain their paths until eligible cleanup.
+This proposal would replace T16's illustrative fixed `after.png` layout; it is not yet a frozen artifact or manifest contract.
 
 ### Work
 
@@ -457,7 +451,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T52 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T53 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

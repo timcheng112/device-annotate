@@ -1,0 +1,17 @@
+{
+  "device": {
+    "platform": "ios",
+    "identity": { "scope": "fixture-host:default-simulator-set", "id": "fixture-iphone" },
+    "osVersion": "18.3.1"
+  },
+  "display": {
+    "pixelWidth": 1206,
+    "pixelHeight": 2622,
+    "pixelDensity": 3,
+    "rotation": "portrait",
+    "appearance": "light",
+    "textSize": { "kind": "ios-content-size", "value": "large" }
+  },
+  "versions": { "deviceProof": "0.1.0", "agentDevice": "0.21.27" },
+  "unavailable": []
+}
