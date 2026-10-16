@@ -1,0 +1,7 @@
+{
+  "step": "after",
+  "attemptId": "11111111-1111-4111-8111-111111111111",
+  "image": "attempts/after/11111111-1111-4111-8111-111111111111/image.png",
+  "raw": "attempts/after/11111111-1111-4111-8111-111111111111/raw.png",
+  "snapshot": "attempts/after/11111111-1111-4111-8111-111111111111/snapshot.json"
+}

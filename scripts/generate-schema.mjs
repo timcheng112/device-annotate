@@ -12,6 +12,7 @@ import { preCaptureErrorSchema } from "../dist/spec/errors.js";
 import { outputOwnerSchema } from "../dist/manifest/owner.js";
 import { completedCheckSchema, entryErrorSchema } from "../dist/manifest/evaluation.js";
 import { environmentStructureSchema } from "../dist/manifest/environment.js";
+import { attemptArtifactsStructureSchema } from "../dist/manifest/artifacts.js";
 
 const args = process.argv.slice(2);
 if (args.length > 1 || (args.length === 1 && args[0] !== "--check")) {
@@ -33,6 +34,7 @@ const schemas = [
   { name: "completed-check", source: "evaluation", directory: "manifest", schema: completedCheckSchema },
   { name: "entry-error", source: "evaluation", directory: "manifest", schema: entryErrorSchema },
   { name: "environment", source: "environment", directory: "manifest", schema: environmentStructureSchema },
+  { name: "attempt-artifacts", source: "artifacts", directory: "manifest", schema: attemptArtifactsStructureSchema },
 ];
 
 for (const { name, source, schema, directory = "spec" } of schemas) {

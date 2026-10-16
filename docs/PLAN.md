@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T53 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T54 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -181,6 +181,7 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T51](DESIGN.md#t51-public-offline-validation-api-and-cli) defines the public offline validator and its CLI, with YAML and parsed-object inputs.
 [T52](DESIGN.md#t52-automatic-read-only-environment-collection) approves automatic read-only supplemental metadata queries against the session-selected local simulator/emulator.
 [T53](DESIGN.md#t53-explicit-unknown-environment-fields-and-reasons) defines explicit null environment observations, field-specific reasons, and the compatibility record.
+[T54](DESIGN.md#t54-immutable-attempt-folders-and-managed-artifact-references) defines immutable attempt folders and exact managed artifact references.
 The package foundation, component schemas, root spec validation, effective step normalization, and environment compatibility schema are implemented; complete manifest, attempt/history, and error contracts still require work.
 The public `validate()` API, YAML parsing, and validation CLI are implemented for the current spec contract.
 Offline capture-input preparation is implemented; device/environment preflight, remaining manifest contracts, and complete persistence records still require work before M1 is complete.
@@ -249,7 +250,11 @@ Complete validation enforces explicit nullable observations, exactly one reason 
 The environment gate permits partial records only for fresh single-step captures; compatibility rejects any unknown value and any changed environment fact.
 Tests exercise each nullable field and each compatibility field, malformed records, exact Android scales, scoped device identity, object key order, caller-data preservation, structural-schema agreement, and the offline import boundary.
 Production metadata collection and wiring this gate into capture remain M5 work; full manifest reconciliation remains M2/M5 work.
-On 2026-10-16, `npm run check` passed type checking, all 441 tests, and all fourteen generated-schema freshness checks.
+The eighteenth slice adds the pure [attempt artifact contract](../src/manifest/artifacts.ts), its [generated structural schema](../src/manifest/attempt-artifacts.schema.json), and an [example record](../examples/attempt-artifacts.json).
+It validates portable step names and canonical UUID v4 IDs, plans output-folder-relative destinations, binds recorded artifacts to their exact attempt, and enumerates only recorded managed references.
+Tests cover every partial artifact combination, ID and filename boundaries, attempted traversal and aliases, cross-step/cross-attempt references, caller-owned recording separation, caller-data preservation, structural-schema agreement, and the offline import boundary.
+Filesystem allocation, symlink containment, actual saves, and atomic publication remain M5 work.
+On 2026-10-16, `npm run check` passed type checking, all 479 tests, and all fifteen generated-schema freshness checks.
 Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, image eligibility and mask suppression, YAML parsing and source locations, CLI/API agreement and exit codes, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
 This verifies offline validation, shared capture normalization, multi-step build enforcement, and the environment gate; the complete manifest contract and integration with capture and reconciliation remain outstanding.
 
@@ -264,14 +269,14 @@ Regenerate its neutral image and geometry data with `node scripts/preview-crop.m
 The preview was visually inspected, and 48 combinations of platform, target, padding, and additional evidence target passed containment and screen-bound checks in cmux on 2026-10-15.
 Production cropping and its geometry tests remain assigned to M2/M3.
 
-### Pending attempt-artifact layout review
+### Pending current/history manifest layout review
 
-T29 requires retained attempts and safe replacement, but the permanent file layout for those attempts remains unapproved.
-The proposed layout gives each capture an immutable attempt ID and stores its managed artifacts beneath `attempts/<step>/<attempt-id>/`.
-The manifest identifies the current attempt and carries output-folder-relative paths to its artifacts; callers obtain image paths from the manifest or capture result.
-For example, an annotated image could be `attempts/after/<attempt-id>/image.png`, with `raw.png` and `snapshot.json` beside it when produced.
-Replacing the current result updates manifest references after the new files are safely written, while the previous files retain their paths until eligible cleanup.
-This proposal would replace T16's illustrative fixed `after.png` layout; it is not yet a frozen artifact or manifest contract.
+T16 places current step results under criteria, while T29 requires retained attempts without including them in current outcomes or check counts.
+The proposed composition keeps `criteria[].steps` for current results and adds a separate top-level `history` list for retained attempts.
+Each historical attempt retains its original criterion, effective step configuration, available build/environment provenance, capture times, results, and T54 artifact references.
+Reused current evidence keeps its original capture time and attempt ID; it does not gain a duplicate historical record merely because it was reused.
+Removed and invalidated attempts enter history according to T27/T29/T39, while current steps become incomplete when their evidence is invalidated.
+This placement is pending review before composing the complete manifest schema.
 
 ### Work
 
@@ -397,6 +402,7 @@ This proposal would replace T16's illustrative fixed `after.png` layout; it is n
 - List caller-supplied local recordings without annotating them.
 - Integrate T45's recording preflight before device access and preserve caller ownership when writing manifest references.
 - Implement T52's bounded, read-only environment queries for the session-selected local simulator/emulator, preserving exact text-size values and diagnosing unavailable metadata under T35.
+- Allocate T54 attempt directories exclusively, enforce filesystem containment, and publish only successfully saved artifact references after the new files are durable.
 - Complete `capture()` and the capture CLI, JSON stdout, diagnostics, and exit codes.
 
 ### Verification and exit criteria
@@ -451,7 +457,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T53 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T54 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

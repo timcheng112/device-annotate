@@ -193,11 +193,12 @@ Humans read the annotated images.
       "steps": [
         {
           "step": "after",
+          "attemptId": "11111111-1111-4111-8111-111111111111",
           "capturedAt": "2026-10-14T10:02:11Z",
           "result": "failed",
-          "image": "after.png",
-          "raw": "after.raw.png",
-          "snapshot": "after.snapshot.json",
+          "image": "attempts/after/11111111-1111-4111-8111-111111111111/image.png",
+          "raw": "attempts/after/11111111-1111-4111-8111-111111111111/raw.png",
+          "snapshot": "attempts/after/11111111-1111-4111-8111-111111111111/snapshot.json",
           "annotations": [
             {
               "n": 1, "type": "box", "target": "id=\"cart-total\"",
@@ -871,6 +872,43 @@ The generated [JSON Schema](../src/manifest/environment.schema.json) validates s
 `assessEnvironment` returns validated observations, completeness, and admission through the environment gate for the supplied step count.
 `environmentsMatch` requires complete records and exact agreement across all compatibility facts, independently of object key order.
 This comparison covers environment compatibility only; build identity, effective step configuration, capture readiness, and manifest reconciliation remain separate requirements.
+
+### T54. Immutable attempt folders and managed artifact references
+
+Agreed on 2026-10-16 during M1 contract review.
+Give each capture its own immutable attempt ID and store its managed artifacts beneath `attempts/<step>/<attempt-id>/` inside the output folder.
+The manifest identifies the current attempt and carries output-folder-relative artifact paths; callers read image paths from the manifest or capture result.
+Retained attempts keep their original IDs and paths when a newer attempt becomes current.
+Write new files safely before publishing their references in the manifest, preserving T29's history and T30's exclusive folder access.
+This replaces T16's original illustrative fixed `after.png` layout.
+
+The [artifact contract](../src/manifest/artifacts.ts) uses canonical lowercase UUID v4 attempt IDs and T42's portable step names.
+Attempt IDs distinguish captures independently of their timestamps.
+M5 generates IDs and exclusively creates their directories; an existing directory must never be reused or overwritten as a new attempt.
+A collision requires a new ID or an error before writing evidence.
+Persist artifact paths with forward slashes on every host:
+
+| Field | Path within the attempt folder |
+|---|---|
+| `image` | `image.png` |
+| `raw` | `raw.png` |
+| `snapshot` | `snapshot.json` |
+
+Only files actually saved may appear in the attempt record.
+Omit an unavailable artifact field; do not invent a path or substitute an earlier attempt's file.
+An error attempt may have any subset of artifacts, including none, subject to the complete result/error contract.
+Planning a destination does not claim that its file exists.
+Caller-owned video references remain separate under T45 and never become managed artifact references through this schema.
+
+Complete validation binds every artifact path to its exact step, attempt ID, and artifact kind.
+Reject absolute paths, traversal, path aliases, backslashes, unexpected files, and references to another step or attempt.
+The generated [JSON Schema](../src/manifest/attempt-artifacts.schema.json) checks structure; `attemptArtifactsSchema` additionally checks the sibling step/attempt relationship under T41's structural-versus-complete distinction.
+The [example record](../examples/attempt-artifacts.json) illustrates the contract and does not assert that its files exist.
+
+This pure contract proves lexical path membership only.
+M5 must independently enforce filesystem containment, safe handling of symlinks, exclusive creation, actual successful writes, and atomic manifest publication.
+Cleanup eligibility and caller-owned recording protection remain separate gates; enumerating managed references does not authorize deleting them.
+The composed manifest and retained-attempt records remain M1 work, while retention decisions and filesystem operations belong to M2/M5.
 
 ## Upstream candidates
 
