@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 through M4 complete, with contracts through T56 approved; M5 is next.
+Status: M0 through M4 complete, with contracts through T56 approved; M5 implementation is in progress.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for runtime evidence, reproducible commands, and metadata collection limitations to address during M5 integration.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -433,6 +433,8 @@ The measured in-memory processing pipeline stays below one second on the recorde
 - Measure added processing time on representative captures against the less-than-one-second requirement, recording the environment and measurement boundary.
 
 ## M5. Capture and artifact integration
+
+Implementation is in progress; [the delivery record](PLAN.delivery.md) tracks the verified internal foundation, remaining public/native integration, and pending iOS capture-only stability decision.
 
 ### Work
 
