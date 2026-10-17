@@ -1,0 +1,35 @@
+{
+  "platform": "android",
+  "dimensions": {
+    "width": 1080,
+    "height": 2220
+  },
+  "snapshotPath": "test/fixtures/capture-spike/android/capture.snapshot.json",
+  "screenshotPath": "test/fixtures/capture-spike/android/capture.raw.png",
+  "step": {
+    "annotate": [
+      {
+        "box": {
+          "target": "id=\"dev.deviceproof.fixture:id/top_left\"",
+          "text": "Top-left control",
+          "expect": {
+            "visible": true
+          }
+        }
+      },
+      {
+        "arrow": {
+          "to": "id=\"dev.deviceproof.fixture:id/top_right\"",
+          "text": "Top-right control"
+        }
+      },
+      {
+        "mask": {
+          "target": "id=\"dev.deviceproof.fixture:id/partial_left\"",
+          "text": "Mask the visible part of the clipped control."
+        }
+      }
+    ]
+  },
+  "criterion": "Neutral android capture: edge controls stay visible and clipped bounds are reported."
+}

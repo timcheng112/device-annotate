@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0, M1, M2, and M3 complete, with contracts through T56 approved; M4 is next.
+Status: M0 through M4 complete, with contracts through T56 approved; M5 is next.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for runtime evidence, reproducible commands, and metadata collection limitations to address during M5 integration.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -409,6 +409,11 @@ Production rendering and visual review remain M4 work.
 - Test INFO-only regions and tags combining INFO, passing checks, and failing checks; verify that INFO entries never acquire a checkmark or a passing assertion result.
 
 ## M4. Rendering and reviewed golden images
+
+M4 is complete.
+[Rendering evidence](M4-RENDERING.md) records the renderer boundary, nine agent-reviewed neutral golden images, visual fixes, verification, and performance measurements.
+`npm run check` passes 679 tests, including nine exact golden pixel comparisons, plus all schema and vendor checks.
+The measured in-memory processing pipeline stays below one second on the recorded Apple M2 environment; live capture and filesystem persistence remain M5 work.
 
 ### Work
 

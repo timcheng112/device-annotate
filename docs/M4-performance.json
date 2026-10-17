@@ -1,0 +1,90 @@
+{
+  "runtime": "v24.21.0",
+  "os": {
+    "platform": "darwin",
+    "release": "23.6.0",
+    "arch": "arm64",
+    "cpu": "Apple M2"
+  },
+  "dependencies": {
+    "resvgWasm": "2.6.2",
+    "pngjs": "7.0.0",
+    "opentype": "1.3.4"
+  },
+  "initializationMs": 34.623834,
+  "boundary": "In-memory accepted-snapshot evaluation, layout, PNG decode, opaque mask application, PNG re-encode, SVG generation, WASM rasterization, final PNG encoding and buffer copy. Asset/file reads and device capture excluded. First sample retained; warm statistics use the following five samples.",
+  "records": [
+    {
+      "name": "ios-native",
+      "dimensions": {
+        "width": 1302,
+        "height": 3726
+      },
+      "firstMs": 767.042459,
+      "medianMs": 582.4068750000001,
+      "maxMs": 592.3948330000001,
+      "samplesMs": [
+        767.042459,
+        592.3948330000001,
+        588.0717500000001,
+        582.4068750000001,
+        575.0409589999999,
+        579.5182919999997
+      ]
+    },
+    {
+      "name": "android-native",
+      "dimensions": {
+        "width": 1176,
+        "height": 3396
+      },
+      "firstMs": 457.23208399999976,
+      "medianMs": 452.8872080000001,
+      "maxMs": 460.4394170000005,
+      "samplesMs": [
+        457.23208399999976,
+        443.2775410000004,
+        448.4025839999995,
+        454.73033399999986,
+        452.8872080000001,
+        460.4394170000005
+      ]
+    },
+    {
+      "name": "dense-masked",
+      "dimensions": {
+        "width": 565,
+        "height": 2124
+      },
+      "firstMs": 157.59758299999976,
+      "medianMs": 156.8435410000002,
+      "maxMs": 157.52004099999976,
+      "samplesMs": [
+        157.59758299999976,
+        154.8887080000004,
+        156.8435410000002,
+        157.52004099999976,
+        157.20383399999992,
+        156.14154099999996
+      ]
+    },
+    {
+      "name": "long-tags",
+      "dimensions": {
+        "width": 826,
+        "height": 3824
+      },
+      "firstMs": 135.96812499999942,
+      "medianMs": 126.50608300000022,
+      "maxMs": 131.31829199999993,
+      "samplesMs": [
+        135.96812499999942,
+        129.8703749999995,
+        131.31829199999993,
+        126.50608300000022,
+        123.5428750000001,
+        121.94795900000008
+      ]
+    }
+  ]
+}

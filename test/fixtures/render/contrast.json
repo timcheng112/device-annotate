@@ -1,0 +1,93 @@
+{
+  "platform": "ios",
+  "dimensions": {
+    "width": 480,
+    "height": 300
+  },
+  "snapshot": {
+    "nodes": [
+      {
+        "index": 0,
+        "type": "Application",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 480,
+          "height": 300
+        },
+        "ref": "e1",
+        "kind": "application"
+      },
+      {
+        "index": 1,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "a",
+        "label": "Same blue",
+        "rect": {
+          "x": 25,
+          "y": 80,
+          "width": 190,
+          "height": 70
+        },
+        "ref": "e2",
+        "kind": "button"
+      },
+      {
+        "index": 2,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "b",
+        "label": "Same rose",
+        "rect": {
+          "x": 230,
+          "y": 80,
+          "width": 220,
+          "height": 70
+        },
+        "ref": "e3",
+        "kind": "button"
+      }
+    ],
+    "createdAt": 1,
+    "viewport": {
+      "width": 480,
+      "height": 300
+    },
+    "backend": "xctest",
+    "snapshotQuality": {
+      "state": "healthy",
+      "backend": "tree"
+    }
+  },
+  "screenshotPath": "test/fixtures/render/contrast.raw.png",
+  "step": {
+    "annotate": [
+      {
+        "box": {
+          "target": "id=a"
+        }
+      },
+      {
+        "box": {
+          "target": "id=b"
+        }
+      }
+    ],
+    "checks": [
+      {
+        "target": "id=a",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=b",
+        "expect": {
+          "text": "Mismatch"
+        }
+      }
+    ]
+  },
+  "criterion": "White halos preserve annotation edges against matching-color UI regions."
+}

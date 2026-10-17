@@ -1,0 +1,105 @@
+{
+  "platform": "ios",
+  "dimensions": {
+    "width": 480,
+    "height": 400
+  },
+  "snapshot": {
+    "nodes": [
+      {
+        "index": 0,
+        "type": "Application",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 480,
+          "height": 400
+        },
+        "ref": "e1",
+        "kind": "application"
+      },
+      {
+        "index": 1,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "partial",
+        "label": "Partial target",
+        "rect": {
+          "x": -15,
+          "y": 80,
+          "width": 180,
+          "height": 60
+        },
+        "ref": "e2",
+        "kind": "button"
+      },
+      {
+        "index": 2,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "secret",
+        "label": "Secret 54321",
+        "rect": {
+          "x": 220.5,
+          "y": 100.25,
+          "width": 150.5,
+          "height": 50.5
+        },
+        "ref": "e3",
+        "kind": "button"
+      },
+      {
+        "index": 3,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "tiny",
+        "label": "",
+        "rect": {
+          "x": 400,
+          "y": 150,
+          "width": 3,
+          "height": 3
+        },
+        "ref": "e4",
+        "kind": "button"
+      }
+    ],
+    "createdAt": 1,
+    "viewport": {
+      "width": 480,
+      "height": 400
+    },
+    "backend": "xctest",
+    "snapshotQuality": {
+      "state": "healthy",
+      "backend": "tree"
+    }
+  },
+  "screenshotPath": "test/fixtures/render/crop-edge.raw.png",
+  "step": {
+    "annotate": [
+      {
+        "marker": {
+          "target": "id=partial"
+        }
+      },
+      {
+        "mask": {
+          "target": "id=secret"
+        }
+      },
+      {
+        "mask": {
+          "target": "id=tiny"
+        }
+      }
+    ],
+    "crop": {
+      "targets": [
+        "id=partial"
+      ],
+      "padding": 0
+    }
+  },
+  "criterion": "Zero-padding crop preserves all drawable targets, clipped bounds, and fractional masks."
+}

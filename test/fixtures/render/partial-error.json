@@ -1,0 +1,95 @@
+{
+  "platform": "ios",
+  "dimensions": {
+    "width": 480,
+    "height": 300
+  },
+  "snapshot": {
+    "nodes": [
+      {
+        "index": 0,
+        "type": "Application",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 480,
+          "height": 300
+        },
+        "ref": "e1",
+        "kind": "application"
+      },
+      {
+        "index": 1,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "save",
+        "label": "Save",
+        "rect": {
+          "x": 60,
+          "y": 90,
+          "width": 170,
+          "height": 60
+        },
+        "ref": "e2",
+        "kind": "button"
+      },
+      {
+        "index": 2,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "status",
+        "label": "Pending",
+        "rect": {
+          "x": 270,
+          "y": 90,
+          "width": 160,
+          "height": 60
+        },
+        "ref": "e3",
+        "kind": "button"
+      }
+    ],
+    "createdAt": 1,
+    "viewport": {
+      "width": 480,
+      "height": 300
+    },
+    "backend": "xctest",
+    "snapshotQuality": {
+      "state": "healthy",
+      "backend": "tree"
+    }
+  },
+  "screenshotPath": "test/fixtures/render/partial-error.raw.png",
+  "step": {
+    "annotate": [
+      {
+        "box": {
+          "target": "id=missing",
+          "text": "Missing control"
+        }
+      }
+    ],
+    "checks": [
+      {
+        "target": "id=save",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=status",
+        "expect": {
+          "text": "Complete"
+        }
+      },
+      {
+        "target": "id=gone",
+        "expect": {
+          "absent": true
+        }
+      }
+    ]
+  },
+  "criterion": "Usable evidence survives an unresolved entry; the overall outcome is ERROR."
+}

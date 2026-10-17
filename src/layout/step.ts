@@ -6,8 +6,9 @@ import { criterionSchema } from '../spec/values.js';
 import { numberStepEntries } from '../spec/numbered-entries.js';
 import { decideAnnotatedImage } from './image-policy.js';
 import type { TextLine, TextMetrics } from './font.js';
+import { regionColor } from './color.js';
 import { denseTargetGroups, type Rect } from './overlap.js';
-import { placeTags, style, type Tag } from './place.js';
+import { placeTags, layoutStyle, type Tag } from './place.js';
 
 type AcceptedEvaluation = Pick<ReturnType<typeof evaluateStep>, 'checks' | 'errors' | 'geometry'>;
 export type Region = { numbers: number[]; targetIds: string[]; rect: Rect; color: string;
@@ -30,6 +31,7 @@ export function layoutStep(input: { step: StepInput; criterion: string; accepted
     drawableNumbers: geometry.targets.map(({ n }) => n) }, { interrupted });
   if (policy.kind === 'omit') return { kind: 'omit' as const, policy };
   const entries = numberStepEntries(step), metrics = input.metrics;
+  const style = layoutStyle(geometry.screenshot.width);
   const outcome = (n: number): LegendRow['outcome'] => summary.errors.some((error) => error.n === n) ? 'ERROR'
     : summary.checks.find((check) => check.n === n)?.result === 'fail' ? 'FAIL'
     : summary.checks.some((check) => check.n === n) ? 'PASS' : 'INFO';
@@ -37,7 +39,7 @@ export function layoutStep(input: { step: StepInput; criterion: string; accepted
   const colorFor = (n: number) => {
     const index = groups.findIndex((group) => group.numbers.includes(n));
     // A fixed low-lightness palette sequence retains white-label contrast without pixel sampling.
-    return `hsl(${(215 + index * 137.508) % 360} 65% 35%)`;
+    return regionColor(index);
   };
   const isMask = (n: number) => { const entry = entries[n - 1]!; return entry.kind === 'annotation' && 'mask' in entry.annotation; };
   function makeView(source: Rect, y: number, targetId?: string): View {
@@ -52,7 +54,7 @@ export function layoutStep(input: { step: StepInput; criterion: string; accepted
         results: numbers.map((n) => ({ n, outcome: outcome(n) })) };
     });
     // Inter includes these result symbols; INFO retains its number alone.
-    const placed = placeTags(draft.map((region) => ({ rect: region.rect, text: region.results.map(({ n, outcome }) => `${n}${outcome === 'INFO' ? '' : outcome === 'PASS' ? ' ✓' : outcome === 'FAIL' ? ' ×' : ' !'}`).join(', ') })), frame, metrics);
+    const placed = placeTags(draft.map((region) => ({ rect: region.rect, text: region.results.map(({ n, outcome }) => `${n}${outcome === 'INFO' ? '' : outcome === 'PASS' ? ' ✓' : outcome === 'FAIL' ? ' ×' : ' !'}`).join(', ') })), frame, metrics, style);
     const regions: Region[] = draft.map((region, index) => {
       const tag = placed.tags[index]!;
       return { ...region, tag, arrows: region.numbers.filter((n) => {
@@ -85,7 +87,7 @@ export function layoutStep(input: { step: StepInput; criterion: string; accepted
       views.push(view); bottom += view.height;
     }
   }
-  const width = Math.max(360, ...views.map((view) => view.width));
+  const width = Math.max(360 * style.fontSize / 16, ...views.map((view) => view.width));
   const legendY = bottom, textWidth = width - style.padding * 2;
   bottom += style.padding;
   function block(source: string): TextBlock {
@@ -102,6 +104,7 @@ export function layoutStep(input: { step: StepInput; criterion: string; accepted
     const text = 'text' in primitive && typeof primitive.text === 'string' ? primitive.text : target;
     const check = summary.checks.find((check) => check.n === entry.n);
     const parts = [`${entry.n} ${outcome(entry.n)}: ${text}`];
+    if (isMask(entry.n)) parts.push('masked');
     if (check) {
       parts.push(`Check: ${check.result.toUpperCase()}`);
       parts.push(`Expected: ${JSON.stringify(check.expect)}`, `Actual: ${JSON.stringify(check.actual)}`);

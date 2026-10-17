@@ -1,49 +1,34 @@
-# M3 delivery
+# M4 delivery
 
-M3 implements pure annotation and legend layout under [PLAN.md](PLAN.md) and [DESIGN.md](DESIGN.md).
-Current phase: complete, with implementation and verification finished.
-M0, M1, and M2 remain complete; M2 evidence is preserved in PLAN.md.
+M4 implements deterministic SVG/WASM rendering, reviewed neutral golden images, and processing-time measurements under [PLAN.md](PLAN.md).
+Current phase: complete, with implementation, visual review, golden comparisons, and performance verification finished.
+M0 through M3 are complete; M3 was committed as `18e11da`.
 
 Worktree: `/Users/timcheng112/Downloads/device-proof`.
 Branch: `plan/implementation`.
-M3 starts after `56d0b10`, the completed M2 implementation.
 Local commits are authorized.
 No push, publication, PR, or external communication has occurred.
 
-## Implementation
+## Implementation and findings
 
-The layout boundary consumes the effective step, criterion, accepted M2 checks/errors/geometry, and parsed bundled font metrics.
-It validates the records before producing image eligibility or layout data.
-It preserves shared numbering, per-entry outcomes, grouped region identity, crop translation, clipping warnings, and explicit error rows.
-Connected overlap groups count distinct target identities and add individual detail views only at the approved three-target threshold.
-Every view carries all intersecting masks, including masks belonging to other targets.
-The legend follows all image views.
-Tags use deterministic outer-edge candidates and a growing external margin when those candidates collide.
-Text uses bundled glyph advances and returns explicit glyph positions without host-font dependencies.
+The renderer accepts font/WASM bytes and the accepted evidence, and performs no filesystem or device IO.
+It decodes and validates the screenshot, masks source pixels before any composition, generates SVG with bundled glyph paths, and rasterizes through pinned `@resvg/resvg-wasm` 2.6.2.
+PNG decoding/encoding uses pinned `pngjs` 7.0.0.
+All raster objects are freed after use, including failure paths.
 
-Inter Regular is copied unchanged from the official 4.1 release, with its license and hashes under `src/render/fonts/`.
-`opentype.js` 1.3.4 is pinned in the package lock.
-The shell's default Node installation has a missing ICU library; use the installed Node 24.21.0 for checks:
-
-```sh
-export PATH=/Users/timcheng112/.volta/tools/image/node/24.21.0/bin:$PATH
-npm run check
-```
-
-## Verification
-
-Focused tests exercise grouping, INFO/check/error presentation, omission policy, crop translation, clipping, mask propagation, overlap identities, tag collisions, long text, glyph metrics, and repeatability without input mutation.
-`npm run check` passes type checking, 661 tests, all 18 generated-schema checks, and 22 vendor source/license/test hash checks.
-The 22 new layout tests include all three neutral M0 capture fixtures, tiny crops at all four corners, and drawable masks with unavailable assertions.
-`git diff --check` passes.
-On 2026-10-18, the user confirmed the English-first scope and accepted keeping Inter without additional fallback fonts.
-Characters absent from Inter use readable Unicode escapes, while original source text remains preserved.
-T17 records this accepted scope.
-The local delivery commit is titled `Implement M3 deterministic annotation and legend layout`.
-Production rendering, visual QA, golden images, and device sessions remain later milestones.
+Nine candidate cases cover both native platforms, all primitives, dense overlap, long tags, partial errors, cropped masks, matching-color backgrounds, and absence-only evidence.
+Candidates are generated separately from accepted golden images.
+Initial visual inspection found unsupported fractional HSL colors and undersized labels on native-density captures.
+The implementation now emits explicit RGB colors with measured white-text contrast and scales typography with screenshot width.
+All nine corrected candidates were visually inspected by the implementation agent and accepted as golden references.
+`npm run check` passes 679 tests, all 18 schema checks, and 22 vendor hash checks.
+The measured pipeline stayed below one second: the slowest sample was 767 ms, with initialization measured separately at 35 ms.
+[Rendering evidence](M4-RENDERING.md) records the exact boundary, environment, samples, review coverage, and limitations.
+The local delivery commit is titled `Implement M4 deterministic rendering and reviewed golden images`.
 
 ## Next safe action
 
-Continue M4 from [PLAN.md](PLAN.md#m4-rendering-and-reviewed-golden-images): render the layout using the bundled font, establish reviewed neutral golden images, and measure rendering performance.
-Use the explicit glyph positions and apply every view's complete mask list before publishing an image.
+Continue M5 from [PLAN.md](PLAN.md#m5-capture-and-artifact-integration): integrate stable accepted captures, runtime asset loading, rendering, and safe artifact/manifest persistence.
+Preserve the daemon safeguard, environment/build provenance, ownership/locking, immutable attempts, and mask-failure publication rules.
+Recheck any simulator, emulator, and daemon state before live work.
 No blockers are known.

@@ -1,0 +1,60 @@
+{
+  "platform": "ios",
+  "dimensions": {
+    "width": 400,
+    "height": 240
+  },
+  "snapshot": {
+    "nodes": [
+      {
+        "index": 0,
+        "type": "Application",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 400,
+          "height": 240
+        },
+        "ref": "e1",
+        "kind": "application"
+      },
+      {
+        "index": 1,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "a",
+        "label": "No alert is shown",
+        "rect": {
+          "x": 50,
+          "y": 80,
+          "width": 300,
+          "height": 60
+        },
+        "ref": "e2",
+        "kind": "button"
+      }
+    ],
+    "createdAt": 1,
+    "viewport": {
+      "width": 400,
+      "height": 240
+    },
+    "backend": "xctest",
+    "snapshotQuality": {
+      "state": "healthy",
+      "backend": "tree"
+    }
+  },
+  "screenshotPath": "test/fixtures/render/legend-only.raw.png",
+  "step": {
+    "checks": [
+      {
+        "target": "id=alert",
+        "expect": {
+          "absent": true
+        }
+      }
+    ]
+  },
+  "criterion": "The alert is absent. A passing absence check has a legend row and no marker."
+}

@@ -1,0 +1,35 @@
+{
+  "platform": "ios",
+  "dimensions": {
+    "width": 1206,
+    "height": 2622
+  },
+  "snapshotPath": "test/fixtures/capture-spike/ios/capture.snapshot.json",
+  "screenshotPath": "test/fixtures/capture-spike/ios/capture.raw.png",
+  "step": {
+    "annotate": [
+      {
+        "box": {
+          "target": "id=\"top-left\"",
+          "text": "Top-left control",
+          "expect": {
+            "visible": true
+          }
+        }
+      },
+      {
+        "arrow": {
+          "to": "id=\"top-right\"",
+          "text": "Top-right control"
+        }
+      },
+      {
+        "mask": {
+          "target": "id=\"partial-left\"",
+          "text": "Mask the visible part of the clipped control."
+        }
+      }
+    ]
+  },
+  "criterion": "Neutral ios capture: edge controls stay visible and clipped bounds are reported."
+}

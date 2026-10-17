@@ -1,0 +1,146 @@
+{
+  "platform": "ios",
+  "dimensions": {
+    "width": 480,
+    "height": 420
+  },
+  "snapshot": {
+    "nodes": [
+      {
+        "index": 0,
+        "type": "Application",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 480,
+          "height": 420
+        },
+        "ref": "e1",
+        "kind": "application"
+      },
+      {
+        "index": 1,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "order",
+        "label": "",
+        "rect": {
+          "x": 30,
+          "y": 60,
+          "width": 420,
+          "height": 300
+        },
+        "ref": "e2",
+        "kind": "button"
+      },
+      {
+        "index": 2,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "summary",
+        "label": "",
+        "rect": {
+          "x": 50,
+          "y": 100,
+          "width": 380,
+          "height": 230
+        },
+        "ref": "e3",
+        "kind": "button"
+      },
+      {
+        "index": 3,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "total",
+        "label": "",
+        "rect": {
+          "x": 70,
+          "y": 230,
+          "width": 340,
+          "height": 70
+        },
+        "ref": "e4",
+        "kind": "button"
+      },
+      {
+        "index": 4,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "amount",
+        "label": "$12.00",
+        "rect": {
+          "x": 250,
+          "y": 245,
+          "width": 140,
+          "height": 40
+        },
+        "ref": "e5",
+        "kind": "button"
+      },
+      {
+        "index": 5,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "secret",
+        "label": "Account 1234",
+        "rect": {
+          "x": 80,
+          "y": 130,
+          "width": 160,
+          "height": 40
+        },
+        "ref": "e6",
+        "kind": "button"
+      }
+    ],
+    "createdAt": 1,
+    "viewport": {
+      "width": 480,
+      "height": 420
+    },
+    "backend": "xctest",
+    "snapshotQuality": {
+      "state": "healthy",
+      "backend": "tree"
+    }
+  },
+  "screenshotPath": "test/fixtures/render/dense-masked.raw.png",
+  "step": {
+    "annotate": [
+      {
+        "mask": {
+          "target": "id=secret",
+          "text": "Account stays masked in every detail."
+        }
+      }
+    ],
+    "checks": [
+      {
+        "target": "id=order",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=summary",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=total",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=amount",
+        "expect": {
+          "text": "$12.00"
+        }
+      }
+    ]
+  },
+  "criterion": "The order summary and $12.00 total are visible. Each detail uses the same captured frame."
+}

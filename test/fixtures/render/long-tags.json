@@ -1,0 +1,254 @@
+{
+  "platform": "ios",
+  "dimensions": {
+    "width": 400,
+    "height": 240
+  },
+  "snapshot": {
+    "nodes": [
+      {
+        "index": 0,
+        "type": "Application",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 400,
+          "height": 240
+        },
+        "ref": "e1",
+        "kind": "application"
+      },
+      {
+        "index": 1,
+        "parentIndex": 0,
+        "type": "Button",
+        "identifier": "continue",
+        "label": "Continue",
+        "rect": {
+          "x": 30,
+          "y": 80,
+          "width": 340,
+          "height": 70
+        },
+        "ref": "e2",
+        "kind": "button"
+      }
+    ],
+    "createdAt": 1,
+    "viewport": {
+      "width": 400,
+      "height": 240
+    },
+    "backend": "xctest",
+    "snapshotQuality": {
+      "state": "healthy",
+      "backend": "tree"
+    }
+  },
+  "screenshotPath": "test/fixtures/render/long-tags.raw.png",
+  "step": {
+    "annotate": [
+      {
+        "box": {
+          "target": "id=continue",
+          "text": "Informational context"
+        }
+      }
+    ],
+    "checks": [
+      {
+        "target": "id=continue",
+        "expect": {
+          "text": "Pay now"
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "text": "Pay now"
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "text": "Pay now"
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "text": "Pay now"
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "text": "Pay now"
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      },
+      {
+        "target": "id=continue",
+        "expect": {
+          "visible": true
+        }
+      }
+    ]
+  },
+  "criterion": "Every repeated check retains its own number and result. Long criteria wrap without truncating the acceptance evidence. Long criteria wrap without truncating the acceptance evidence. Long criteria wrap without truncating the acceptance evidence. Long criteria wrap without truncating the acceptance evidence. Long criteria wrap without truncating the acceptance evidence. \nSecond paragraph: <xml> & \"quotes\" remain plain text. Unicode outside Inter: 漢 😀."
+}
