@@ -82,6 +82,9 @@ export function summarizeStepEvaluation(step: StepInput, input: unknown, options
       if (!entries[error.n - 1]) {
         context.addIssue({ code: "custom", path: ["errors", index, "n"], message: "This error number does not belong to the step." });
       }
+      if (error.code === "CHECK_UNAVAILABLE" && completed.has(error.n)) {
+        context.addIssue({ code: "custom", path: ["errors", index], message: "An unavailable assertion cannot also have a completed pass/fail result." });
+      }
       errored.add(error.n);
     }
     for (const entry of entries) {

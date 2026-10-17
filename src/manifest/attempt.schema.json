@@ -33,23 +33,26 @@
     "environment": {
       "$ref": "#/$defs/__schema34"
     },
-    "result": {
+    "geometry": {
       "$ref": "#/$defs/__schema43"
     },
+    "result": {
+      "$ref": "#/$defs/__schema64"
+    },
     "checkCounts": {
-      "$ref": "#/$defs/__schema44"
+      "$ref": "#/$defs/__schema65"
     },
     "checks": {
-      "$ref": "#/$defs/__schema45"
+      "$ref": "#/$defs/__schema66"
     },
     "errors": {
-      "$ref": "#/$defs/__schema49"
+      "$ref": "#/$defs/__schema70"
     },
     "error": {
-      "$ref": "#/$defs/__schema52"
+      "$ref": "#/$defs/__schema73"
     },
     "recordings": {
-      "$ref": "#/$defs/__schema53"
+      "$ref": "#/$defs/__schema74"
     }
   },
   "required": [
@@ -1006,6 +1009,302 @@
       }
     },
     "__schema43": {
+      "type": "object",
+      "properties": {
+        "screenshot": {
+          "$ref": "#/$defs/__schema44"
+        },
+        "crop": {
+          "$ref": "#/$defs/__schema46"
+        },
+        "targets": {
+          "$ref": "#/$defs/__schema49"
+        },
+        "cropTargets": {
+          "$ref": "#/$defs/__schema59"
+        },
+        "groups": {
+          "$ref": "#/$defs/__schema60"
+        },
+        "warnings": {
+          "$ref": "#/$defs/__schema61"
+        }
+      },
+      "required": [
+        "screenshot",
+        "targets",
+        "cropTargets",
+        "groups",
+        "warnings"
+      ],
+      "additionalProperties": false,
+      "description": "Resolved screenshot geometry, grouped entry numbers, and clipping warnings. Use geometrySchema and validateStepGeometry for complete validation. Final label placement belongs to layout."
+    },
+    "__schema44": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "$ref": "#/$defs/__schema45"
+        },
+        "height": {
+          "$ref": "#/$defs/__schema45"
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "__schema45": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "__schema46": {
+      "description": "Accepted crop in original screenshot pixels. Omit if no usable crop was established.",
+      "$ref": "#/$defs/__schema47"
+    },
+    "__schema47": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "$ref": "#/$defs/__schema48"
+        },
+        "y": {
+          "$ref": "#/$defs/__schema48"
+        },
+        "width": {
+          "$ref": "#/$defs/__schema45"
+        },
+        "height": {
+          "$ref": "#/$defs/__schema45"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "__schema48": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "__schema49": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "$ref": "#/$defs/__schema50"
+          },
+          "targetId": {
+            "$ref": "#/$defs/__schema51"
+          },
+          "rect": {
+            "$ref": "#/$defs/__schema52"
+          },
+          "originalRect": {
+            "$ref": "#/$defs/__schema57"
+          }
+        },
+        "required": [
+          "n",
+          "targetId",
+          "rect"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "__schema50": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "__schema51": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Resolved component identity within this accepted snapshot; equal rectangles do not establish equal identities."
+    },
+    "__schema52": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "$ref": "#/$defs/__schema53"
+        },
+        "y": {
+          "$ref": "#/$defs/__schema55"
+        },
+        "width": {
+          "$ref": "#/$defs/__schema56"
+        },
+        "height": {
+          "$ref": "#/$defs/__schema56"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "description": "Visible target bounds in full original screenshot pixels."
+    },
+    "__schema53": {
+      "minimum": 0,
+      "$ref": "#/$defs/__schema54"
+    },
+    "__schema54": {
+      "type": "number",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "__schema55": {
+      "minimum": 0,
+      "$ref": "#/$defs/__schema54"
+    },
+    "__schema56": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
+    "__schema57": {
+      "description": "Unclipped bounds, only when the source actually supplies them, in the same screenshot coordinate space.",
+      "$ref": "#/$defs/__schema58"
+    },
+    "__schema58": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "$ref": "#/$defs/__schema54"
+        },
+        "y": {
+          "$ref": "#/$defs/__schema54"
+        },
+        "width": {
+          "$ref": "#/$defs/__schema56"
+        },
+        "height": {
+          "$ref": "#/$defs/__schema56"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "__schema59": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "$ref": "#/$defs/__schema10"
+          },
+          "targetId": {
+            "$ref": "#/$defs/__schema51"
+          },
+          "rect": {
+            "$ref": "#/$defs/__schema52"
+          },
+          "originalRect": {
+            "$ref": "#/$defs/__schema57"
+          }
+        },
+        "required": [
+          "target",
+          "targetId",
+          "rect"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "__schema60": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "numbers": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/__schema50"
+            }
+          }
+        },
+        "required": [
+          "numbers"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "__schema61": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "n": {
+                "$ref": "#/$defs/__schema50"
+              },
+              "code": {
+                "$ref": "#/$defs/__schema62"
+              },
+              "message": {
+                "$ref": "#/$defs/__schema63"
+              }
+            },
+            "required": [
+              "n",
+              "code",
+              "message"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "cropTarget": {
+                "$ref": "#/$defs/__schema10"
+              },
+              "code": {
+                "$ref": "#/$defs/__schema62"
+              },
+              "message": {
+                "$ref": "#/$defs/__schema63"
+              }
+            },
+            "required": [
+              "cropTarget",
+              "code",
+              "message"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "__schema62": {
+      "type": "string",
+      "enum": [
+        "PARTIALLY_OFFSCREEN",
+        "EDGE_EXTENT_UNKNOWN"
+      ]
+    },
+    "__schema63": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "__schema64": {
       "type": "string",
       "enum": [
         "passed",
@@ -1013,7 +1312,7 @@
         "error"
       ]
     },
-    "__schema44": {
+    "__schema65": {
       "type": "object",
       "properties": {
         "total": {
@@ -1039,22 +1338,22 @@
       ],
       "additionalProperties": false
     },
-    "__schema45": {
+    "__schema66": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
           "n": {
-            "$ref": "#/$defs/__schema46"
+            "$ref": "#/$defs/__schema67"
           },
           "expect": {
             "$ref": "#/$defs/__schema13"
           },
           "actual": {
-            "$ref": "#/$defs/__schema47"
+            "$ref": "#/$defs/__schema68"
           },
           "result": {
-            "$ref": "#/$defs/__schema48"
+            "$ref": "#/$defs/__schema69"
           }
         },
         "required": [
@@ -1067,12 +1366,12 @@
         "description": "Completed assertion only. The evaluation validator also checks its number, expectation, actual predicate, and outcome against the step."
       }
     },
-    "__schema46": {
+    "__schema67": {
       "type": "integer",
       "exclusiveMinimum": 0,
       "maximum": 9007199254740991
     },
-    "__schema47": {
+    "__schema68": {
       "anyOf": [
         {
           "type": "object",
@@ -1172,26 +1471,26 @@
         }
       ]
     },
-    "__schema48": {
+    "__schema69": {
       "type": "string",
       "enum": [
         "pass",
         "fail"
       ]
     },
-    "__schema49": {
+    "__schema70": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
           "n": {
-            "$ref": "#/$defs/__schema46"
+            "$ref": "#/$defs/__schema67"
           },
           "code": {
-            "$ref": "#/$defs/__schema50"
+            "$ref": "#/$defs/__schema71"
           },
           "message": {
-            "$ref": "#/$defs/__schema51"
+            "$ref": "#/$defs/__schema72"
           }
         },
         "required": [
@@ -1203,7 +1502,7 @@
         "description": "An entry could not be resolved, evaluated, or drawn. This is not a failed assertion."
       }
     },
-    "__schema50": {
+    "__schema71": {
       "type": "string",
       "enum": [
         "TARGET_NOT_FOUND",
@@ -1212,11 +1511,11 @@
         "CHECK_UNAVAILABLE"
       ]
     },
-    "__schema51": {
+    "__schema72": {
       "type": "string",
       "pattern": "\\S"
     },
-    "__schema52": {
+    "__schema73": {
       "type": "object",
       "properties": {
         "code": {
@@ -1234,7 +1533,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema53": {
+    "__schema74": {
       "type": "array",
       "items": {
         "type": "string",

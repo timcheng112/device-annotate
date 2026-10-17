@@ -98,7 +98,40 @@
             }
           ],
           "errors": [],
-          "recordings": []
+          "recordings": [],
+          "geometry": {
+            "screenshot": {
+              "width": 1206,
+              "height": 2622
+            },
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "width": 1206,
+              "height": 2622
+            },
+            "targets": [
+              {
+                "n": 1,
+                "targetId": "fixture-total-node",
+                "rect": {
+                  "x": 100,
+                  "y": 200,
+                  "width": 50,
+                  "height": 30
+                }
+              }
+            ],
+            "cropTargets": [],
+            "groups": [
+              {
+                "numbers": [
+                  1
+                ]
+              }
+            ],
+            "warnings": []
+          }
         }
       ]
     }
@@ -177,7 +210,40 @@
         }
       ],
       "errors": [],
-      "recordings": []
+      "recordings": [],
+      "geometry": {
+        "screenshot": {
+          "width": 1206,
+          "height": 2622
+        },
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "width": 1206,
+          "height": 2622
+        },
+        "targets": [
+          {
+            "n": 1,
+            "targetId": "fixture-total-node",
+            "rect": {
+              "x": 100,
+              "y": 200,
+              "width": 50,
+              "height": 30
+            }
+          }
+        ],
+        "cropTargets": [],
+        "groups": [
+          {
+            "numbers": [
+              1
+            ]
+          }
+        ],
+        "warnings": []
+      }
     }
   ]
 }

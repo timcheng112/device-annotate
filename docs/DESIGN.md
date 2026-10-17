@@ -1,6 +1,6 @@
 # device-proof: technical design
 
-Status: M0 runtime findings are recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md); remaining gates and contract work are tracked in [PLAN.md](PLAN.md).
+Status: M0 and M1 are complete; runtime findings are recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md), and implementation of resolution, rendering, and capture continues through [PLAN.md](PLAN.md).
 Requirements live in [REQUIREMENTS.md](REQUIREMENTS.md).
 Facts about agent-device come from reading its source at commit `3d48bb99` (2026-10-14).
 The findings below preserve that initial source review; [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) distinguishes verified 0.21.27 behavior from assumptions and limitations.
@@ -71,7 +71,7 @@ device-proof's own code owns layout: anchoring, label placement, collision avoid
 
 ```
 device-proof capture <spec.yaml> --step <name>
-device-proof capture --box 'id="x"' --criterion "The expected control is visible" -o shot.png
+device-proof capture --step control --box 'id="x"' --criterion "The expected control is visible" --out evidence/control
 device-proof validate <spec.yaml>
 ```
 
@@ -100,12 +100,13 @@ The spec never contains actions.
 
 ### T7. Output per step
 
-- `<step>.png`: annotated.
-- `<step>.raw.png`: unannotated.
-- `<step>.snapshot.json`: the snapshot used.
+- `attempts/<step>/<attempt-id>/image.png`: annotated.
+- `attempts/<step>/<attempt-id>/raw.png`: unannotated.
+- `attempts/<step>/<attempt-id>/snapshot.json`: the snapshot used.
 - `manifest.json`: shared, updated after every step.
 
 Raw images and snapshots let anyone audit an annotation against what was captured, and double as test fixtures.
+T54 defines the immutable attempt layout and requires callers to use manifest/capture-result paths.
 
 ### T8. Stability check
 
@@ -178,7 +179,8 @@ This also covers the case of a global agent-device CLI next to a different proje
 
 Audience: machines (the agent, harnesses such as `fh`, CI).
 Humans read the annotated images.
-The sketch below illustrates evidence output; T55 defines the implemented current/history ledger, with resolved geometry and warning records still to be composed.
+The sketch below illustrates evidence output; T55 defines the current/history ledger and T56 defines its composed geometry and warning records.
+The complete [manifest example](../examples/manifest-ledger.json) follows the implemented schema.
 
 ```json
 {
@@ -269,7 +271,7 @@ Agreed on 2026-10-14 during implementation-plan review.
 Steps may contain standalone checks, so an `absent` expectation does not require a drawable annotation target.
 A successful absence check appears in the legend without an on-screen marker.
 Annotations still require a drawable target: asking to box a missing element is an evidence error, while successfully proving that element absent is a passing check.
-T36 defines the spec fields for standalone checks; their manifest representation remains contract-review work.
+T36 defines standalone check inputs, T49 defines their results, and T55/T56 compose results and geometry into the manifest.
 
 ### T20. Nearby annotation markers
 
@@ -488,7 +490,7 @@ Unknown values must not compare as evidence of an unchanged environment.
 Unlike the caller-supplied build identity checked offline under T33, environment identity may require device metadata collection.
 This rule does not promise detection before contacting the device.
 It also does not relax the geometry requirements needed to produce correctly anchored evidence.
-The exact environment fields and unavailable-metadata representation remain M1 contract work.
+T52/T53 define collection policy, environment fields, and unavailable-metadata representation.
 
 ### T36. One predicate per expectation
 
@@ -577,7 +579,7 @@ Build and environment compatibility remain required under T32-T35.
 
 For example, renaming `after` to `updated-total` requires a new capture.
 Matching does not infer identity from similar names or identical checks.
-T40 defines inherited settings; the complete normalized effective step configuration remains M1 implementation work.
+T40 defines inherited settings, and the implemented effective-step normalization carries them into the T55 manifest.
 
 ### T40. Shared crop defaults and explicit step overrides
 
@@ -700,7 +702,7 @@ Return every schema issue, including whole-file semantic errors, while keeping t
 Internal exception causes and stacks stay outside the JSON result.
 T16's exit code 2 remains the capture error outcome.
 The [pre-capture error example](../examples/pre-capture-error.json) demonstrates known step and criterion context without device or artifact claims.
-Partial errors after capture, additional error codes, and manifest persistence remain separate M1/M5 work.
+T49/T55 define partial and terminal attempt errors; production error-code emission and manifest persistence remain M5 integration work.
 
 ### T47. One owner per evidence folder
 
@@ -755,7 +757,7 @@ Check totals remain `passed + failed`, and each assertion contributes at most on
 Preserve original expectations and actual values, and reject inconsistent records instead of silently repairing their result.
 The [partial-evaluation example](../examples/partial-evaluation.json) retains one failing text check and one passing absence check around an ambiguous-target error: total 2, passed 1, failed 1, overall error.
 
-The implemented fragment defines evaluation results and errors, not a complete saved manifest or a claim that capture/render/save succeeded.
+The evaluation fragment is composed into T55/T56's manifest; evaluation alone does not claim that capture/render/save succeeded.
 Generated record schemas validate structure; the complete evaluation validator additionally checks consistency with the numbered step and between expected, actual, and reported outcomes.
 M2 must implement continued evaluation and diagnostic candidate details; M5 must preserve available raw artifacts and apply any later rendering or persistence errors.
 
@@ -909,7 +911,7 @@ The [example record](../examples/attempt-artifacts.json) illustrates the contrac
 This pure contract proves lexical path membership only.
 M5 must independently enforce filesystem containment, safe handling of symlinks, exclusive creation, actual successful writes, and atomic manifest publication.
 Cleanup eligibility and caller-owned recording protection remain separate gates; enumerating managed references does not authorize deleting them.
-The composed manifest and retained-attempt records remain M1 work, while retention decisions and filesystem operations belong to M2/M5.
+T55/T56 compose the manifest and retained-attempt records; retention decisions and filesystem operations belong to M2/M5.
 
 ### T55. Current results and separate retained-attempt history
 
@@ -960,9 +962,59 @@ Complete ledger validation checks nested contracts, normalized configuration, gl
 The illustrative [manifest ledger example](../examples/manifest-ledger.json) contains a current pass and a historical failure, with only the current check included in totals.
 Generated [attempt](../src/manifest/attempt.schema.json) and [manifest](../src/manifest/manifest.schema.json) JSON Schemas check structure; complete semantic validation uses `attemptSchema` and `manifestSchema` under T41.
 
-This ledger contract does not yet include resolved annotation geometry, grouped marker records, or warning records, which remain M1 composition work.
+T56 adds resolved annotation geometry, grouped marker numbers, and warning records to this ledger.
 It does not perform reconciliation, apply retention limits, create files, or determine filesystem ownership; those remain M2/M5 integration work.
 Retention can temporarily exceed its limits between safe publication and cleanup, so policy limits do not make an otherwise valid ledger structurally invalid.
+
+### T56. Original-screenshot coordinates, grouped geometry, and warnings
+
+Agreed on 2026-10-18 during M1 contract review.
+Keep target rectangles in the full original screenshot's pixel coordinates when the annotated image uses a crop.
+Record the accepted crop rectangle in that same coordinate space.
+Translate to the cropped screenshot by subtracting the crop's `x` and `y`; do not rewrite the original target bounds.
+Final label placement, legend dimensions, connectors, and detail-view layout remain M3 responsibilities.
+
+The optional per-attempt `geometry` record contains:
+
+| Field | Meaning |
+|---|---|
+| `screenshot` | Original screenshot width and height in pixels |
+| `crop` | Accepted integer-pixel crop rectangle, or omitted when no usable crop was established |
+| `targets` | Drawable entries with `n`, snapshot-local `targetId`, visible `rect`, and optional source-proven `originalRect` |
+| `cropTargets` | Explicit crop selectors and their resolved identities and bounds |
+| `groups` | Arrays of entry `numbers` sharing one rendered rectangle and tag |
+| `warnings` | Clipping diagnostics addressed by entry `n` or explicit `cropTarget` selector |
+
+Visible rectangles must have positive dimensions and stay inside the original screenshot.
+Bounds may be fractional after projection; screenshot dimensions and accepted crop rectangles use integer pixels.
+Full-frame configuration records the complete screenshot rectangle as its accepted crop.
+An explicit crop requires every crop selector to resolve and contains the union of those targets and all drawable entry targets, with configured padding clamped to screenshot bounds under T38.
+Round fractional crop edges outward to whole pixels so rounding cannot remove evidence.
+Missing or invalid crop geometry prevents publication of an annotated image.
+
+The `originalRect` field is present only when the source provides unclipped bounds; it may extend outside the screenshot.
+Its intersection with the screenshot must equal the recorded visible rectangle, allowing only a tiny numerical tolerance for floating-point projection.
+Source-proven partial clipping requires `PARTIALLY_OFFSCREEN` with the message "Partly off-screen; only the visible bounds are shown."
+When original extent is unavailable and visible bounds touch a screenshot edge, require `EDGE_EXTENT_UNKNOWN` with T31's message "Touches screen edge; full extent unknown".
+Do not invent clipping uncertainty when source-proven complete bounds merely touch an edge.
+Each affected entry or explicit crop selector has exactly one matching warning; warnings do not change assertion results or check counts.
+
+Identical visible rectangles share one group containing all their individual numbers in ascending order under T22/T48.
+Each drawable entry appears in exactly one group; legend-only absent/hidden checks have no drawable target or group.
+Distinct component identities remain distinct even when their rectangles share a group, preserving the information M3 needs for T21's overlap threshold.
+One resolved identity cannot claim contradictory bounds within the accepted snapshot.
+Repeated identical selectors must retain the same component identity, and an explicit crop target cannot contradict an absent, hidden, or unresolved result for that selector.
+Different or merely overlapping rectangles remain separate groups.
+
+Complete geometry validation checks entry membership, crop selectors, source-bound consistency, grouping, warning accuracy, and agreement with completed checks and entry errors.
+An annotated image requires a capture timestamp and validated geometry with an accepted crop.
+Apply T50's image policy to the recorded drawable entries: unresolved masks suppress the image, and other missing drawable entries need an explicit diagnostic unless the check proves absence or hidden state.
+Partial attempts may preserve available geometry and diagnostics while omitting the image path.
+`CHECK_UNAVAILABLE` cannot coexist with a completed result for the same assertion; completed checks may still coexist with a distinct drawing/resolution error under T49.
+
+The [geometry example](../examples/geometry.json) combines crop geometry, distinct component identities sharing bounds, grouped numbers, and both warning types.
+The [geometry schema](../src/manifest/geometry.ts) is composed into attempt and manifest validation, with a generated [structural JSON Schema](../src/manifest/geometry.schema.json).
+These contracts validate recorded observations; native coordinate projection, selector resolution, actual cropping, annotation rendering, and filesystem publication remain M2-M5 implementation work.
 
 ## Upstream candidates
 
@@ -974,4 +1026,5 @@ Retention can temporarily exceed its limits between safe publication and cleanup
 ## Still to design
 
 The implementation sequence and verification gates are recorded in [PLAN.md](PLAN.md).
-Its remaining contract work is assigned to M0 and M1 and must be resolved before dependent implementation.
+M1's spec, manifest, error, provenance, and geometry contracts are complete.
+Implementation must continue to honor the review gates for new user-visible behavior discovered in M2-M6.

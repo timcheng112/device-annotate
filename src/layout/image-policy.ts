@@ -24,9 +24,9 @@ export type AnnotatedImagePolicy =
     };
 
 /** Eligibility only. Resolution/layout supplies readiness; successful rendering is still required. */
-export function decideAnnotatedImage(step: StepInput, evaluation: unknown, readiness: z.input<typeof readinessSchema>): AnnotatedImagePolicy {
+export function decideAnnotatedImage(step: StepInput, evaluation: unknown, readiness: z.input<typeof readinessSchema>, options: { interrupted?: boolean } = {}): AnnotatedImagePolicy {
   const entries = numberStepEntries(step);
-  const summary = summarizeStepEvaluation(step, evaluation);
+  const summary = summarizeStepEvaluation(step, evaluation, options);
   const checked = readinessSchema.superRefine((value, context) => {
     const seen = new Set<number>();
     for (const [index, n] of value.drawableNumbers.entries()) {
@@ -55,9 +55,12 @@ export function decideAnnotatedImage(step: StepInput, evaluation: unknown, readi
   }
   if (reasons.length > 0) return { kind: "omit", result: "error", reasons };
 
-  // An annotation must either be drawable or have a diagnostic row; never silently drop it.
+  // Only proven absence/hidden checks are intentionally legend-only. Other
+  // entries need drawable evidence or a diagnostic row; never silently drop them.
   for (const entry of entries) {
-    if (entry.kind === "annotation" && !drawable.has(entry.n) && !summary.errors.some((error) => error.n === entry.n)) {
+    const check = summary.checks.find((item) => item.n === entry.n);
+    const legendOnly = entry.kind === "check" && check && (("absent" in check.actual && check.actual.absent) || ("hidden" in check.actual && check.actual.hidden));
+    if (!legendOnly && !drawable.has(entry.n) && !summary.errors.some((error) => error.n === entry.n)) {
       throw new Error(`Entry ${entry.n} has neither drawable evidence nor an error for the legend.`);
     }
   }

@@ -1,0 +1,41 @@
+{
+  "step": {
+    "annotate": [
+      { "box": { "target": "id=left" } },
+      { "marker": { "target": "id=overlay" } },
+      { "arrow": { "to": "id=total", "text": "Total" } }
+    ],
+    "crop": { "targets": ["id=total"], "padding": 24 }
+  },
+  "evaluation": { "checks": [], "errors": [] },
+  "geometry": {
+    "screenshot": { "width": 400, "height": 800 },
+    "crop": { "x": 0, "y": 76, "width": 174, "height": 178 },
+    "targets": [
+      {
+        "n": 1,
+        "targetId": "left-component",
+        "rect": { "x": 0, "y": 100, "width": 50, "height": 30 },
+        "originalRect": { "x": -20, "y": 100, "width": 70, "height": 30 }
+      },
+      {
+        "n": 2,
+        "targetId": "overlay-component",
+        "rect": { "x": 0, "y": 100, "width": 50, "height": 30 }
+      },
+      {
+        "n": 3,
+        "targetId": "total-component",
+        "rect": { "x": 100, "y": 200, "width": 50, "height": 30 }
+      }
+    ],
+    "cropTargets": [
+      { "target": "id=total", "targetId": "total-component", "rect": { "x": 100, "y": 200, "width": 50, "height": 30 } }
+    ],
+    "groups": [{ "numbers": [1, 2] }, { "numbers": [3] }],
+    "warnings": [
+      { "n": 1, "code": "PARTIALLY_OFFSCREEN", "message": "Partly off-screen; only the visible bounds are shown." },
+      { "n": 2, "code": "EDGE_EXTENT_UNKNOWN", "message": "Touches screen edge; full extent unknown" }
+    ]
+  }
+}

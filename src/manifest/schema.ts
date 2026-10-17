@@ -24,7 +24,7 @@ export const manifestStructureSchema = z.strictObject({
   result: resultSchema, checkCounts: checkCountsSchema,
   criteria: z.array(criterionRecordSchema).min(1),
   history: z.array(attemptStructureSchema),
-}).describe("Current results under criteria; retained attempts in history. Complete ledger validation uses manifestSchema. Geometry/warning extensions and filesystem integration remain separate work.");
+}).describe("Current results under criteria; retained attempts in history. Complete semantic validation uses manifestSchema. Filesystem integration is separate.");
 
 type CountedResult = { result: z.output<typeof resultSchema>; checkCounts: z.output<typeof checkCountsSchema> };
 function aggregate(records: CountedResult[]): CountedResult {

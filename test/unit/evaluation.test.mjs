@@ -11,6 +11,16 @@ const ajv = new Ajv2020({ strict: true, allErrors: true });
 const validateCheck = ajv.compile(readJSON("src/manifest/completed-check.schema.json"));
 const validateError = ajv.compile(readJSON("src/manifest/entry-error.schema.json"));
 
+test("an unavailable assertion cannot simultaneously claim a completed result", () => {
+  const step = { checks: [{ target: "id=total", expect: { visible: true } }] };
+  const evaluation = {
+    checks: [{ n: 1, expect: { visible: true }, actual: { visible: true }, result: "pass" }],
+    errors: [{ n: 1, code: "CHECK_UNAVAILABLE", message: "The assertion could not run." }],
+  };
+  assert.throws(() => summarizeStepEvaluation(step, evaluation), /cannot also have a completed/);
+  assert.throws(() => summarizeStepEvaluation(step, evaluation, { interrupted: true }), /cannot also have a completed/);
+});
+
 test("an unresolved target preserves completed checks before and after it and dominates failure", () => {
   const summary = summarizeStepEvaluation(example.step, example.evaluation);
   assert.equal(summary.result, "error");

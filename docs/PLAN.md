@@ -1,10 +1,10 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T55 approved.
-See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
+Status: M0 and M1 complete, with contracts through T56 approved; M2 is next.
+See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for runtime evidence, reproducible commands, and metadata collection limitations to address during M5 integration.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
-Runtime findings and remaining contract details are assigned to M0 and M1; they must be resolved before dependent implementation rather than assumed to be settled.
+M0 runtime findings and M1 contracts establish the foundation for dependent implementation; new user-visible behavior choices still require review when discovered.
 
 ## Agreed planning decisions
 
@@ -20,7 +20,7 @@ Results determine whether the existing design can be implemented as written or w
 Agreed on 2026-10-14 and recorded as T19 in [DESIGN.md](DESIGN.md).
 Allow standalone checks in a step and show successful absence checks in the legend without on-screen markers.
 Annotations continue to require drawable targets.
-M1 must define the spec and manifest representation, and M2 through M4 must verify the distinction between a passing absence check and an annotation-target error.
+M1 defines the spec and manifest representation, and M2 through M4 must verify the distinction between a passing absence check and an annotation-target error.
 
 ### P3. Separate nearby target badges
 
@@ -128,7 +128,7 @@ Runtime evidence is recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md), with the [
 Native geometry, implicit/named sessions, and a real daemon-version mismatch have been exercised on both target platforms where applicable.
 The user approved the edge-uncertainty warning on 2026-10-15, recorded as T31 in [DESIGN.md](DESIGN.md), resolving the partial-visibility gate.
 M0 is complete within its documented platform and environment limits.
-M1 contract review is in progress; T32 defines one verification flow per spec with a shared app-build identity.
+M1 contract review is complete; T32 defines one verification flow per spec with a shared app-build identity.
 
 ### Work
 
@@ -183,9 +183,10 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T53](DESIGN.md#t53-explicit-unknown-environment-fields-and-reasons) defines explicit null environment observations, field-specific reasons, and the compatibility record.
 [T54](DESIGN.md#t54-immutable-attempt-folders-and-managed-artifact-references) defines immutable attempt folders and exact managed artifact references.
 [T55](DESIGN.md#t55-current-results-and-separate-retained-attempt-history) defines current results under criteria and retained attempts in a separate history list.
-The package foundation, component schemas, root spec validation, effective step normalization, environment compatibility schema, and current/history ledger are implemented; resolved geometry, grouping, and warning records still require composition before the complete manifest is stable.
-The public `validate()` API, YAML parsing, and validation CLI are implemented for the current spec contract.
-Offline capture-input preparation is implemented; device/environment preflight, remaining manifest contracts, and complete persistence records still require work before M1 is complete.
+[T56](DESIGN.md#t56-original-screenshot-coordinates-grouped-geometry-and-warnings) defines original-screenshot coordinates, crop records, grouped numbers, and clipping warnings.
+M1 is complete: the package foundation, component schemas, root spec validation, effective step normalization, environment compatibility, current/history records, and resolved-geometry contracts are implemented.
+The public `validate()` API, YAML parsing, validation CLI, and offline capture-input preparation are implemented and verified without device access.
+Native resolution, actual metadata collection, rendering, and filesystem persistence remain their planned M2-M5 work.
 
 The first implementation slice contains the [zod build schema](../src/spec/build-identity.ts), its [generated JSON Schema](../src/spec/build.schema.json), and neutral [embedded](../examples/build.embedded.json) and [external-runtime](../examples/build.external.json) examples.
 The example identifiers are illustrative and do not identify a captured app.
@@ -259,10 +260,13 @@ The nineteenth slice adds [attempt records](../src/manifest/attempt.ts), the [cu
 Complete validation enforces exact current totals and outcome precedence, original historical provenance, unique attempt IDs, normalized configuration, timestamp validity, partial-error integrity, and current multi-step compatibility.
 Terminal interruptions retain completed checks without manufacturing results for unevaluated entries.
 The schemas work with all host built-in and device imports blocked; filesystem integration, reconciliation, and retention execution remain separate work.
-On 2026-10-18, `npm run check` passed type checking, all 502 tests, and all seventeen generated-schema freshness checks.
+The twentieth slice composes [geometry and warning records](../src/manifest/geometry.ts) into attempts and manifests, adds their [generated structural schema](../src/manifest/geometry.schema.json), and provides a [crop/group/warning example](../examples/geometry.json).
+Validation preserves raw coordinates, verifies crop unions and padding, retains distinct resolved identities within shared rectangle groups, requires accurate clipping diagnostics, and enforces image eligibility including mask suppression.
+Final rendering, placement, and native coordinate projection remain M2-M4 work.
+On 2026-10-18, `npm run check` passed type checking, all 538 tests, and all eighteen generated-schema freshness checks.
 The new JSON Schema tests disable only Ajv's `strictTypes` lint because Zod emits reused types through `$ref` beside constraints that the lint cannot infer; referenced types remain enforced, with wrong-type rejection covered explicitly.
 Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, image eligibility and mask suppression, YAML parsing and source locations, CLI/API agreement and exit codes, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
-This verifies offline validation, shared capture normalization, multi-step build enforcement, and the environment gate; the complete manifest contract and integration with capture and reconciliation remain outstanding.
+This completes the M1 contract and offline validation gates; integration with native capture, reconciliation, rendering, and persistence remains assigned to M2-M5.
 
 Full-spec validation review has identified a JSON Schema export limitation.
 With pinned zod 4.6.7 and Ajv 8.18.0, a custom whole-file uniqueness refinement rejects duplicate step names across criteria at runtime, but its generated JSON Schema accepts the same input.
@@ -275,13 +279,21 @@ Regenerate its neutral image and geometry data with `node scripts/preview-crop.m
 The preview was visually inspected, and 48 combinations of platform, target, padding, and additional evidence target passed containment and screen-bound checks in cmux on 2026-10-15.
 Production cropping and its geometry tests remain assigned to M2/M3.
 
-### Pending geometry-coordinate review
+### M1 exit evidence
 
-T16 identifies screenshot pixels as the rectangle unit, while T38 allows the annotated image to use a crop.
-The proposed resolved-geometry contract keeps target rectangles in the full original screenshot's pixel coordinates and records the crop rectangle in that same space.
-For example, a target at `{ x: 100, y: 200, width: 50, height: 30 }` and a crop beginning at `{ x: 80, y: 160 }` places the target at `{ x: 20, y: 40 }` within the cropped screenshot.
-The raw target rectangle remains unchanged when only the crop changes.
-This coordinate convention needs review before adding resolved geometry and grouped marker records to the ledger.
+| Gate | Evidence |
+|---|---|
+| Spec rules and actionable diagnostics | Component/root tests cover malformed YAML, unknown fields, missing criteria, duplicate names, predicates, annotation combinations, and actions |
+| Generated structural schemas and complete semantics | Ajv agreement tests plus explicit cross-field validation tests and generated-schema freshness checks |
+| Offline public validation | Public API import guard blocks all host built-ins and device-client imports; CLI tests block device/network access and verify no evidence writes |
+| Shared capture normalization | One-off and YAML/object spec inputs preserve criteria and produce equivalent effective steps |
+| Build/environment gates | Missing or incomplete multi-step identity is rejected; unknown environments never establish compatibility |
+| Manifest/history/errors | Current-only counts and precedence, unique attempt IDs, original provenance, incomplete steps, partial results, and terminal errors |
+| Geometry/grouping/warnings | Crop containment, raw coordinate preservation, shared rectangle numbers, clipping evidence, legend-only checks, and mask suppression |
+| Examples | Root YAML, component JSON, environment, artifact, manifest, and geometry examples exercised by the tests |
+
+The validation CLI was also exercised directly against `examples/cart.yaml` after building.
+M1 adds no live capture or image-rendering claim; those capabilities remain assigned to their implementation milestones.
 
 ### Work
 
@@ -450,19 +462,19 @@ This coordinate convention needs review before adding resolved geometry and grou
 - Run the completed unit, golden-image, and platform end-to-end suites.
 - Record remaining limitations and release evidence without overstating untested platform support.
 
-## Remaining contract work and its gates
+## Contract gates and implementation follow-through
 
-These tasks are part of the implementation sequence, not additional settled decisions.
-Investigate runtime facts directly and review any resulting user-visible behavior choices before implementing the affected contract.
+M0 metadata investigations and M1 contract gates are complete within their documented platform limits.
+Investigate runtime facts directly and review any new user-visible behavior choices before changing the affected contract.
 
-- M0: establish reliable app/build and environment identity metadata, and determine how an affected verification flow can be identified when runtime metadata is insufficient.
-- M1, before freezing the schema: compose the approved annotation/check/crop contracts with the remaining root and step settings, recording fields, check counts, grouped-number representation, environment provenance, and managed history records.
-- M1, before implementing persistence: define partial and pre-capture error records, including optional artifact paths and unavailable device metadata.
-- M1, before enabling reuse: finish inherited settings and effective step configuration under T27 and T39, carrying the approved build and environment rules in T32-T35 through the manifest contract.
+- M2 must produce the reviewed check/geometry/error records from an accepted snapshot and apply current/history reconciliation without changing historical provenance.
+- M3/M4 must realize the approved grouped regions, clipping warnings, masking, crop, and detail-view behavior in actual images.
+- M5 must establish reliable native metadata for supported targets, enforce the approved compatibility gates, and implement safe publication and cleanup under the folder lock.
+- M6 must exercise the complete public capture interfaces and packaging; M1's successful validation CLI is not evidence that live capture is implemented.
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T55 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T56 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.

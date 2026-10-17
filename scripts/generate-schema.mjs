@@ -15,6 +15,7 @@ import { environmentStructureSchema } from "../dist/manifest/environment.js";
 import { attemptArtifactsStructureSchema } from "../dist/manifest/artifacts.js";
 import { attemptStructureSchema } from "../dist/manifest/attempt.js";
 import { manifestStructureSchema } from "../dist/manifest/schema.js";
+import { geometryStructureSchema } from "../dist/manifest/geometry.js";
 
 const args = process.argv.slice(2);
 if (args.length > 1 || (args.length === 1 && args[0] !== "--check")) {
@@ -39,6 +40,7 @@ const schemas = [
   { name: "attempt-artifacts", source: "artifacts", directory: "manifest", schema: attemptArtifactsStructureSchema },
   { name: "attempt", source: "attempt", directory: "manifest", schema: attemptStructureSchema },
   { name: "manifest", source: "schema", directory: "manifest", schema: manifestStructureSchema },
+  { name: "geometry", source: "geometry", directory: "manifest", schema: geometryStructureSchema },
 ];
 
 for (const { name, source, schema, directory = "spec" } of schemas) {

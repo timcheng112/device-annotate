@@ -24,7 +24,7 @@ function incomplete(name = "before") {
 }
 function errorAttempt() {
   const value = clone(current);
-  for (const key of ["image", "raw", "snapshot", "capturedAt", "environment"]) delete value[key];
+  for (const key of ["image", "raw", "snapshot", "capturedAt", "environment", "geometry"]) delete value[key];
   return { ...value, result: "error", checkCounts: { ...zero }, checks: [], error: { code: "CAPTURE_FAILED", message: "The device disconnected before a screenshot was captured." } };
 }
 function another(attempt, step = "before") {
@@ -175,6 +175,7 @@ test("terminal errors preserve completed checks while permitting unevaluated rem
   value.configuration.checks.push({ target: 'id="next"', expect: { visible: true } });
   value.result = "error";
   value.error = { code: "ARTIFACT_SAVE_FAILED", message: "Snapshot write failed." };
+  delete value.image;
   assert.equal(attemptSchema.safeParse(value).success, true);
   assert.deepEqual(attemptSchema.parse(value).checkCounts, { total: 1, passed: 1, failed: 0 });
   delete value.error;
@@ -195,6 +196,7 @@ test("interrupted attempts still reject contradictory and invented check results
 test("successful assertion-free captures explicitly report zero checks", () => {
   const value = clone(current);
   value.configuration.checks = []; value.checks = []; value.checkCounts = { ...zero };
+  value.geometry.targets = []; value.geometry.groups = [];
   assert.equal(attemptSchema.safeParse(value).success, true);
 });
 

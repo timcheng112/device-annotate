@@ -1,7 +1,7 @@
 # M0 capture compatibility spike
 
 Status: M0 complete; the user approved the partial-visibility refinement on 2026-10-15, recorded as T31 in [DESIGN.md](DESIGN.md).
-M1 and dependent production work have not started.
+M1's contracts and offline validation were subsequently completed on 2026-10-18; [PLAN.md](PLAN.md) records that verification and the remaining M2-M6 implementation work.
 The authoritative product decisions remain in [DESIGN.md](DESIGN.md); this document records observations and unresolved consequences.
 Experiments ran on 2026-10-14 UTC, crossing into 2026-10-15 in Asia/Singapore.
 
@@ -158,8 +158,8 @@ These prove provenance for the fixture; version names, install timestamps, and p
 Rebuilding or changing an OTA/Metro JavaScript bundle can leave the native app version unchanged.
 Neither a screenshot nor a package identifier identifies the semantic extent of an affected verification flow.
 
-M1 must define caller-supplied immutable build/revision provenance, including runtime bundle identity where relevant, before automatic reuse is enabled.
-It must also define how that identity applies to the affected flow.
+M1 was required to define caller-supplied immutable build/revision provenance, including runtime bundle identity where relevant, before automatic reuse could be enabled.
+It also needed to define how that identity applies to the affected flow.
 No field names, fallback policy, or affected-flow boundaries were approved during this spike.
 Subsequent M1 review established the per-spec flow boundary, missing-build-identity behavior, and separate build JSON contract in [DESIGN.md, T32-T34](DESIGN.md#t32-one-verification-flow-per-spec).
 Unknown identity must not be interpreted as an unchanged build.
@@ -248,4 +248,5 @@ T31 records the exact behavior, including intentionally edge-aligned targets and
 This resolves M0's foundational-assumption gate.
 The user also asked whether the spike's visual styling replaced the previously agreed annotation design.
 It does not: the spike shows coordinate diagnostics, while T11 and T19-T25 remain the visual source of truth for M3 and M4.
-Build identity and supplemental environment fields remain the explicitly assigned M1 contract review work, supported by the findings above.
+Subsequent M1 decisions T32-T35 and T52-T56 define build identity, supplemental environment metadata, unknown-value handling, and persisted geometry.
+M1's schemas and offline validation are complete; production metadata collection and capture integration remain M5 work supported by these runtime findings.

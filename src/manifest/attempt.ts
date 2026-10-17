@@ -8,6 +8,7 @@ import { criterionSchema, localPathSchema } from "../spec/values.js";
 import { attemptArtifactsSchema, attemptArtifactsStructureSchema } from "./artifacts.js";
 import { environmentSchema, environmentStructureSchema } from "./environment.js";
 import { completedCheckSchema, entryErrorSchema, summarizeStepEvaluation } from "./evaluation.js";
+import { geometryStructureSchema, validateStepGeometry } from "./geometry.js";
 
 export const checkCountsSchema = z.strictObject({
   total: z.number().int().nonnegative(), passed: z.number().int().nonnegative(), failed: z.number().int().nonnegative(),
@@ -21,7 +22,7 @@ const failureSchema = z.strictObject({
   message: z.string().regex(/\S/),
 });
 
-/** Attempt ledger fields. Annotation geometry and warning records are separate contracts. */
+/** Captured evidence and original-coordinate geometry, including partial error attempts. */
 export const attemptStructureSchema = z.strictObject({
   ...attemptArtifactsStructureSchema.shape,
   attemptedAt: timestampSchema,
@@ -29,6 +30,7 @@ export const attemptStructureSchema = z.strictObject({
   configuration: effectiveConfigurationSchema,
   build: buildIdentitySchema.optional(),
   environment: environmentStructureSchema.optional(),
+  geometry: geometryStructureSchema.optional(),
   result: z.enum(["passed", "failed", "error"]),
   checkCounts: checkCountsSchema,
   checks: z.array(completedCheckSchema),
@@ -79,12 +81,22 @@ export const attemptSchema = attemptStructureSchema.superRefine((attempt, contex
   if ((image !== undefined || raw !== undefined) && attempt.capturedAt === undefined) {
     context.addIssue({ code: "custom", path: ["capturedAt"], message: "A saved screenshot or annotated image requires the original capture time." });
   }
+  if (image !== undefined && attempt.geometry === undefined) context.addIssue({ code: "custom", path: ["geometry"], message: "A saved annotated image requires validated geometry." });
+  if (attempt.geometry !== undefined && attempt.capturedAt === undefined) context.addIssue({ code: "custom", path: ["capturedAt"], message: "Screenshot geometry requires the original capture timestamp." });
   if (attempt.result !== "error") {
     for (const key of ["image", "raw", "snapshot", "capturedAt", "environment"] as const) {
       if (attempt[key] === undefined) context.addIssue({ code: "custom", path: [key], message: "A successful evidence attempt requires this field." });
     }
   }
   const { criterion: _criterion, ...configuration } = attempt.configuration;
+  if (attempt.geometry !== undefined) {
+    try {
+      validateStepGeometry(configuration, attempt.geometry, { checks: attempt.checks, errors: attempt.errors }, { imageAvailable: image !== undefined, interrupted: attempt.error !== undefined });
+    } catch (error) {
+      if (!(error instanceof z.ZodError)) throw error;
+      for (const issue of error.issues) context.addIssue({ code: "custom", path: ["geometry", ...issue.path], message: issue.message });
+    }
+  }
   try {
     const summary = summarizeStepEvaluation(configuration, { checks: attempt.checks, errors: attempt.errors }, { interrupted: attempt.error !== undefined });
     if (attempt.result !== summary.result) context.addIssue({ code: "custom", path: ["result"], message: "The attempt outcome contradicts its completed checks and errors." });
