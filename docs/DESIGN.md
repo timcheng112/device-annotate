@@ -252,6 +252,9 @@ device-proof/
 
 Everything except `capture/` and `cli/` is pure: no device, no file writes.
 Text is measured from the bundled Inter font's glyph widths with `opentype.js`.
+During M3 review on 2026-10-18, the user confirmed the current focus is English and accepted keeping Inter without additional fallback fonts.
+Characters absent from Inter display as readable Unicode code-point escapes, with original source text preserved in layout records.
+Broader font coverage is deferred.
 The spec schema is defined in zod; the JSON Schema file is generated from it.
 
 ### T18. Skill

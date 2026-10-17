@@ -1,38 +1,49 @@
-# M2 delivery
+# M3 delivery
 
-M2 implements pure resolution, checks, manifest reconciliation, and history eligibility under the approved contracts in [PLAN.md](PLAN.md) and [DESIGN.md](DESIGN.md).
+M3 implements pure annotation and legend layout under [PLAN.md](PLAN.md) and [DESIGN.md](DESIGN.md).
 Current phase: complete, with implementation and verification finished.
-M0 and M1 remain complete.
+M0, M1, and M2 remain complete; M2 evidence is preserved in PLAN.md.
 
 Worktree: `/Users/timcheng112/Downloads/device-proof`.
 Branch: `plan/implementation`.
-M2 starts after commit `1e12eff`; the delivery commit is titled `Implement M2 resolution, checks, and evidence lifecycle`.
+M3 starts after `56d0b10`, the completed M2 implementation.
 Local commits are authorized.
-No external actions were requested or performed.
+No push, publication, PR, or external communication has occurred.
 
-## Delivered behavior
+## Implementation
 
-The resolver uses public selector functions over one supplied snapshot and preserves upstream ambiguity, alternative, and duplicate-reporting behavior.
-The check pipeline produces completed checks and entry errors independently, plus raw screenshot coordinates, crop geometry, groups, clipping warnings, and image eligibility.
-Reconciliation preserves compatible original evidence, archives invalidated attempts, and excludes historical counts from current results.
-History pruning returns a deterministic preview while protecting current evidence and caller-owned recordings by canonical file identity.
-The filesystem adapter must supply verified sizes and identities; missing observations stop the preview.
+The layout boundary consumes the effective step, criterion, accepted M2 checks/errors/geometry, and parsed bundled font metrics.
+It validates the records before producing image eligibility or layout data.
+It preserves shared numbering, per-entry outcomes, grouped region identity, crop translation, clipping warnings, and explicit error rows.
+Connected overlap groups count distinct target identities and add individual detail views only at the approved three-target threshold.
+Every view carries all intersecting masks, including masks belonging to other targets.
+The legend follows all image views.
+Tags use deterministic outer-edge candidates and a growing external margin when those candidates collide.
+Text uses bundled glyph advances and returns explicit glyph positions without host-font dependencies.
 
-The installed peer and local upstream source both identify agent-device 0.21.27, commit `50e45f11bc6d388d272e672771acc33d9e56921d`.
-[Vendor notes](../src/vendor/agent-device/README.md) record the preserved source, extraction boundaries, matching tests, and comparison commands.
+Inter Regular is copied unchanged from the official 4.1 release, with its license and hashes under `src/render/fonts/`.
+`opentype.js` 1.3.4 is pinned in the package lock.
+The shell's default Node installation has a missing ICU library; use the installed Node 24.21.0 for checks:
+
+```sh
+export PATH=/Users/timcheng112/.volta/tools/image/node/24.21.0/bin:$PATH
+npm run check
+```
 
 ## Verification
 
-`npm run check` passes type checking, 639 tests, all 18 generated-schema checks, and 22 vendor source/license/test hash checks.
-The total includes 23 copied upstream parity tests.
-`npm run compare:vendor` passes against the pinned local source.
-Coordinate tests use the three committed neutral M0 capture pairs, including iOS compatibility scaling.
-No new live capture, visual QA, or production rendering is claimed.
+Focused tests exercise grouping, INFO/check/error presentation, omission policy, crop translation, clipping, mask propagation, overlap identities, tag collisions, long text, glyph metrics, and repeatability without input mutation.
+`npm run check` passes type checking, 661 tests, all 18 generated-schema checks, and 22 vendor source/license/test hash checks.
+The 22 new layout tests include all three neutral M0 capture fixtures, tiny crops at all four corners, and drawable masks with unavailable assertions.
+`git diff --check` passes.
+On 2026-10-18, the user confirmed the English-first scope and accepted keeping Inter without additional fallback fonts.
+Characters absent from Inter use readable Unicode escapes, while original source text remains preserved.
+T17 records this accepted scope.
+The local delivery commit is titled `Implement M3 deterministic annotation and legend layout`.
+Production rendering, visual QA, golden images, and device sessions remain later milestones.
 
 ## Next safe action
 
-Continue M3 from [PLAN.md](PLAN.md#m3-pure-layout): bundled font metrics, deterministic annotation placement, overlap/detail geometry, and legend layout.
-M5 will integrate accepted captures and durable writes with these pure modules.
-Call reconciliation before replacement, and apply a pruning preview only after the new files and manifest are safely saved under the output-folder lock.
-Missing screenshot geometry is a capture-level failure; the pure resolver does not invent a viewport or start another capture.
+Continue M4 from [PLAN.md](PLAN.md#m4-rendering-and-reviewed-golden-images): render the layout using the bundled font, establish reviewed neutral golden images, and measure rendering performance.
+Use the explicit glyph positions and apply every view's complete mask list before publishing an image.
 No blockers are known.

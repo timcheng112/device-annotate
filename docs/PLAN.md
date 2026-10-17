@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0, M1, and M2 complete, with contracts through T56 approved; M3 is next.
+Status: M0, M1, M2, and M3 complete, with contracts through T56 approved; M4 is next.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for runtime evidence, reproducible commands, and metadata collection limitations to address during M5 integration.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -377,6 +377,14 @@ Tests exercise iOS, Android, and iOS compatibility captures from the neutral M0 
 - Use a controlled clock to test just before and at the seven-day boundary, as well as count and size limits, oldest-first pruning, current-attempt protection, and INFO/error attempt history.
 
 ## M3. Pure layout
+
+M3 is complete.
+Implementation and verification are recorded in [PLAN.delivery.md](PLAN.delivery.md).
+The pure layout preserves shared numbering, region grouping, distinct-target detail views, masks across views, crop coordinates, collision-free tags, and complete legend text.
+Inter Regular and its license are bundled, with glyph metrics supplied by pinned `opentype.js`.
+The user confirmed the current English-first scope; characters absent from Inter use Unicode escapes while original source text remains preserved.
+`npm run check` passes 661 tests, all 18 generated-schema checks, and 22 vendor hash checks.
+Production rendering and visual review remain M4 work.
 
 ### Work
 
