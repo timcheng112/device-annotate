@@ -178,6 +178,7 @@ This also covers the case of a global agent-device CLI next to a different proje
 
 Audience: machines (the agent, harnesses such as `fh`, CI).
 Humans read the annotated images.
+The sketch below illustrates evidence output; T55 defines the implemented current/history ledger, with resolved geometry and warning records still to be composed.
 
 ```json
 {
@@ -909,6 +910,59 @@ This pure contract proves lexical path membership only.
 M5 must independently enforce filesystem containment, safe handling of symlinks, exclusive creation, actual successful writes, and atomic manifest publication.
 Cleanup eligibility and caller-owned recording protection remain separate gates; enumerating managed references does not authorize deleting them.
 The composed manifest and retained-attempt records remain M1 work, while retention decisions and filesystem operations belong to M2/M5.
+
+### T55. Current results and separate retained-attempt history
+
+Agreed on 2026-10-18 during M1 contract review.
+Keep current step results under `criteria[].steps` and retained attempts in a separate top-level `history` list.
+Only current results contribute to criterion and manifest outcomes and check counts.
+Historical failures and errors remain available for inspection without affecting the current outcome.
+Each retained attempt preserves its original criterion, effective configuration, available build/environment provenance, timestamps, results, and artifact references.
+Reusing a current attempt preserves its attempt ID and capture time without copying it into history.
+An attempt ID occurs exactly once across current results and history.
+Removed and invalidated evidence moves into history under T27/T29/T39, while invalidated current steps become incomplete.
+
+The [manifest ledger schema](../src/manifest/schema.ts) composes these fields:
+
+| Field | Meaning |
+|---|---|
+| `schemaVersion` | `1` for the v1 ledger |
+| `owner` | T47's output-folder owner |
+| `retention` | T43's folder-level retention settings |
+| `result`, `checkCounts` | Summaries derived from current criteria only |
+| `criteria` | Criterion wording, current steps, and current per-criterion summaries |
+| `history` | Retained attempts with their original data |
+
+Current step records are either complete attempt ledger records or explicit incomplete records.
+An incomplete record carries its step name, current normalized configuration, `result: "incomplete"`, and zero check counts; it carries no fabricated attempt ID, capture timestamp, or artifact paths.
+History contains attempted captures, never incomplete placeholders.
+The containing criterion must match each current step's `configuration.criterion` verbatim.
+Historical configuration retains its original criterion even after that wording changes or its step is removed.
+
+The [attempt schema](../src/manifest/attempt.ts) carries T54's identity and optional artifact paths alongside `configuration`, optional `build` and `environment`, `result`, `checkCounts`, completed `checks`, entry `errors`, an optional terminal `error`, and separate caller-owned `recordings` references.
+`configuration` is the normalized effective step, including its criterion.
+`attemptedAt` records the attempt start and is always present; `capturedAt` records the successful screenshot acquisition and is omitted if no screenshot was captured.
+Store real UTC timestamps with millisecond precision and preserve them on reuse and archival.
+History age uses `capturedAt` where available and `attemptedAt` for an error that occurred before screenshot acquisition; file modification time remains irrelevant under T29.
+A saved raw or annotated image requires its capture timestamp; capture time cannot precede attempt start.
+An evidence-producing `passed` or `failed` attempt requires its image, raw screenshot, snapshot, capture time, and available environment record.
+Fresh single-step evidence may retain partial environment observations under T35/T53.
+Current multi-step evidence requires complete build and environment identity, with compatible identities across current evidence-producing attempts.
+
+A terminal error is `{ code, message }`, with a nonblank diagnostic and an uppercase machine-readable code.
+It forces the attempt outcome to `error`, preserves completed assertions and their counts, and permits remaining assertions to be unevaluated.
+Completed checks still validate their entry numbers, expectations, actual values, and pass/fail consistency even when interrupted.
+Without a terminal error, every asserted entry needs a completed result or an explicit entry error under T49.
+An error attempt may omit unavailable provenance and artifacts under T46/T50/T54.
+
+Complete ledger validation checks nested contracts, normalized configuration, globally unique current step names, unique attempt IDs, owner consistency, timestamp validity, result precedence, and exact current check totals.
+`summarizeManifest` recomputes current group/root summaries from validated attempt data without rewriting history or its timestamps.
+The illustrative [manifest ledger example](../examples/manifest-ledger.json) contains a current pass and a historical failure, with only the current check included in totals.
+Generated [attempt](../src/manifest/attempt.schema.json) and [manifest](../src/manifest/manifest.schema.json) JSON Schemas check structure; complete semantic validation uses `attemptSchema` and `manifestSchema` under T41.
+
+This ledger contract does not yet include resolved annotation geometry, grouped marker records, or warning records, which remain M1 composition work.
+It does not perform reconciliation, apply retention limits, create files, or determine filesystem ownership; those remain M2/M5 integration work.
+Retention can temporarily exceed its limits between safe publication and cleanup, so policy limits do not make an otherwise valid ledger structurally invalid.
 
 ## Upstream candidates
 

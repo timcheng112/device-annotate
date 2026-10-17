@@ -49,8 +49,8 @@ function expectationFor(entry: NumberedEntry): Expectation | undefined {
   return primitive.expect;
 }
 
-/** Preserve partial entry results. Capture/render/save errors may still override this evaluation result. */
-export function summarizeStepEvaluation(step: StepInput, input: unknown): EvaluationSummary {
+/** Preserve completed checks. A terminal interruption permits pending checks and forces error. */
+export function summarizeStepEvaluation(step: StepInput, input: unknown, options: { interrupted?: boolean } = {}): EvaluationSummary {
   const entries = numberStepEntries(step);
   const validated = evaluationInputSchema.superRefine((evaluation, context) => {
     const completed = new Set<number>();
@@ -85,7 +85,7 @@ export function summarizeStepEvaluation(step: StepInput, input: unknown): Evalua
       errored.add(error.n);
     }
     for (const entry of entries) {
-      if (expectationFor(entry) && !completed.has(entry.n) && !errored.has(entry.n)) {
+      if (!options.interrupted && expectationFor(entry) && !completed.has(entry.n) && !errored.has(entry.n)) {
         context.addIssue({ code: "custom", path: ["checks"], message: `Entry ${entry.n} needs a completed assertion result or an explicit error; it cannot silently count as passed.` });
       }
     }
@@ -96,7 +96,7 @@ export function summarizeStepEvaluation(step: StepInput, input: unknown): Evalua
   const passed = checks.filter((check) => check.result === "pass").length;
   const failed = checks.length - passed;
   return {
-    result: errors.length > 0 ? "error" : failed > 0 ? "failed" : "passed",
+    result: options.interrupted || errors.length > 0 ? "error" : failed > 0 ? "failed" : "passed",
     checkCounts: { total: checks.length, passed, failed },
     checks,
     errors,

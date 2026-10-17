@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "owner": {
+    "kind": "spec",
+    "specPath": "/fixtures/cart.yaml"
+  },
+  "retention": {
+    "maxAttemptsPerStep": 3,
+    "maxAgeDays": 7,
+    "maxBytes": 500000000
+  },
+  "result": "passed",
+  "checkCounts": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0
+  },
+  "criteria": [
+    {
+      "criterion": "Cart total updates when quantity changes",
+      "result": "passed",
+      "checkCounts": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "steps": [
+        {
+          "step": "after",
+          "attemptId": "11111111-1111-4111-8111-111111111111",
+          "image": "attempts/after/11111111-1111-4111-8111-111111111111/image.png",
+          "raw": "attempts/after/11111111-1111-4111-8111-111111111111/raw.png",
+          "snapshot": "attempts/after/11111111-1111-4111-8111-111111111111/snapshot.json",
+          "attemptedAt": "2026-10-18T00:00:00.000Z",
+          "capturedAt": "2026-10-18T00:00:01.000Z",
+          "configuration": {
+            "criterion": "Cart total updates when quantity changes",
+            "annotate": [],
+            "checks": [
+              {
+                "target": "id=\"cart-total\"",
+                "expect": {
+                  "text": "£12.00"
+                }
+              }
+            ],
+            "crop": null
+          },
+          "build": {
+            "appId": "com.example.shop",
+            "native": "fixture-build-1",
+            "runtime": {
+              "kind": "embedded"
+            }
+          },
+          "environment": {
+            "device": {
+              "platform": "ios",
+              "identity": {
+                "scope": "fixture-host:default-simulator-set",
+                "id": "fixture-iphone"
+              },
+              "osVersion": "18.3.1"
+            },
+            "display": {
+              "pixelWidth": 1206,
+              "pixelHeight": 2622,
+              "pixelDensity": 3,
+              "rotation": "portrait",
+              "appearance": "light",
+              "textSize": {
+                "kind": "ios-content-size",
+                "value": "large"
+              }
+            },
+            "versions": {
+              "deviceProof": "0.1.0",
+              "agentDevice": "0.21.27"
+            },
+            "unavailable": []
+          },
+          "result": "passed",
+          "checkCounts": {
+            "total": 1,
+            "passed": 1,
+            "failed": 0
+          },
+          "checks": [
+            {
+              "n": 1,
+              "expect": {
+                "text": "£12.00"
+              },
+              "actual": {
+                "text": "£12.00"
+              },
+              "result": "pass"
+            }
+          ],
+          "errors": [],
+          "recordings": []
+        }
+      ]
+    }
+  ],
+  "history": [
+    {
+      "step": "after",
+      "attemptId": "22222222-2222-4222-8222-222222222222",
+      "image": "attempts/after/22222222-2222-4222-8222-222222222222/image.png",
+      "raw": "attempts/after/22222222-2222-4222-8222-222222222222/raw.png",
+      "snapshot": "attempts/after/22222222-2222-4222-8222-222222222222/snapshot.json",
+      "attemptedAt": "2026-10-17T23:00:00.000Z",
+      "capturedAt": "2026-10-17T23:00:01.000Z",
+      "configuration": {
+        "criterion": "Cart total updates when quantity changes",
+        "annotate": [],
+        "checks": [
+          {
+            "target": "id=\"cart-total\"",
+            "expect": {
+              "text": "£12.00"
+            }
+          }
+        ],
+        "crop": null
+      },
+      "build": {
+        "appId": "com.example.shop",
+        "native": "fixture-build-1",
+        "runtime": {
+          "kind": "embedded"
+        }
+      },
+      "environment": {
+        "device": {
+          "platform": "ios",
+          "identity": {
+            "scope": "fixture-host:default-simulator-set",
+            "id": "fixture-iphone"
+          },
+          "osVersion": "18.3.1"
+        },
+        "display": {
+          "pixelWidth": 1206,
+          "pixelHeight": 2622,
+          "pixelDensity": 3,
+          "rotation": "portrait",
+          "appearance": "light",
+          "textSize": {
+            "kind": "ios-content-size",
+            "value": "large"
+          }
+        },
+        "versions": {
+          "deviceProof": "0.1.0",
+          "agentDevice": "0.21.27"
+        },
+        "unavailable": []
+      },
+      "result": "failed",
+      "checkCounts": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1
+      },
+      "checks": [
+        {
+          "n": 1,
+          "expect": {
+            "text": "£12.00"
+          },
+          "actual": {
+            "text": "£6.00"
+          },
+          "result": "fail"
+        }
+      ],
+      "errors": [],
+      "recordings": []
+    }
+  ]
+}

@@ -13,6 +13,8 @@ import { outputOwnerSchema } from "../dist/manifest/owner.js";
 import { completedCheckSchema, entryErrorSchema } from "../dist/manifest/evaluation.js";
 import { environmentStructureSchema } from "../dist/manifest/environment.js";
 import { attemptArtifactsStructureSchema } from "../dist/manifest/artifacts.js";
+import { attemptStructureSchema } from "../dist/manifest/attempt.js";
+import { manifestStructureSchema } from "../dist/manifest/schema.js";
 
 const args = process.argv.slice(2);
 if (args.length > 1 || (args.length === 1 && args[0] !== "--check")) {
@@ -35,6 +37,8 @@ const schemas = [
   { name: "entry-error", source: "evaluation", directory: "manifest", schema: entryErrorSchema },
   { name: "environment", source: "environment", directory: "manifest", schema: environmentStructureSchema },
   { name: "attempt-artifacts", source: "artifacts", directory: "manifest", schema: attemptArtifactsStructureSchema },
+  { name: "attempt", source: "attempt", directory: "manifest", schema: attemptStructureSchema },
+  { name: "manifest", source: "schema", directory: "manifest", schema: manifestStructureSchema },
 ];
 
 for (const { name, source, schema, directory = "spec" } of schemas) {

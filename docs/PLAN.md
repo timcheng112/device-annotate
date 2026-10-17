@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T54 approved.
+Status: M0 complete following approval of T31; M1 contract review and implementation are in progress, with contracts through T55 approved.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for evidence, reproducible commands, and remaining contract work assigned to M1.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -182,7 +182,8 @@ Contract review has established the verification-flow boundary in [DESIGN.md, T3
 [T52](DESIGN.md#t52-automatic-read-only-environment-collection) approves automatic read-only supplemental metadata queries against the session-selected local simulator/emulator.
 [T53](DESIGN.md#t53-explicit-unknown-environment-fields-and-reasons) defines explicit null environment observations, field-specific reasons, and the compatibility record.
 [T54](DESIGN.md#t54-immutable-attempt-folders-and-managed-artifact-references) defines immutable attempt folders and exact managed artifact references.
-The package foundation, component schemas, root spec validation, effective step normalization, and environment compatibility schema are implemented; complete manifest, attempt/history, and error contracts still require work.
+[T55](DESIGN.md#t55-current-results-and-separate-retained-attempt-history) defines current results under criteria and retained attempts in a separate history list.
+The package foundation, component schemas, root spec validation, effective step normalization, environment compatibility schema, and current/history ledger are implemented; resolved geometry, grouping, and warning records still require composition before the complete manifest is stable.
 The public `validate()` API, YAML parsing, and validation CLI are implemented for the current spec contract.
 Offline capture-input preparation is implemented; device/environment preflight, remaining manifest contracts, and complete persistence records still require work before M1 is complete.
 
@@ -254,7 +255,12 @@ The eighteenth slice adds the pure [attempt artifact contract](../src/manifest/a
 It validates portable step names and canonical UUID v4 IDs, plans output-folder-relative destinations, binds recorded artifacts to their exact attempt, and enumerates only recorded managed references.
 Tests cover every partial artifact combination, ID and filename boundaries, attempted traversal and aliases, cross-step/cross-attempt references, caller-owned recording separation, caller-data preservation, structural-schema agreement, and the offline import boundary.
 Filesystem allocation, symlink containment, actual saves, and atomic publication remain M5 work.
-On 2026-10-16, `npm run check` passed type checking, all 479 tests, and all fifteen generated-schema freshness checks.
+The nineteenth slice adds [attempt records](../src/manifest/attempt.ts), the [current/history ledger](../src/manifest/schema.ts), generated structural schemas for both, and a [manifest example](../examples/manifest-ledger.json).
+Complete validation enforces exact current totals and outcome precedence, original historical provenance, unique attempt IDs, normalized configuration, timestamp validity, partial-error integrity, and current multi-step compatibility.
+Terminal interruptions retain completed checks without manufacturing results for unevaluated entries.
+The schemas work with all host built-in and device imports blocked; filesystem integration, reconciliation, and retention execution remain separate work.
+On 2026-10-18, `npm run check` passed type checking, all 502 tests, and all seventeen generated-schema freshness checks.
+The new JSON Schema tests disable only Ajv's `strictTypes` lint because Zod emits reused types through `$ref` beside constraints that the lint cannot infer; referenced types remain enforced, with wrong-type rejection covered explicitly.
 Tests cover structural agreement between zod and JSON Schema, complete-validator duplicate-name rejection, portable step names and reserved filenames, retention defaults and numeric boundaries, output path resolution, recording input shapes and file preflight, pre-capture error serialization and context, folder ownership conflicts and spec aliases, per-step entry numbering, partial evaluation and check counts, image eligibility and mask suppression, YAML parsing and source locations, CLI/API agreement and exit codes, field locations, input preservation, invalid runtime combinations, all eight predicates, every pair of combined predicates, all five annotation primitives, INFO preservation, required labels, crop targets and padding, inheritance, effective configuration equivalence, unknown fields, actions, and validation with device-client and built-in module imports blocked.
 This verifies offline validation, shared capture normalization, multi-step build enforcement, and the environment gate; the complete manifest contract and integration with capture and reconciliation remain outstanding.
 
@@ -269,14 +275,13 @@ Regenerate its neutral image and geometry data with `node scripts/preview-crop.m
 The preview was visually inspected, and 48 combinations of platform, target, padding, and additional evidence target passed containment and screen-bound checks in cmux on 2026-10-15.
 Production cropping and its geometry tests remain assigned to M2/M3.
 
-### Pending current/history manifest layout review
+### Pending geometry-coordinate review
 
-T16 places current step results under criteria, while T29 requires retained attempts without including them in current outcomes or check counts.
-The proposed composition keeps `criteria[].steps` for current results and adds a separate top-level `history` list for retained attempts.
-Each historical attempt retains its original criterion, effective step configuration, available build/environment provenance, capture times, results, and T54 artifact references.
-Reused current evidence keeps its original capture time and attempt ID; it does not gain a duplicate historical record merely because it was reused.
-Removed and invalidated attempts enter history according to T27/T29/T39, while current steps become incomplete when their evidence is invalidated.
-This placement is pending review before composing the complete manifest schema.
+T16 identifies screenshot pixels as the rectangle unit, while T38 allows the annotated image to use a crop.
+The proposed resolved-geometry contract keeps target rectangles in the full original screenshot's pixel coordinates and records the crop rectangle in that same space.
+For example, a target at `{ x: 100, y: 200, width: 50, height: 30 }` and a crop beginning at `{ x: 80, y: 160 }` places the target at `{ x: 20, y: 40 }` within the cropped screenshot.
+The raw target rectangle remains unchanged when only the crop changes.
+This coordinate convention needs review before adding resolved geometry and grouped marker records to the ledger.
 
 ### Work
 
@@ -457,7 +462,7 @@ Investigate runtime facts directly and review any resulting user-visible behavio
 
 ## Completion criteria
 
-- All v1 requirements and package behavior from T1-T54 are represented in the package, help, and skill where applicable.
+- All v1 requirements and package behavior from T1-T55 are represented in the package, help, and skill where applicable.
 - Unit and upstream parity tests pass; golden images are visually reviewed and pixel comparisons pass.
 - End-to-end tests pass on both an iOS simulator and an Android emulator, with the exact versions and environment recorded.
 - The added processing-time requirement is measured and met for representative inputs, including dense annotations, with capture time reported separately.
