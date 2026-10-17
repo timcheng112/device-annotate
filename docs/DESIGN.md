@@ -1,6 +1,6 @@
 # device-proof: technical design
 
-Status: M0 and M1 are complete; runtime findings are recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md), and implementation of resolution, rendering, and capture continues through [PLAN.md](PLAN.md).
+Status: M0, M1, and M2 are complete; runtime findings are recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md), and implementation of layout, rendering, and capture continues through [PLAN.md](PLAN.md).
 Requirements live in [REQUIREMENTS.md](REQUIREMENTS.md).
 Facts about agent-device come from reading its source at commit `3d48bb99` (2026-10-14).
 The findings below preserve that initial source review; [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) distinguishes verified 0.21.27 behavior from assumptions and limitations.

@@ -1,0 +1,138 @@
+{
+  "version": "0.21.27",
+  "commit": "50e45f11bc6d388d272e672771acc33d9e56921d",
+  "files": [
+    {
+      "path": "src/vendor/agent-device/snapshot.ts",
+      "source": "packages/kernel/src/snapshot.ts",
+      "sourceSha256": "3c280d9cef8bebefda27fc9696898e5648c83b6be68fd0ee604edfe43e3763f2",
+      "sha256": "994598c29e0eba278998bfecb4e8a330a02ae583298d8005e3ba9736917a2087"
+    },
+    {
+      "path": "src/vendor/agent-device/rect.ts",
+      "source": "packages/kernel/src/rect.ts",
+      "sourceSha256": "b17e5a5537371ea2fc341944622d38f4bcbebd6b9f94829f3f1364986aa47aea",
+      "sha256": "1c8ff3886202fa2e717e67e77e16a577bb6056c39ac2db1b870783e2ec5df780"
+    },
+    {
+      "path": "src/vendor/agent-device/snapshot-text.ts",
+      "source": "packages/contracts/src/snapshot-text.ts",
+      "sourceSha256": "d2893fc025328395c0efc6c2b79070f45c046bce2af21e58979cde6b2d5ec13b",
+      "sha256": "7a5db636cd3c9f96c4dad775a9cea55dd7c2dcedb7ea41cecd6517ca601296c1"
+    },
+    {
+      "path": "src/vendor/agent-device/snapshot-tree.ts",
+      "source": "packages/contracts/src/snapshot-tree.ts",
+      "sourceSha256": "96ea9991a6b0762913ea23f9315e2320d8dfe4c75e3d9273d6c7e47b8d6aee49",
+      "sha256": "6c7354bf3de117aeb18887b5508a293099c0540d7603092605502a9f97978cbb"
+    },
+    {
+      "path": "src/vendor/agent-device/snapshot-scroll.ts",
+      "source": "packages/contracts/src/snapshot-scroll.ts",
+      "sourceSha256": "e26ad4f1f5349475dd1f3c2b19a636d140a935e74e903d32ab8b91f234b919ee",
+      "sha256": "985e3160a2c9b2ff5b9c389ceba9e8c398caf29abe27f3e9bb9041075650fe42"
+    },
+    {
+      "path": "src/vendor/agent-device/snapshot-visibility.ts",
+      "source": "packages/contracts/src/snapshot-visibility.ts",
+      "sourceSha256": "9304bc54e044df209d00cc69dca7565ae61b1ee5e481be3c65714039de7fc969",
+      "sha256": "5ac85157bbc5f6aedc935b67ae20bc030862badd2684a08c033a703ef0bca0f7"
+    },
+    {
+      "path": "src/vendor/agent-device/is-predicate.ts",
+      "source": "packages/contracts/src/is-predicate.ts",
+      "sourceSha256": "7518fd0f3aba82b1d0ed19013734fb313452c3012542a4902f99caf03609a6f1",
+      "sha256": "e8f84d070454583c76f28545d4a722072d1485f96adb5297efe92f52feab8444"
+    },
+    {
+      "path": "src/vendor/agent-device/argument-refusal.ts",
+      "source": "packages/selectors/src/internal/argument-refusal.ts",
+      "sourceSha256": "0adfd5e53001d87f0d4c2612c8aef7d3027ec095d06ede40e1f97ca94f054877",
+      "sha256": "4b180738445b7aac0191118263809ae08bc810b7b579325cad005fa6a8cdaaaa"
+    },
+    {
+      "path": "src/vendor/agent-device/predicates.ts",
+      "source": "packages/selectors/src/internal/predicates.ts",
+      "sourceSha256": "743493c8e4c07e54a734c0b4dba53a627c397d465611a9b6192f29df4b70c38b",
+      "sha256": "eb62c3727e2d3708d7d124c61100a38d10be9082528ddb77d55b9695ca5e86b3"
+    },
+    {
+      "path": "src/vendor/agent-device/identity-fields.ts",
+      "source": "packages/ad-script/src/internal/target-annotation-serde.ts",
+      "sourceSha256": "1bf3eaae600d3ddbc45c1df3b2395a4cf87455e63bf1c9ba6749f93503890d41",
+      "sha256": "bb1c9b5d0e622bbb0ebf28be5bd37c39c4364e3b611750bf66cd667d749790a7"
+    },
+    {
+      "path": "src/vendor/agent-device/local-identity.ts",
+      "source": "packages/ad-script/src/internal/target-annotation-identity.ts",
+      "sourceSha256": "cacf0a3105a340d34c216ccdc521fc891407efbdef360059f4bf98db9fb2350d",
+      "sha256": "faef8d86d287880b2c9c4dc0ffea1c6aa153bec5efa2e32544cdc95016faedf2"
+    },
+    {
+      "path": "src/vendor/agent-device/absence-observation.ts",
+      "source": "packages/selectors/src/absence-observation.ts",
+      "sourceSha256": "d2edb555f46405252760fc6f21d87f8228a51c22c24c1a97b881fb9f03f44a0b",
+      "sha256": "f700b4c4b256c3d3e3020cdbdf0cec06c9233be5006bb09768de9ad37350af39"
+    },
+    {
+      "path": "src/vendor/agent-device/rect-center.ts",
+      "source": "packages/kernel/src/rect-center.ts",
+      "sourceSha256": "a96ce7412e6fa5c537cdfe63a6179f87a5caeed0ec7a3ec89b56090c0cdd35e9",
+      "sha256": "42d28aabd535e9caa52547bb4a4229068c37632e87072bf6bca17803f8fbbc84"
+    },
+    {
+      "path": "src/vendor/agent-device/touch-semantics.ts",
+      "source": "packages/selectors/src/touch-semantics.ts",
+      "sourceSha256": "48530927847a700132da5cee0e2222024006d9ea395109d3ac403d36c588a509",
+      "sha256": "9429db478974c23822a3ee215c86affecfbd63526f1724785d7fe7390d21debf"
+    },
+    {
+      "path": "src/vendor/agent-device/reported-twice.ts",
+      "source": "packages/selectors/src/interaction-targeting.ts",
+      "sourceSha256": "18a0e2a0d6990b79cafb2efa44973527e90f7d621ce3f92c23e8a281d846ac9a",
+      "sha256": "97a43dcc3317f05bba771f4100d1e971f4841285171fa3a9280ea1b85132bf4f"
+    },
+    {
+      "path": "src/vendor/agent-device/LICENSE",
+      "source": "LICENSE",
+      "sourceSha256": "64f25cb04776a886b0acd79fe7345a7ae09bed9952fa6774a5b2041ecba763f3",
+      "sha256": "64f25cb04776a886b0acd79fe7345a7ae09bed9952fa6774a5b2041ecba763f3"
+    },
+    {
+      "path": "test/vendor/predicates.test.ts",
+      "source": "packages/selectors/src/internal/predicates.test.ts",
+      "sourceSha256": "d793e33ce28ec53edce201d686841eda8ed8525d63624fee66b6e2a37ef723de",
+      "sha256": "f044876f4b924d253a3481bf2285b7c98eb6bf00265ae61936af0284a4659da6"
+    },
+    {
+      "path": "test/vendor/snapshot-visibility.test.ts",
+      "source": "packages/contracts/src/snapshot-visibility.test.ts",
+      "sourceSha256": "3e737f2cf7979ba94364354aaa63b87f279a535a1097267bd13544db87d6737b",
+      "sha256": "ae807586a4f10951ffbcb060ff974ed9fbcde45fac3c3b98cae0ab40ee1d98c8"
+    },
+    {
+      "path": "test/vendor/absence-observation.test.ts",
+      "source": "packages/selectors/src/absence-observation.test.ts",
+      "sourceSha256": "466f4add4ab8fdf2d35ec67e261795d45c8aa73164716cd180a31636471acaea",
+      "sha256": "6b0a3303469b142109b1b4b7889a58b9bc201d51e773703d8bc9d4eb89aa6bfe"
+    },
+    {
+      "path": "test/vendor/snapshot-state.fixtures.ts",
+      "source": "packages/capture-kit/src/snapshot-state.fixtures.ts",
+      "sourceSha256": "d1057d8b2ed8f220da5ad266e7e577a8a973ca593e9afe2aef1277e48ec29aa5",
+      "sha256": "327b3aea87f8a64e6192c31f5aed4c21a366f9ccd711f3eb2ec4057234a89f10"
+    },
+    {
+      "path": "test/vendor/interaction-targeting.fixtures.ts",
+      "source": "packages/selectors/src/interaction-targeting.fixtures.ts",
+      "sourceSha256": "81cb2a8cf1cdd9bb4a79cbd1bf49d3ac08349697a8d4b80c301280cb441c6100",
+      "sha256": "1b7aa470671f0adb962564669993268b275386fa6369420a8afd584791baf0cb"
+    },
+    {
+      "path": "test/vendor/reported-twice.test.ts",
+      "source": "packages/selectors/src/interaction-targeting.test.ts",
+      "sourceSha256": "78630095afe81abc55786ff6489119dc6d741f9217343d8c8b81aae8f83b04f2",
+      "sha256": "1f15085f6f61258f77c1a1b942b068454f39a0b38a594b69d6bd31e314078513"
+    }
+  ]
+}

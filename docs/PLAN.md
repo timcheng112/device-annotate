@@ -1,6 +1,6 @@
 # device-proof: implementation plan
 
-Status: M0 and M1 complete, with contracts through T56 approved; M2 is next.
+Status: M0, M1, and M2 complete, with contracts through T56 approved; M3 is next.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for runtime evidence, reproducible commands, and metadata collection limitations to address during M5 integration.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -320,6 +320,28 @@ M1 adds no live capture or image-rendering claim; those capabilities remain assi
 
 ## M2. Resolution, checks, and outcomes
 
+M2 is complete.
+The delivery record is [PLAN.delivery.md](PLAN.delivery.md).
+The public capture API remains M5 work; these are internal pure modules over supplied capture evidence.
+
+### Implementation and verification evidence
+
+- `src/resolve/targets.ts` reuses public selectors, preserves upstream alternative ordering, collapses only structurally equivalent reports, and supplies candidate diagnostics.
+- `src/check/evaluate.ts` and `src/check/step.ts` evaluate all eight predicates, continue independent entries after errors, and produce the approved geometry, groups, warnings, and image eligibility records.
+- Screenshot projection uses the observed viewport and image dimensions, including the non-density-only iOS compatibility fixture.
+  Exact edge alignment remains uncertainty rather than becoming proven clipping through floating-point rounding.
+- `src/manifest/reconcile.ts` retains compatible current attempts verbatim, archives invalidated or removed attempts, and replaces one attempt without double counting.
+  Unknown build or environment identity never enables reuse; historical passes never restore themselves automatically.
+- `src/manifest/prune.ts` returns a deletion preview using supplied file sizes and canonical identities.
+  Current evidence, retained file aliases, and caller-owned recording aliases remain protected.
+  Pre-screenshot error attempts use their attempt time when no capture time exists.
+- Vendored upstream source, supporting helpers, license, and copied parity tests are pinned to agent-device 0.21.27, commit `50e45f11bc6d388d272e672771acc33d9e56921d`.
+  [Vendor notes](../src/vendor/agent-device/README.md) document deterministic extraction, test-runner adaptations, hash verification, and local source comparison.
+
+`npm run check` passes type checking, 639 tests including 23 copied upstream parity tests, all 18 generated-schema freshness checks, and 22 vendor source/license/test hash checks.
+`npm run compare:vendor` also passes against the pinned local upstream source.
+Tests exercise iOS, Android, and iOS compatibility captures from the neutral M0 fixtures; they do not claim new live device or rendered-image verification.
+
 ### Work
 
 - Vendor the agreed predicate, visibility, absence, and React Native merge code from the verified upstream version, with its license, source headers, and matching upstream tests.
@@ -464,10 +486,10 @@ M1 adds no live capture or image-rendering claim; those capabilities remain assi
 
 ## Contract gates and implementation follow-through
 
-M0 metadata investigations and M1 contract gates are complete within their documented platform limits.
+M0 metadata investigations, M1 contract gates, and M2 pure behavior checks are complete within their documented platform limits.
 Investigate runtime facts directly and review any new user-visible behavior choices before changing the affected contract.
 
-- M2 must produce the reviewed check/geometry/error records from an accepted snapshot and apply current/history reconciliation without changing historical provenance.
+- M2 produces the reviewed check/geometry/error records from a supplied accepted snapshot and applies current/history reconciliation without changing historical provenance.
 - M3/M4 must realize the approved grouped regions, clipping warnings, masking, crop, and detail-view behavior in actual images.
 - M5 must establish reliable native metadata for supported targets, enforce the approved compatibility gates, and implement safe publication and cleanup under the folder lock.
 - M6 must exercise the complete public capture interfaces and packaging; M1's successful validation CLI is not evidence that live capture is implemented.

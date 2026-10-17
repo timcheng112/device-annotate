@@ -23,8 +23,10 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "generate:schema": "npm run build && node scripts/generate-schema.mjs",
     "check:schema": "npm run build && node scripts/generate-schema.mjs --check",
-    "test": "npm run build && node --test test/unit/*.test.mjs",
-    "check": "npm run typecheck && npm run test && node scripts/generate-schema.mjs --check"
+    "test": "npm run build && node --experimental-strip-types --test test/unit/*.test.mjs test/vendor/*.test.ts",
+    "check": "npm run typecheck && npm run test && node scripts/generate-schema.mjs --check && npm run check:vendor",
+    "check:vendor": "node scripts/check-vendor.mjs",
+    "compare:vendor": "node scripts/vendor-agent-device.mjs"
   },
   "dependencies": {
     "yaml": "2.9.0",
