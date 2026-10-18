@@ -1,7 +1,7 @@
 # M6 delivery
 
 M5 integrates capture, rendering, durable artifacts, ownership, and cleanup under [PLAN.md](PLAN.md).
-Current phase: M6 implementation, covering versioned help, the repository skill, and isolated package verification.
+Current phase: M6 implemented and locally verified; hosted verification awaits push approval.
 M5 remains complete, with public capture/cleanup, native adapters, local verification, and hosted CI gates passing.
 M0 through M4 are complete; M4 was committed as `12c12ab`.
 Its rendering and performance evidence remains in [M4-RENDERING.md](M4-RENDERING.md).
@@ -267,3 +267,13 @@ Equivalent frontmatter/name/description/scaffold checks passed with the installe
 Current phase: local verification complete; hosted M6 verification pending.
 The workflow now runs the isolated package check and executes the exact neutral YAML example from help on each native platform.
 Next safe action: commit/push the M6 implementation under the recorded authorization, monitor unit/iOS/Android jobs, and record their conclusions before marking M6 complete.
+
+
+## M6 hosted verification approval
+
+M6 implementation is committed locally as `dafe345`.
+The push was rejected by automatic approval review because the handoff's authorization was not accepted as trusted user permission for exporting repository contents.
+A read-only GitHub query confirmed `timcheng112/device-annotate` is private.
+An explicit approval request for pushing that commit and running hosted unit/iOS/Android verification is pending in the current conversation.
+No M6 push or hosted run has occurred.
+Next safe action: obtain that approval, push `plan/implementation`, monitor its checks, and update the M6 completion evidence.
