@@ -46,7 +46,7 @@ Requires **Node.js 22.12 or later** and **agent-device 0.21.27**.
 The installed agent-device version and its running local daemon must match.
 Prepare your simulator/emulator, app, and session with agent-device before capturing evidence.
 
-This package is currently unpublished and marked private.
+Version 0.1.0 is being prepared for its first npm release.
 Until a release is published, build and install a local tarball from this checkout:
 
 ```sh

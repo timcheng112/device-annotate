@@ -435,3 +435,26 @@ No repository visibility change or npm publication was performed.
 
 The README opening and npm package description now explicitly explain that device-annotate captures screenshots through agent-device and annotates the resulting images.
 The README also clarifies that recordings are created separately and attached as evidence references; video recording and annotation are not implemented.
+
+## npm 0.1.0 release preparation
+
+The user authorized release preparation with an explicit stop before publication.
+Package metadata now includes author, repository, homepage, issue tracker, keywords, and public npm registry/access settings; the private flag is removed.
+The lockfile was refreshed using npm's offline package-lock-only command and required no content changes.
+The README no longer says the package is marked private and still accurately labels registry installation as pending publication.
+
+A read-only registry lookup returned 404 for `device-annotate`; this is an availability observation, not a reservation or proof of publish permission.
+`npm whoami` returned ENEEDAUTH, so npm identity and account access remain unverified.
+The GitHub repository remains private.
+The user has been asked to choose between making the repository public and publishing only neutral example images separately; that choice is pending.
+No visibility change, image upload, npm login, or npm publication has occurred.
+
+`npm run check:package -- --offline` passed installed CLI/API/rendering/cleanup verification with runtime network entry points blocked.
+A candidate tarball is saved locally at `/private/tmp/device-annotate-release-0.1.0/device-annotate-0.1.0.tgz`.
+It contains 171 files, is 557893 bytes, and has integrity `sha512-mxhtZe0XVLSLKirUwlQ+df3l2CAbuTR5FW8yMYlDZbawIdJqw+R1I1S2YtgTGCFivENINo4W+36saic8hTvI8g==`.
+`npm publish <tarball> --dry-run --ignore-scripts --offline --json` completed successfully, with the expected unauthenticated warning and no registry mutation.
+The independent pack and isolated-consumer tarballs have matching integrity.
+
+Current phase: metadata and candidate package verified; public README images and npm authentication pending.
+Next safe action: act on the user's public-image hosting choice, update README image URLs, authenticate interactively with npm, then regenerate and verify the final tarball.
+Publication still requires explicit approval after that final artifact is ready.

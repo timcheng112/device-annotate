@@ -1,7 +1,6 @@
 {
   "name": "device-annotate",
   "version": "0.1.0",
-  "private": true,
   "description": "Capture native mobile screenshots with agent-device, then annotate them with numbered highlights and assertion results.",
   "license": "MIT",
   "type": "module",
@@ -62,5 +61,28 @@
     "src/vendor/agent-device/README.md",
     "src/vendor/agent-device/sources.json",
     "THIRD_PARTY_NOTICES.md"
-  ]
+  ],
+  "author": "Tim Cheng",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timcheng112/device-annotate.git"
+  },
+  "homepage": "https://github.com/timcheng112/device-annotate#readme",
+  "bugs": {
+    "url": "https://github.com/timcheng112/device-annotate/issues"
+  },
+  "keywords": [
+    "agent-device",
+    "screenshots",
+    "annotations",
+    "mobile",
+    "ios",
+    "android",
+    "testing",
+    "evidence"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }
