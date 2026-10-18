@@ -421,3 +421,14 @@ The isolated offline package check passes with the expanded README included: 171
 This documentation update changes no runtime implementation.
 The package remains private and unpublished; publication has not been authorized.
 Next available step is release preparation, including final package metadata and publication readiness review.
+
+## README visual examples
+
+The user requested example pictures showing the annotation output.
+README.md now displays the approved neutral primitives-mixed image near the top and includes dense-masked detail views in an expandable section.
+Both images have descriptive alt text, a 480-pixel display width, and links to the full-resolution files.
+The examples reuse existing committed golden files; no private prototype material or extra image assets were added.
+Both referenced PNGs were decoded and their paths and dimensions verified; `git diff --check` passes.
+The npm file allowlist remains unchanged, so fixture screenshots stay outside the tarball.
+Before npm publication, provide publicly accessible absolute image URLs for the npm README; the current repository is private and these repository-relative image links are for GitHub/local review.
+No repository visibility change or npm publication was performed.
