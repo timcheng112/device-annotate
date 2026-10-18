@@ -6,10 +6,13 @@ import { prepareScreenshot } from './screenshot.js';
 import { createSvgBuilder } from './svg.js';
 
 let initialization: Promise<void> | undefined;
+export async function initializeRasterizer(wasm: Uint8Array<ArrayBuffer>) {
+  initialization ??= initWasm(wasm).catch((error: unknown) => { initialization = undefined; throw error; });
+  await initialization;
+}
 /** The integration layer loads runtime assets; this module performs no IO. */
 export async function createEvidenceRenderer(assets: { font: ArrayBuffer; semibold: ArrayBuffer; wasm: Uint8Array<ArrayBuffer> }) {
-  initialization ??= initWasm(assets.wasm).catch((error: unknown) => { initialization = undefined; throw error; });
-  await initialization;
+  await initializeRasterizer(assets.wasm);
   const font = assets.font.slice(0), semibold = assets.semibold.slice(0);
   const metrics = createTextMetrics(font, semibold), buildSvg = createSvgBuilder(font, metrics, semibold);
   return {

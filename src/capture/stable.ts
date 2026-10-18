@@ -27,7 +27,8 @@ export function snapshotsMatch(before: SnapshotState, after: SnapshotState): boo
     }
     const android = evidence.androidSnapshot;
     if (typeof android === 'object' && android !== null) {
-      const { elapsedMs: _elapsed, ...metadata } = android as Record<string, unknown>;
+      // Recording may reconnect the helper without changing captured UI evidence.
+      const { elapsedMs: _elapsed, helperSessionReused: _reused, ...metadata } = android as Record<string, unknown>;
       evidence.androidSnapshot = metadata;
     }
     return { ...evidence, nodes: snapshot.nodes.map(({ ref: _ref, ...node }) => node) };

@@ -20,11 +20,11 @@ try {
   const packed = JSON.parse(run('npm', ['pack', '--json', '--pack-destination', temporary]))[0];
   const files = packed.files.map((file) => file.path);
   const required = ['package.json', 'LICENSE', 'README.md', 'THIRD_PARTY_NOTICES.md', 'bin/device-annotate.mjs',
-    'dist/index.js', 'dist/index.d.ts', 'src/cli/help.md', 'src/spec/spec.schema.json',
+    'dist/index.js', 'dist/index.d.ts', 'dist/video/public.js', 'src/video/video.schema.json', 'src/cli/help.md', 'src/spec/spec.schema.json',
     'src/render/fonts/Inter-Regular.ttf', 'src/render/fonts/Inter-SemiBold.ttf', 'src/render/fonts/LICENSE.txt',
     'src/vendor/agent-device/LICENSE', 'src/vendor/agent-device/sources.json'];
   for (const file of required) assert.ok(files.includes(file), `Missing ${file}`);
-  for (const file of files) assert.match(file, /^(?:dist\/.*\.(?:js|d\.ts)|bin\/device-annotate\.mjs|src\/cli\/help\.md|src\/(?:spec|manifest)\/[^/]+\.schema\.json|src\/render\/fonts\/(?:Inter-(?:Regular|SemiBold)\.ttf|LICENSE\.txt|README\.md)|src\/vendor\/agent-device\/(?:LICENSE|README\.md|sources\.json)|package\.json|LICENSE|README\.md|THIRD_PARTY_NOTICES\.md)$/, `Unexpected packed file: ${file}`);
+  for (const file of files) assert.match(file, /^(?:dist\/.*\.(?:js|d\.ts)|bin\/device-annotate\.mjs|src\/cli\/help\.md|src\/(?:spec|manifest|video)\/[^/]+\.schema\.json|src\/render\/fonts\/(?:Inter-(?:Regular|SemiBold)\.ttf|LICENSE\.txt|README\.md)|src\/vendor\/agent-device\/(?:LICENSE|README\.md|sources\.json)|package\.json|LICENSE|README\.md|THIRD_PARTY_NOTICES\.md)$/, `Unexpected packed file: ${file}`);
   const consumer = join(temporary, 'consumer');
   await cp(new URL('../test/package/', import.meta.url), consumer, { recursive: true });
   await writeFile(join(consumer, 'package.json'), JSON.stringify({ private: true, type: 'module' }));

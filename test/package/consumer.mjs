@@ -13,7 +13,8 @@ const refuseNetwork = () => { throw new Error('Unexpected network request in off
 net.connect = net.createConnection = http.request = http.get = https.request = https.get = refuseNetwork;
 globalThis.fetch = refuseNetwork;
 syncBuiltinESMExports();
-const { validate, capture, cleanup } = await import('device-annotate');
+const { validate, capture, cleanup, videoStart, videoMark, videoStop, videoRender } = await import('device-annotate');
+for (const operation of [videoStart, videoMark, videoStop, videoRender]) assert.equal((await operation({})).error.code, 'INVALID_INPUT');
 const entry = import.meta.resolve('device-annotate');
 const packageRoot = new URL('../', entry);
 const cli = fileURLToPath(new URL('bin/device-annotate.mjs', packageRoot));
@@ -25,7 +26,7 @@ function command(args, status = 0) {
 const help = command(['help']);
 const pkg = JSON.parse(await readFile(new URL('package.json', packageRoot)));
 assert.ok(help.startsWith(`# device-annotate ${pkg.version}\n`));
-for (const args of [['--help'], ['-h'], ['validate', '--help'], ['capture', '--help'], ['cleanup', '--help']]) assert.equal(command(args), help);
+for (const args of [['--help'], ['-h'], ['validate', '--help'], ['capture', '--help'], ['cleanup', '--help'], ['video', '--help']]) assert.equal(command(args), help);
 const specs = [...help.matchAll(/```yaml\n([\s\S]*?)```/g)].map((match) => match[1]);
 assert.ok(specs.length);
 for (const [index, source] of specs.entries()) {
@@ -64,4 +65,19 @@ for (const [name, config, expected] of [
     assert.equal((await cleanup({ outDir: out, finished: true, apply: true })).result, 'passed');
   }
 }
-console.log('Installed CLI help/examples/preflight, Node API, pass/fail/error rendering, raw artifacts, manifest, and cleanup passed with network calls blocked in the consumer process.');
+const { startVideo, markVideo } = await import(new URL('video/public.js', entry));
+const { checklistRenderer } = await import(new URL('video/render.js', entry));
+let clock = 1000;
+await writeFile('video-spec.json', JSON.stringify({ criteria: [{ criterion: 'Installed video footer', steps: { sample: {} } }] }));
+const videoDeps = { clock: () => clock += 100, preflight: async () => {}, captureAdapter: adapter,
+  device: async () => ({ identity: { address: 'fixture', createdAt: 1, platform: 'ios', deviceId: 'fixture', agentDevice: '0.21.27' },
+    start: async path => ({ recording: 'started', outPath: path }),
+  }),
+};
+assert.equal((await startVideo({ specPath: 'video-spec.json', out: 'video' }, videoDeps)).result, 'passed');
+assert.equal((await markVideo({ out: 'video', step: 'sample' }, videoDeps)).result, 'passed');
+const videoRun = JSON.parse(await readFile('video/video.json'));
+const footer = await checklistRenderer(videoRun, 480, [0, 2000], 3000);
+assert.ok(footer.render(1).svg.includes('INFO'));
+assert.ok(footer.render(1).png.length > 100);
+console.log('Installed CLI help/examples/preflight, Node API, pass/fail/error rendering, raw artifacts, manifest, cleanup, video interfaces/ledger/footer passed with network calls blocked in the consumer process.');

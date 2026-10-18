@@ -1038,3 +1038,70 @@ These contracts validate recorded observations; native coordinate projection, se
 The implementation sequence and verification gates are recorded in [PLAN.md](PLAN.md).
 M1's spec, manifest, error, provenance, and geometry contracts are complete.
 Implementation must continue to honor the review gates for new user-visible behavior discovered in M2-M6.
+
+## Video increment: running checklist
+
+The user selected prototype C and authorized implementation.
+Video adds explicit recording lifecycle operations; ordinary screenshot capture remains observe-only.
+App navigation continues to belong to agent-device.
+
+### Interface and ownership
+
+`video start <spec> --out <new-folder>` starts app-scoped recording on one existing local agent-device session.
+`video mark --out <folder> --step <name>` captures and evaluates the next declared step using the existing screenshot pipeline.
+`video stop --out <folder>` finalizes recording and exports an annotated MP4.
+`video render --out <folder>` retries export offline after a successful stop.
+The Node interface exposes `videoStart`, `videoMark`, `videoStop`, and `videoRender` with corresponding option objects.
+FFmpeg with libx264 and ffprobe must already be installed on PATH; the package never installs or downloads them.
+
+Each recording owns a new output folder, a frozen `spec.json`, and a validated `video.json` ledger.
+The ledger pins session address, creation time, device, peer version, build identity, and observed environment.
+Capture attempts live under `evidence/` and retain their original manifest and audit artifacts.
+The raw recording is `raw.mp4`; the exported result is `annotated.mp4`.
+All operations take the existing exclusive folder lock; no operation overwrites a caller-owned video.
+Screenshot history cleanup does not prune video files or the video ledger.
+Use one recording owner per session and do not independently replace its recorder through agent-device while the flow is active.
+
+### Timing and results
+
+The pinned public recording response does not expose a first-frame timestamp.
+The timeline uses the host monotonic clock, conservatively anchored immediately before requesting recording, and records the request-to-acknowledgment window as `startUncertaintyMs`.
+This is approximate synchronization, not a frame-accurate guarantee; the rendered footer discloses the start window.
+Cross-host or backwards-clock continuations are refused.
+Video duration is obtained from ffprobe rather than inferred from wall-clock elapsed time.
+No proportional timeline stretching is applied when recorder duration differs from elapsed time.
+
+Marks run once in declared spec order.
+A mark becomes CHECKING at capture invocation and receives PASS, FAIL, INFO, or ERROR only at completion.
+INFO means no evaluated assertions and never becomes a passing assertion.
+Earlier results stay visible; unmarked steps remain PENDING.
+An interrupted mark becomes ERROR at the end and blocks further marking; use a new recording for recaptures.
+An incomplete or errored flow returns exit code 2 while still exporting reviewable evidence when possible.
+Failed checks return exit code 1; a completed flow without failed checks returns 0.
+
+### Rendering and limits
+
+The approved footer keeps numbered step rows visible, highlights the active row, and accumulates results.
+Criteria and labels wrap with the bundled Inter font; failure details retain expected and actual values.
+The footer height is computed across all timeline states and remains fixed during playback.
+Longer flows expand the footer rather than hide rows or shrink text.
+Oversized layouts are refused with an actionable error; the initial limits are 100 steps, one hour of source video, and bounded render dimensions.
+Transitions round up to the next 30 FPS output frame so encoding does not move a result earlier.
+The recording remains above the footer, with portrait/landscape orientation and aspect ratio preserved.
+Available audio is preserved as AAC.
+A two-second final hold, or a longer hold when conservative timestamps extend past the source, is explicitly labeled as a frozen final frame.
+
+Raw files survive export failure, and a stopped recording can be rendered without a device connection.
+Start is never automatically retried because an interrupted acknowledgment may still have started a recorder.
+An unacknowledged start requires operator inspection through agent-device before stopping; it never authorizes stopping an unrelated recorder.
+Stop retries use agent-device's idempotent completion response and validate the returned output path.
+Multiple recording chunks and unconfirmed/lost recorders are refused as continuous-video evidence.
+The export is decoded/probed before exclusive atomic publication.
+Source validation permits up to 8192 × 8192 pixels and one hour; composed-output validation permits up to 8192 × 16384 pixels and one hour plus the two-second final hold.
+Published exports have a SHA-256 digest in the video ledger, checked before an existing export is returned.
+A missing export is rebuilt from raw evidence; changed output bytes are refused and preserved, with instructions to move the file before retrying.
+Older ledgers without a digest require a fresh deterministic export to match the existing file before recording its digest.
+
+Moving target highlights and video redaction are deferred.
+Specs containing masks are refused before recording to avoid implying that screenshot masks redact video.
+Existing multi-step build/environment requirements, including the current iOS geometry limitation, remain in force.

@@ -220,3 +220,73 @@ For one-off calls use `{step, criterion, out, config: {annotate, checks, crop}}`
 `cleanup` accepts `outDir`, `apply`, and `finished`; omitted booleans default to false.
 The package ships TypeScript declarations, generated schemas, the Inter font/license, and vendored agent-device notices.
 The pinned `@resvg/resvg-wasm` dependency supplies local WASM bytes; runtime never downloads fonts or WASM.
+
+## Annotated video
+
+Record through agent-device, mark prepared screens, and export a timed running checklist below the video.
+Requires local FFmpeg with libx264 and ffprobe on PATH, in addition to the normal capture prerequisites.
+Use seeded data: video is not redacted, and specs containing masks are rejected before recording.
+
+```sh
+# Open the intended app/session with agent-device first.
+device-annotate video start flow.yaml --build build.json --platform android --out evidence/flow-video
+# Navigate with agent-device, then mark the next declared step.
+device-annotate video mark --out evidence/flow-video --step before
+# Navigate to the next state with agent-device.
+device-annotate video mark --out evidence/flow-video --step after
+device-annotate video stop --out evidence/flow-video
+# Retry an export after a tool/disk failure, without contacting the device.
+device-annotate video render --out evidence/flow-video
+```
+
+`start` accepts one spec path, required `--out`, optional `--platform ios|android`, `--session <exact-address>`, and `--build <JSON-file>`.
+`mark` accepts required `--out` and `--step`; `stop` and `render` accept required `--out`.
+Paths resolve from the invocation directory.
+Use `device-annotate video --help` for this complete reference.
+Start always requires a new empty output folder and freezes the spec for the recording.
+The spec's screenshot `out` setting is ignored for video; captures are saved under the video's `evidence/` directory.
+Mark each declared step once and in order, after navigating to its expected state.
+Repeated checks and changed specs require a new recording.
+Do not independently stop, restart, or replace this session's recorder through agent-device while recording.
+
+`video.json` records the session, observed environment, build, frozen spec, timing, marks, warnings, export path, and export checksum.
+Rendering again verifies the saved checksum and rebuilds a missing export from the raw recording.
+If the saved export has changed, preserve it elsewhere by moving `annotated.mp4`, then rerun `video render`; the command never overwrites the changed file.
+`raw.mp4` remains unchanged, `annotated.mp4` contains the checklist, and `evidence/manifest.json` retains screenshot results and audit artifact paths.
+The checklist shows PENDING, CHECKING, PASS, FAIL, INFO, and ERROR explicitly.
+INFO means no assertions were evaluated.
+Completed results persist while later steps run; failure rows include expected and actual values.
+The footer expands to fit the flow and keeps a constant height throughout playback.
+Video output is 30 FPS H.264 MP4; available audio is transcoded to AAC.
+A labeled frozen-frame ending gives final results at least two seconds of reading time.
+
+Timing is approximate: agent-device {{peer}} does not report the first-frame timestamp.
+The ledger records the start request window, and captions use the same host's monotonic clock without stretching to fit the video.
+The footer discloses this uncertainty.
+The first version supports at most 100 steps and one hour of source video, with bounded output dimensions.
+Split flows whose full checklist exceeds rendering limits.
+Multiple raw chunks are preserved but are not exported as a continuous recording.
+Video has captions only; it does not track or mask moving targets.
+
+Build and environment requirements match screenshot capture, including the current multi-step iOS limitation.
+A session/environment change refuses new checks.
+Recording startup preflights tools and environment before starting the recorder.
+An interrupted start is never automatically retried or stopped: inspect agent-device before stopping any recorder.
+An interrupted mark blocks further marks; stop to preserve its ERROR state, then start a new recording to retry.
+Stop can be retried after a transport failure; once successfully stopped, export retries stay offline.
+Raw evidence survives export errors.
+A completed export returns exit 0 for a complete flow without failed checks, 1 for failed checks, or 2 for incomplete/error evidence.
+Exit 0 with INFO-only steps proves no assertions.
+
+```js
+import { videoStart, videoMark, videoStop, videoRender } from 'device-annotate';
+await videoStart({ specPath: 'flow.yaml', out: 'evidence/flow-video', platform: 'android', build });
+await videoMark({ out: 'evidence/flow-video', step: 'before' });
+// Navigate using agent-device, then mark the remaining declared steps.
+await videoMark({ out: 'evidence/flow-video', step: 'after' });
+const result = await videoStop({ out: 'evidence/flow-video' });
+// If encoding failed after stop: await videoRender({ out: 'evidence/flow-video' });
+```
+
+All video operations also accept an absolute `cwd`.
+Screenshot cleanup operates only on its evidence ledger; video files are retained until explicitly removed by their owner.

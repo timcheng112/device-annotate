@@ -17,12 +17,15 @@ import { attemptStructureSchema } from "../dist/manifest/attempt.js";
 import { manifestStructureSchema } from "../dist/manifest/schema.js";
 import { geometryStructureSchema } from "../dist/manifest/geometry.js";
 
+import { videoStructureSchema } from "../dist/video/schema.js";
+
 const args = process.argv.slice(2);
 if (args.length > 1 || (args.length === 1 && args[0] !== "--check")) {
   throw new Error("Usage: node scripts/generate-schema.mjs [--check]");
 }
 
 const schemas = [
+  { name: "video", source: "schema", directory: "video", schema: videoStructureSchema },
   { name: "build", source: "build-identity", schema: buildIdentitySchema },
   { name: "check", source: "check", schema: standaloneCheckSchema },
   { name: "annotation", source: "annotation", schema: annotationSchema },

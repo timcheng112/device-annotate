@@ -485,3 +485,177 @@ This was an npm authentication-policy rejection, not an automatic tool approval 
 Publication authorization remains valid for this release candidate; the user must complete the required account authentication setup before retrying.
 The prepared tarball is unchanged.
 Next safe action: enable npm 2FA, retry the authorized publication with interactive authentication, and verify registry version and integrity before reporting success.
+
+## Publication reconciliation and README simplification
+
+The successful publication supersedes the authentication blocker recorded above.
+The release report at `/private/tmp/device-annotate-release-0.1.0/publication-result.md` records successful interactive npm 2FA publication, the 0.1.0 latest tag, and an anonymous download matching the verified release integrity.
+No additional publication was performed.
+After repository access resumed, the README was shortened around purpose, use cases, one approved neutral screenshot, registry installation, and one assertion quick start.
+The privacy note and platform limitations remain explicit; detailed syntax stays in installed help.
+
+## Video caption design exploration
+
+The user requested prototypes before choosing a video annotation design.
+Three local animated mockups compare a compact caption, an evidence card, and a running checklist using the same neutral simulated flow.
+They are stored under the ignored `scripts/m0/.local/video-prototypes/` directory with playback, seeking, a failure shortcut, and enlarged views.
+These are visual prototypes, not agent-device recordings or an implemented video pipeline.
+The proposed direction is agent-device recording followed by timed captions below the video.
+The user selected variant C, the running checklist, after reviewing the animated prototypes.
+The selected design keeps the criterion and step list below the video, highlights the active step, and accumulates explicit PASS or FAIL results only after checks finish.
+Upcoming checks remain pending, and failed checks show expected versus actual details below the list.
+The prototype demonstrates three steps; overflow behavior for longer flows and recording-to-check timestamp synchronization remain implementation design work.
+This records visual approval; the video pipeline remains unimplemented.
+
+## Video checklist implementation
+
+The user authorized implementation of the selected C layout.
+Active worktree: `/Users/timcheng112/Documents/repos/device-annotate`, on the existing `plan/implementation` branch.
+The earlier README and release-reconciliation edits remain in this worktree.
+Current phase: implementation and verification.
+
+Implemented explicit start/mark/stop/render operations, a separate validated video ledger, frozen specs, existing capture evaluation for marks, session/environment checks, conservative monotonic timestamps, deterministic checklist rendering, and FFmpeg MP4 export.
+The public interface and timing/ownership limitations are recorded in the video increment section of DESIGN.md.
+Seven focused tests pass for lifecycle, ordering, result timing, INFO semantics, malformed evidence, interrupted marks, frozen-spec edits, safe output ownership, export retry, and footer rendering.
+The initial synthetic encoder integration produced and fully decoded a 480 × 900 MP4 with audio, verified timed states, and exercised idempotent offline rendering.
+Its extracted failure frame was visually inspected and matches the approved checklist arrangement.
+Native recording verification and full/package checks are still in progress.
+No commit, push, or publication has been performed.
+
+### Video verification complete
+
+Current phase: local implementation and verification complete; no external delivery requested.
+`npm run check` passes all 752 tests, generated-schema freshness, and the 22 vendored source/license/test hashes.
+`npm run check:package -- --offline` passes installed CLI/API validation, screenshot capture/render/cleanup, and the installed video interfaces, ledger, fonts, and checklist renderer with network entry points blocked.
+`node scripts/check-video.mjs` passes real FFmpeg encoding, complete decode, audio preservation, fixed dimensions/duration, timed-state checks, idempotent rendering, recovery after publication-before-ledger interruption, and refusal to overwrite unrelated output.
+The final synthetic encoder evidence is under `scripts/m0/.local/video-verification/run-9hN5YC/`.
+
+`node scripts/check-video-native.mjs video-fixture emulator-5580`, with the isolated `AGENT_DEVICE_STATE_DIR`, passes real Android recording through the pinned public agent-device interface, all three CLI marks, stop, MP4 export, and complete decode.
+The neutral fixture deliberately produces PASS, FAIL, and INFO; the test expects exit 1 for its failed assertion and export.
+The verified output is `scripts/m0/.local/video-verification/native-qdRNwV/video/annotated.mp4`, 1080 × 2804, approximately 10.167 seconds.
+Its final frame was visually inspected, and the MP4 loaded and played to completion in cmux with no playback error.
+The local review page is `scripts/m0/.local/video-verification/native-qdRNwV/preview.html`.
+All prototype and verification artifacts remain ignored and local.
+
+Native testing exposed a stability false alarm from Android `helperSessionReused`, which the pinned upstream source identifies as helper connection bookkeeping.
+The comparison now excludes that flag alongside elapsed timing while retaining evidence-bearing metadata and all nodes; regression tests verify that root changes still fail.
+An additional native test failure was caused by the fixture being backgrounded despite an existing session; explicitly foregrounding the fixture resolved it.
+No capture requirement was weakened for that setup failure.
+The test harness records the SHA-256 of the installed fixture APK as its build identity.
+The isolated emulator started for verification was shut down afterward.
+
+Ten focused video tests cover lifecycle, ordering, delayed result publication, INFO, invalid ledger evidence, interrupted marks, output ownership, export retry, frozen-spec edits, environment changes, clock regression, contention, long wrapping, and safe text rendering.
+Video scope remains captions below the recording, approximate timing, and existing platform limitations; iOS recording and physical devices were not verified in this increment.
+The README remains concise and now distinguishes the unpublished checkout feature from npm 0.1.0.
+No dependency installation, branch creation, commit, push, PR, or npm publication was performed.
+Next safe action: review the local real-video preview and implementation diff; any release or remote delivery requires its own authorization.
+
+
+### Video implementation review fixes
+
+The user requested an implementation review before release preparation and authorized fixing both findings.
+Current phase: review fixes implemented and verified locally in `/Users/timcheng112/Documents/Repos/device-annotate`, branch `plan/implementation`.
+
+Cached exports now record and verify a SHA-256 checksum instead of accepting any nonempty regular file.
+Missing exports are rebuilt from preserved raw recordings; changed files and symlinks are refused without replacement.
+Legacy ledgers without a checksum use deterministic exclusive publication again, adding a checksum only after the existing export matches.
+Fresh exports receive a strict complete FFmpeg decode check before publication.
+The video schema was regenerated through `npm run generate:schema`.
+
+Source and composed-output metadata validation now use distinct limits.
+Sources retain the one-hour and 8192 × 8192 limits; composed outputs permit the two-second final hold and heights up to 16384.
+Boundary regressions exercise source/output duration and dimension limits without encoding a full hour of footage.
+
+Verification: all 12 focused video tests pass, including changed-byte detection, missing-file recovery, symlink refusal, and output-limit boundaries.
+`npm run check` passes all 754 repository tests, generated-schema freshness, and 22 vendor hashes.
+The initial sandboxed run failed on existing loopback mock-server permissions; the rerun with loopback access passed.
+`npm run check:package -- --offline` passes installed CLI/API and video ledger/footer checks.
+The real FFmpeg synthetic integration passes cached-output corruption refusal, missing-output rebuilding, legacy-ledger migration, publication-before-ledger recovery, full decode, and existing timing/audio checks.
+Its local evidence is under `scripts/m0/.local/video-verification/run-9aOWqh/`.
+No UI layout changes or additional native-device checks were needed for these export fixes.
+The previously recorded iOS and physical-device verification limits remain.
+
+No commit, push, version bump, or publication was performed.
+Next safe action: prepare the next release candidate when requested, retaining the separate publication authorization boundary.
+
+
+### 0.2.0 release preparation and README draft
+
+The user authorized release preparation and requested a shorter, more casual README covering motivation, agent verification, features, and use cases.
+Current phase: local candidate prepared; README wording is ready for user discussion.
+The worktree remains `/Users/timcheng112/Documents/Repos/device-annotate`, branch `plan/implementation`.
+
+Package and lockfile versions are now 0.2.0, updated with `npm version --no-git-tag-version --ignore-scripts`.
+The package description and keywords now include coding agents, verification, and video.
+README.md is approximately 327 words, with Playwright-inspired motivation, the agent Verify workflow, four capability bullets, three use cases, one screenshot, and one validated YAML quick start.
+Detailed video syntax remains in installed help.
+The README explicitly distinguishes the upcoming 0.2.0 video feature from published 0.1.0.
+Refresh that pending-release sentence and rebuild the candidate when publication is authorized.
+
+An anonymous direct registry request confirms latest 0.1.0 and versions 0.0.0-stage and 0.1.0.
+An earlier npm CLI lookup returned only 0.0.0-stage; the direct registry response resolves that discrepancy.
+No registry mutation was performed.
+
+The candidate is `/private/tmp/device-annotate-release-0.2.0/device-annotate-0.2.0.tgz` with 188 files and 577070 bytes.
+Its verified integrity is `sha512-dXSiqvitaQqUeZimqyItQM0kpkaHYnqVH9gaggebZECEnvY/olpsysneXI0RVaY290rLQ+tMH7jW/7Y4aoEY0A==`.
+`npm run check:package -- --offline` passes against 0.2.0, and its tarball integrity matches this saved candidate.
+The candidate contains the exact README draft and package version checked locally.
+`npm publish <candidate> --dry-run --ignore-scripts --offline --json` passes without publication.
+The README YAML validates; `git diff --check` passes.
+The previous 754-test regression and real FFmpeg verification remain the implementation evidence; this preparation changed only documentation and package metadata.
+Machine-readable candidate details are in `/private/tmp/device-annotate-release-0.2.0/readiness.json`.
+
+No commit, tag, push, or npm publication was performed.
+Next safe action: settle README wording, then prepare the final candidate for separately authorized publication.
+Recheck npm identity, version availability, and final integrity immediately before publishing.
+
+
+### README video example and device support
+
+The user requested a video example and device-support section, and accepted a looping GIF linked to the full MP4.
+README.md now includes both, using the verified neutral Android fixture recording.
+`docs/examples/running-checklist.mp4` preserves the original recording; `docs/examples/running-checklist.gif` is a 480 × 1246, 10 FPS looping preview, approximately 217 KB and 10.2 seconds.
+Both files fully decode with FFmpeg.
+The support table distinguishes verified Android emulator screenshots/video, single-step iOS simulator screenshots, and unverified iOS video and physical devices.
+
+The updated 0.2.0 candidate passes the offline installed-package check and publish dry run.
+Its 577312-byte tarball matches the package check integrity `sha512-naWw2V5QUEaoD9i0Eo6Obax50737VxBeH5K9LrGCigVrTyChmMaw/weIn9TQmSD9CswXyLDgql1rWbK2NexGfw==` and includes the exact updated README.
+Demo media stays outside the npm tarball.
+Before publication, publish the neutral repository demo assets with authorized remote delivery, replace relative media links with verified public URLs, refresh the release-status sentence, and rebuild the final candidate.
+No push or publication has occurred.
+
+
+### iOS simulator video verification
+
+The user requested verifying iOS simulator video before release.
+`scripts/check-video-ios.mjs` now provides a repeatable native gate for a pre-opened neutral fixture on a dedicated Device Proof simulator.
+The gate verifies session/device identity and the foreground neutral app before recording, and hashes the installed fixture executable for build identity.
+
+The gate passed on the Device Proof M0 iPhone 16 Pro simulator running iOS 18.3, using isolated agent-device state at `scripts/m0/.local/ios-video-daemon`.
+Three separate single-step recordings exercised PASS, deliberate FAIL, and INFO outcomes through the real CLI.
+Start, mark, stop, MP4 export, strict complete decode, checksum validation, delayed result visibility in the ledger, and repeat rendering all passed.
+The deliberate failed assertion and its export returned expected exit code 1; PASS and INFO returned 0.
+The final frames were visually inspected for all three cases and showed the correct checklist results and failure details.
+Evidence is under `scripts/m0/.local/video-verification/ios-kwcc70/`, including `summary.json`, final PNGs, and each annotated MP4.
+The recordings are approximately 7 seconds at 1206 pixels wide, with output heights 2962 or 3012 pixels.
+
+Multi-step video start returned ENVIRONMENT_UNAVAILABLE before publishing a video ledger, as required by the existing metadata gate.
+Display pixel width, pixel height, and rotation remain unavailable from the tested toolchain.
+README.md now reports iOS simulator screenshots and video as verified for single-step flows and explicitly retains the multi-step limitation.
+Physical devices remain unverified.
+No runtime implementation changes were required.
+The isolated iOS fixture session was closed and the simulator started for verification was shut down afterward.
+The refreshed candidate passes the offline installed-package check and publication dry run, with matching saved/consumer tarball integrity `sha512-3fm3CM/M/WP9JLnloGUjFpy5lxnkwlnidpbj4+zVG3sUm8wDCtsoaHrGss2spknuwUAazrfqUFfhF9Ale/sjCg==` and 577329 bytes.
+The README public-media URL and publication-status preparation steps remain open before release.
+No commit, push, or publication occurred.
+
+
+### Authorized 0.2.0 publication
+
+The user explicitly authorized publication with “ok lets publish”.
+Current phase: final package verification and authorized remote delivery.
+Npm identity is timcheng112; direct registry verification reports latest 0.1.0 and no existing 0.2.0.
+GitHub remains public with plan/implementation as the default branch, and its remote head matches the expected d572208 ancestor.
+Neutral GIF/MP4 examples are committed at a5ffe77ea79bc0420ab9c421a4664a8b4b32cb42.
+README media links now use immutable public URLs pinned to that commit, and the release-pending wording is removed.
+The final package must pass verification and the public example downloads must match local bytes before npm publication.

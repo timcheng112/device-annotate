@@ -74,6 +74,8 @@ test('quiet loop resets its interval on evidence change and ignores refs and tim
   b.snapshotQuality.state = 'sparse'; assert.equal(snapshotsMatch(a, b), false);
   assert.equal(snapshotsMatch({ ...fixture, androidSnapshot: { elapsedMs: 4, rootPresent: true } }, { ...fixture, androidSnapshot: { elapsedMs: 7, rootPresent: true } }), true);
   assert.equal(snapshotsMatch({ ...fixture, androidSnapshot: { elapsedMs: 4, rootPresent: true } }, { ...fixture, androidSnapshot: { elapsedMs: 7, rootPresent: false } }), false);
+  assert.equal(snapshotsMatch({ ...fixture, androidSnapshot: { helperSessionReused: true, rootPresent: true } }, { ...fixture, androidSnapshot: { helperSessionReused: false, rootPresent: true } }), true);
+  assert.equal(snapshotsMatch({ ...fixture, androidSnapshot: { helperSessionReused: true, rootPresent: true } }, { ...fixture, androidSnapshot: { helperSessionReused: false, rootPresent: false } }), false);
 });
 test('quiet loop bounds changes and propagates observe-only refusal without retry', async () => {
   let clock = 0;

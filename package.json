@@ -1,7 +1,7 @@
 {
   "name": "device-annotate",
-  "version": "0.1.0",
-  "description": "Capture native mobile screenshots with agent-device, then annotate them with numbered highlights and assertion results.",
+  "version": "0.2.0",
+  "description": "Annotated screenshots, UI checks, and video checklists for coding agents verifying native apps.",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -53,6 +53,7 @@
     "src/cli/help.md",
     "src/spec/*.schema.json",
     "src/manifest/*.schema.json",
+    "src/video/*.schema.json",
     "src/render/fonts/Inter-Regular.ttf",
     "src/render/fonts/Inter-SemiBold.ttf",
     "src/render/fonts/LICENSE.txt",
@@ -79,7 +80,10 @@
     "ios",
     "android",
     "testing",
-    "evidence"
+    "evidence",
+    "video",
+    "ai-agents",
+    "verification"
   ],
   "publishConfig": {
     "access": "public",
