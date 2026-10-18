@@ -1,7 +1,7 @@
 # M6 delivery
 
 M5 integrates capture, rendering, durable artifacts, ownership, and cleanup under [PLAN.md](PLAN.md).
-Current phase: M6 implemented and locally verified; hosted verification is running.
+Current phase: M6 complete; M4 prototype-fidelity follow-through remains open.
 M5 remains complete, with public capture/cleanup, native adapters, local verification, and hosted CI gates passing.
 M0 through M4 are complete; M4 was committed as `12c12ab`.
 Its rendering and performance evidence remains in [M4-RENDERING.md](M4-RENDERING.md).
@@ -306,3 +306,25 @@ M6 packaging verification and this visual follow-through are separate evidence g
 The first M6 hosted unit job passed all regression/schema/vendor checks, but isolated installation failed with `ENOTCACHED` because `npm ci` cached tarballs without the package registry metadata needed by a new offline consumer.
 The package verifier now permits normal npm installation with `--prefer-offline` by default and retains explicit `--offline` mode for a fully warmed cache.
 Only dependency installation can consult the registry; the consumer's runtime network blocks remain unchanged.
+
+The approved base is Style C, explicitly named in DESIGN.md T14, with later T22/T25 refinements taking precedence over its original result colors and INFO treatment.
+Local inspection of the ignored `docs/prototypes/annotation-style/style-C.png` and its generator confirms additional fidelity targets: a compact outcome pill, emphasized wrapping criterion, numbered legend badges, stronger annotation titles, and subordinate human-readable detail text.
+The production full-width outcome bar and undifferentiated diagnostic rows do not reproduce that hierarchy.
+The source prototype's criterion truncation is a known defect to fix, not reproduce; measured wrapping and all evidence text must remain intact.
+No employer-app prototype bytes were added to tracked files or the package during this review.
+
+
+## M6 completion and next visual work
+
+[Run 39092633233](https://github.com/timcheng112/device-annotate/actions/runs/39092633233) passed unit, iOS, and Android jobs at `b523e09` on 2026-10-18.
+The unit job passes all 741 tests, schema/vendor checks, and isolated package verification.
+The 170-file tarball is 347185 bytes with integrity `sha512-rLG5ru7a8nMTQdJGUA3FPO7gfMsMrSFkDgsO3WWcEpMIoS/1585ofc0PvygM+/kXCJ7+aNliWcgzUti2lctFCw==`, matching the locally verified package.
+The iOS job passes native pass/fail/error capture, the exact help example, the required multi-step environment refusal, and observe-only refusal without app activation or daemon replacement.
+The Android job passes native pass/fail/error capture, the exact help example, and multi-step aggregation/replacement/rename/reuse checks on the configured API 33 x86_64 Google APIs emulator.
+The first M6 run also passed both native jobs; its isolated package cache failure is resolved by the correction documented above.
+The implementation branch is pushed; no npm publication, PR, or merge occurred.
+
+M6's help, skill, packaging, and verification scope is complete.
+The overall design is not signed off: the user explicitly reaffirmed exact approved-prototype fidelity, and the comparison above reopened that M4 work.
+Next safe action: implement the Style C legend hierarchy and badge presentation with the later grouped-tag/INFO/dense-overlap refinements, generate neutral candidates, compare them beside the exact agreed prototypes in the visible preview surface, and verify before replacing golden references.
+Preserve current capture behavior, privacy rules, unknown-environment admission, and the documented iOS limits throughout the visual correction.

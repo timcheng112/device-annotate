@@ -1,6 +1,6 @@
 # device-annotate: implementation plan
 
-Status: M0-M5 behavior and verification are implemented; M6 hosted verification is in progress.
+Status: M0-M6 behavior and verification are implemented; M6 hosted unit/package/iOS/Android gates pass.
 M4 visual fidelity is reopened following the user's request to match the exact agreed prototypes.
 Passing golden comparisons establish regression stability, not exact prototype fidelity.
 See [PLAN.delivery.md](PLAN.delivery.md) for the current visual gaps and verification state.
@@ -482,6 +482,10 @@ M5 is complete.
 - Run iOS simulator tests on macOS CI and Android emulator tests in CI, as required by T10.
 
 ## M6. Help, skill, and package verification
+
+M6 is complete at verified commit `b523e09`.
+[The delivery record](PLAN.delivery.md) contains local/hosted evidence and package limitations.
+The reopened M4 prototype-fidelity work remains required for overall design completion.
 
 ### Work
 
