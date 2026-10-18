@@ -9,9 +9,13 @@ M5 exposes public live capture but remains incomplete until the required hosted 
 Worktree: `/Users/timcheng112/Documents/repos/device-annotate`.
 Branch: `plan/implementation`.
 Local commits are authorized.
-No push, publication, PR, or external communication occurred.
+The user authorized creating the private GitHub repository, pushing this branch, and running hosted CI.
+The private repository is https://github.com/timcheng112/device-annotate, configured as `origin`.
+GitHub rejected the initial push because the active OAuth credential lacks `workflow` scope; the remote remains empty and CI has not started.
+GitHub CLI permission refresh is awaiting user authorization in the browser.
+No PR or package publication occurred.
 This continuation used only the dedicated neutral M0 simulator/emulator and a new isolated M5 daemon.
-No Git remote is configured, so hosted CI execution requires a destination and authorization to publish the branch.
+Hosted verification can proceed after GitHub grants the requested credential permission.
 
 ## Implemented foundation
 
@@ -183,8 +187,8 @@ That replay uses saved evidence and does not constitute a fresh native run.
 `npm run check` passed after this change, including all 740 tests, type checking, 18 generated-schema freshness checks, and 22 vendor hash checks.
 Loopback transport tests ran with sandbox escalation.
 No simulator, emulator, or daemon was started during this continuation.
-No hosted CI run or publication occurred, and no Git remote is configured.
-The user has been asked for a repository destination and permission to push `plan/implementation` for hosted verification.
+At this local-verification checkpoint, no hosted CI run or publication had occurred.
+Current remote and authorization status is recorded above.
 
 ## Next safe action
 
@@ -197,7 +201,8 @@ The checkout moved from `~/Downloads/device-proof` to `~/Documents/repos/device-
 Neutral fixture identities, the existing `versions.deviceProof` evidence field, and the `.device-proof-lock` journal remain unchanged to preserve existing evidence and locking compatibility.
 Recorded native fixture provenance retains its original capture-time workspace path; fresh native runs must prepare a session scoped to the new checkout path.
 
-Review and run the committed native CI workflow after a Git remote and publication authorization are supplied.
+Complete the pending GitHub CLI workflow-scope authorization, push `plan/implementation` to `origin`, and monitor all three jobs in the committed native CI workflow.
+Repository creation, this push, and hosted CI execution are authorized; a further publication confirmation is unnecessary.
 The iOS host limitation remains explicit: multi-step iOS evidence requires a toolchain/provider that can reliably expose active display rotation, or a separately verified read-only observation source.
 Do not substitute configured orientation, screenshot aspect ratio, or a guessed default for that observation.
 Keep T8's approved observe-only refusal behavior intact.
