@@ -2,7 +2,7 @@
   "name": "device-annotate",
   "version": "0.1.0",
   "private": true,
-  "description": "Agent-first screenshot annotation and visual assertions, powered by agent-device.",
+  "description": "Capture native mobile screenshots with agent-device, then annotate them with numbered highlights and assertion results.",
   "license": "MIT",
   "type": "module",
   "exports": {

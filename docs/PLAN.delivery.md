@@ -432,3 +432,6 @@ Both referenced PNGs were decoded and their paths and dimensions verified; `git 
 The npm file allowlist remains unchanged, so fixture screenshots stay outside the tarball.
 Before npm publication, provide publicly accessible absolute image URLs for the npm README; the current repository is private and these repository-relative image links are for GitHub/local review.
 No repository visibility change or npm publication was performed.
+
+The README opening and npm package description now explicitly explain that device-annotate captures screenshots through agent-device and annotates the resulting images.
+The README also clarifies that recordings are created separately and attached as evidence references; video recording and annotation are not implemented.

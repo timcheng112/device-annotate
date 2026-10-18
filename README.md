@@ -1,7 +1,8 @@
 # device-annotate
 
-Turn native mobile screenshots into annotated evidence with explicit PASS, FAIL, and INFO results.
-Write acceptance criteria and checks in YAML, prepare the app with agent-device, then capture a self-contained image and a machine-readable manifest.
+Capture native mobile screenshots with agent-device, then annotate them with numbered highlights, acceptance criteria, and explicit PASS, FAIL, and INFO results.
+Write criteria and checks in YAML, prepare your app with agent-device, and let device-annotate capture and render a self-contained evidence image plus a machine-readable manifest.
+Recordings created separately with agent-device can be attached as evidence references; device-annotate does not create or annotate videos.
 
 - Highlight targets with numbered boxes, markers, arrows, and callouts.
 - Check visibility, presence, text, and other snapshot-supported states.
