@@ -7,10 +7,11 @@ import { createSvgBuilder } from './svg.js';
 
 let initialization: Promise<void> | undefined;
 /** The integration layer loads runtime assets; this module performs no IO. */
-export async function createEvidenceRenderer(assets: { font: ArrayBuffer; wasm: Uint8Array<ArrayBuffer> }) {
+export async function createEvidenceRenderer(assets: { font: ArrayBuffer; semibold: ArrayBuffer; wasm: Uint8Array<ArrayBuffer> }) {
   initialization ??= initWasm(assets.wasm).catch((error: unknown) => { initialization = undefined; throw error; });
   await initialization;
-  const font = assets.font.slice(0), metrics = createTextMetrics(font), buildSvg = createSvgBuilder(font, metrics);
+  const font = assets.font.slice(0), semibold = assets.semibold.slice(0);
+  const metrics = createTextMetrics(font, semibold), buildSvg = createSvgBuilder(font, metrics, semibold);
   return {
     render(input: Omit<Parameters<typeof layoutStep>[0], 'metrics'> & { screenshot: Uint8Array }) {
       const layout = layoutStep({ ...input, metrics });
@@ -21,7 +22,7 @@ export async function createEvidenceRenderer(assets: { font: ArrayBuffer; wasm: 
       // Failure throws before any SVG/PNG result is returned. There is no unmasked fallback.
       const screenshot = prepareScreenshot(input.screenshot, dimensions, masks);
       const svg = buildSvg(layout, screenshot, dimensions);
-      const renderer = new Resvg(svg, { font: { fontBuffers: [new Uint8Array(font)], defaultFontFamily: 'Inter' },
+      const renderer = new Resvg(svg, { font: { fontBuffers: [new Uint8Array(font), new Uint8Array(semibold)], defaultFontFamily: 'Inter' },
         fitTo: { mode: 'original' }, shapeRendering: 2, textRendering: 2, imageRendering: 0 });
       try {
         const image = renderer.render();

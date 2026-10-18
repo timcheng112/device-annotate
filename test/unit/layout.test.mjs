@@ -8,7 +8,8 @@ import { layoutStep } from '../../dist/layout/step.js';
 import { evaluateStep } from '../../dist/check/step.js';
 import { attachRefs } from '../../dist/vendor/agent-device/snapshot.js';
 const bytes = readFileSync(new URL('../../src/render/fonts/Inter-Regular.ttf', import.meta.url));
-const metrics = createTextMetrics(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength));
+const semibold = readFileSync(new URL('../../src/render/fonts/Inter-SemiBold.ttf', import.meta.url));
+const metrics = createTextMetrics(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), semibold.buffer.slice(semibold.byteOffset, semibold.byteOffset + semibold.byteLength));
 const rect = { x: 100, y: 100, width: 80, height: 40 };
 const node = (identifier, bounds = rect, index = 1) => ({ index, parentIndex: 0, type: 'Button', identifier, label: identifier, rect: bounds });
 function run(step, nodes = [node('a')], criterion = 'The expected UI is shown.', extra = {}) {
@@ -57,7 +58,8 @@ test('INFO is dotted, all passing checks solid, and arrows have target-edge endp
   assert.equal(info.views[0].regions[0].border, 'dotted');
   assert.equal(info.views[0].regions[0].tag.lines[0].text, '1');
   assert.equal(info.views[0].regions[0].arrows.length, 1);
-  assert.equal(info.legend.rows[0].block.source, '1 INFO: Here');
+  assert.equal(info.legend.rows[0].title.source, 'INFO · Here');
+  assert.equal(info.legend.rows[0].detail.source, 'Highlighted for context; no assertion');
   assert.equal(run({ checks: [check()] }).views[0].regions[0].border, 'solid');
 });
 
@@ -189,7 +191,7 @@ test('completed check survives a drawable-evidence error in its legend row', () 
   const result = run({ annotate: [{ box: { target: 'id=missing', expect: { absent: true } } }] });
   assert.equal(result.result, 'error');
   assert.equal(result.views[0].regions.length, 0);
-  assert.match(result.legend.rows[0].block.source, /ERROR:.*\nCheck: PASS/);
+  assert.match(result.legend.rows[0].block.source, /ERROR.*\nCheck: PASS/);
   assert.equal(result.checkCounts.passed, 1);
 });
 
@@ -202,4 +204,25 @@ test('unavailable assertion still applies a drawable mask with an error badge', 
   const result = layoutStep({ step, criterion: 'Mask remains covered.', accepted, metrics });
   assert.equal(result.result, 'error'); assert.equal(result.views[0].masks.length, 1);
   assert.match(result.views[0].regions[0].tag.lines[0].text, /1 !/);
+});
+
+
+test('legend hierarchy preserves measured text, large numbers and zero-check counts', () => {
+  assert.equal(createHash('sha256').update(semibold).digest('hex'), '78a843fade9d4612a5567302fb595b56976eb5fcebf4fea5a5912d638bafcde3');
+  const text = 'Wide heading WWW with spaces and unsupported 漢 '.repeat(12);
+  const result = run({ annotate: Array.from({ length: 105 }, () => ({ callout: { target: 'id=a', text } })) }, undefined, text);
+  assert.equal(result.legend.badge.source, 'PASSED');
+  assert.equal(result.legend.counts.source, 'Checks: 0, passed: 0, failed: 0');
+  assert.ok(result.legend.criterion.lines.every((line) => line.weight === 'semibold'));
+  for (const row of result.legend.rows) {
+    assert.equal(row.number.source, String(row.n));
+    assert.ok(row.title.lines.every((line) => line.weight === 'semibold'));
+    assert.ok(row.detail.lines.every((line) => line.weight === 'regular'));
+    for (const block of [row.title, row.detail]) {
+      assert.equal(block.lines.map(({ text }) => text).join(''), block.source.replaceAll('\n', ''));
+      assert.ok(block.lines.every((line) => block.x + line.width <= result.width - result.style.padding));
+    }
+    assert.ok(row.detail.y >= row.title.y + row.title.height);
+    assert.ok(row.detail.y + row.detail.height <= result.height);
+  }
 });

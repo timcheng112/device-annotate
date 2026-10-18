@@ -1,9 +1,9 @@
 # device-annotate: implementation plan
 
 Status: M0-M6 behavior and verification are implemented; M6 hosted unit/package/iOS/Android gates pass.
-M4 visual fidelity is reopened following the user's request to match the exact agreed prototypes.
+The user approved the M4 prototype-fidelity update after reviewing the local before/after comparison.
 Passing golden comparisons establish regression stability, not exact prototype fidelity.
-See [PLAN.delivery.md](PLAN.delivery.md) for the current visual gaps and verification state.
+See [PLAN.delivery.md](PLAN.delivery.md) for visual acceptance and current verification evidence.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for runtime evidence, reproducible commands, and metadata collection limitations to address during M5 integration.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.
@@ -413,9 +413,9 @@ Production rendering and visual review remain M4 work.
 
 ## M4. Rendering and reviewed golden images
 
-M4 is complete.
-[Rendering evidence](M4-RENDERING.md) records the renderer boundary, nine agent-reviewed neutral golden images, visual fixes, verification, and performance measurements.
-`npm run check` passes 679 tests, including nine exact golden pixel comparisons, plus all schema and vendor checks.
+M4 is complete, including the subsequently approved prototype-fidelity correction recorded in [PLAN.delivery.md](PLAN.delivery.md).
+The original [rendering evidence](M4-RENDERING.md) records the renderer boundary, nine agent-reviewed neutral golden images, visual fixes, verification, and performance measurements.
+The original M4 gate passed 679 tests; the current verification count and accepted visual baseline are recorded in the delivery record.
 The measured in-memory processing pipeline stays below one second on the recorded Apple M2 environment; live capture and filesystem persistence remain M5 work.
 
 ### Work
@@ -485,7 +485,7 @@ M5 is complete.
 
 M6 is complete at verified commit `b523e09`.
 [The delivery record](PLAN.delivery.md) contains local/hosted evidence and package limitations.
-The reopened M4 prototype-fidelity work remains required for overall design completion.
+The reopened M4 prototype-fidelity work has received explicit user approval.
 
 ### Work
 

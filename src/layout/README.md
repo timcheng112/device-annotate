@@ -43,9 +43,10 @@ The overall outcome and legend rows preserve error precedence and completed resu
 The bundled font and its provenance are documented in [the font directory](../render/fonts/README.md).
 Each text line retains its original text, display text, exact glyph indices, advances, and horizontal positions.
 The renderer must use these positions and the identical font bytes, preserving whitespace rather than asking a host text engine to reflow or reshape the text.
-Vertical layout uses a base 24-pixel line height and 16-pixel font size, multiplied by the screenshot-width scale.
+Tags use a base 16-pixel semibold font and 24-pixel line height.
+The legend uses 15-pixel semibold criteria, 13-pixel semibold titles and number badges, and 11.5-pixel regular details with 1.5 line spacing, multiplied by the screenshot-width scale.
 The baseline should be the line top plus the supplied font's ascender at that size.
-Criterion and annotation source strings remain available verbatim, and expected/actual values use lossless JSON strings.
+Criterion and annotation source strings remain available verbatim, and expected/actual values retain lossless JSON values beside readable predicate labels.
 No text or record is truncated.
 
 The approved current scope focuses on English.

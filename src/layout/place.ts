@@ -22,14 +22,14 @@ export function placeTags(items: { rect: Rect; text: string }[], frame: Rect, me
     const tokens = item.text.split(', ');
     for (const [index, token] of tokens.entries()) {
       const piece = token + (index < tokens.length - 1 ? ', ' : '');
-      if (pending && metrics.line(pending + piece, style.fontSize).width > maxWidth - 16 * scale) {
-        lines.push(metrics.line(pending, style.fontSize)); pending = '';
+      if (pending && metrics.line(pending + piece, style.fontSize, 'semibold').width > maxWidth - 16 * scale) {
+        lines.push(metrics.line(pending, style.fontSize, 'semibold')); pending = '';
       }
       // Keep each entry number and its result symbol together across wrapped lines.
       pending += piece;
     }
-    if (pending) lines.push(metrics.line(pending, style.fontSize));
-    const width = Math.ceil(Math.max(...lines.map((line) => line.width))) + 16 * scale;
+    if (pending) lines.push(metrics.line(pending, style.fontSize, 'semibold'));
+    const width = Math.max(36 * scale, Math.ceil(Math.max(...lines.map((line) => line.width))) + 16 * scale);
     const height = lines.length * style.lineHeight + 12 * scale;
     const r = item.rect, gap = style.gap;
     const candidates: Rect[] = [

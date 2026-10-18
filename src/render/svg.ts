@@ -10,17 +10,18 @@ export function escapeXml(text: string): string {
 const box = (r: Rect) => `x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}"`;
 
 /** The caller must supply the successfully decoded and masked screenshot. */
-export function createSvgBuilder(fontBytes: ArrayBuffer, metrics: TextMetrics) {
-  const font = opentype.parse(fontBytes);
+export function createSvgBuilder(fontBytes: ArrayBuffer, metrics: TextMetrics, semiboldBytes: ArrayBuffer = fontBytes) {
+  const fonts = { regular: opentype.parse(fontBytes), semibold: opentype.parse(semiboldBytes) };
   return function buildSvg(layout: EvidenceLayout, screenshot: Uint8Array, dimensions: { width: number; height: number }): string {
     const { style } = layout;
     const scale = style.fontSize / 16;
-    const definitions = new Map<number, string>();
+    const definitions = new Map<string, string>();
     const title = (text: string) => `<title>${escapeXml(text)}</title>`;
     function lines(lines: TextLine[], x: number, y: number, color: string): string {
       return lines.map((line, index) => `<g fill="${escapeXml(color)}">${title(line.displayText)}${line.glyphs.map((glyph) => {
-        if (!definitions.has(glyph.index)) definitions.set(glyph.index, font.glyphs.get(glyph.index).getPath(0, 0, style.fontSize).toPathData(3));
-        return `<use href="#glyph-${glyph.index}" x="${x + glyph.x}" y="${y + index * style.lineHeight + metrics.ascent * style.fontSize}"/>`;
+        const key = `${glyph.index}-${line.weight}-${line.size}`;
+        if (!definitions.has(key)) definitions.set(key, fonts[line.weight].glyphs.get(glyph.index).getPath(0, 0, line.size).toPathData(3));
+        return `<use href="#glyph-${key}" x="${x + glyph.x}" y="${y + index * line.size * 1.5 + metrics.ascent * line.size}"/>`;
       }).join('')}</g>`).join('');
     }
     const block = (block: TextBlock, color = style.ink as string) => lines(block.lines, block.x, block.y, color);
@@ -56,18 +57,22 @@ export function createSvgBuilder(fontBytes: ArrayBuffer, metrics: TextMetrics) {
       }
       // Tags paint last so crossing connectors cannot obscure numbers or symbols.
       for (const region of view.regions) {
-        content.push(`<rect ${box(region.tag.rect)} rx="${12 * scale}" fill="${escapeXml(region.color)}" stroke="white" stroke-width="${style.haloWidth}"/>`);
-        content.push(lines(region.tag.lines, region.tag.rect.x + 8 * scale, region.tag.rect.y + 6 * scale, '#ffffff'));
+        content.push(`<rect ${box(region.tag.rect)} rx="${18 * scale}" fill="${escapeXml(region.color)}" stroke="white" stroke-width="${style.haloWidth}"/>`);
+        content.push(lines(region.tag.lines, region.tag.rect.x + (region.tag.lines.length === 1 ? (region.tag.rect.width - region.tag.lines[0]!.width) / 2 : 8 * scale), region.tag.rect.y + 6 * scale, '#ffffff'));
       }
       content.push('</g>');
     });
     content.push(`<rect ${box(layout.legend.rect)} fill="${style.panel}"/>`);
     const badgeColor = layout.result === 'error' ? '#8b1e12' : layout.result === 'failed' ? '#9e1b24' : '#145c3a';
-    content.push(`<rect x="${layout.legend.badge.x - 6 * scale}" y="${layout.legend.badge.y - 4 * scale}" width="${layout.width - 20 * scale}" height="${layout.legend.badge.height + 8 * scale}" rx="5" fill="${badgeColor}"/>`);
-    content.push(block(layout.legend.badge, '#ffffff'), block(layout.legend.criterion));
+    const badge = layout.legend.badge;
+    content.push(`<path d="M0 ${layout.legend.rect.y}H${layout.width}" stroke="#e3e6ec" stroke-width="${scale}"/>`);
+    content.push(`<rect x="${badge.x - 8 * scale}" y="${badge.y - 3 * scale}" width="${Math.max(...badge.lines.map((line) => line.width)) + 16 * scale}" height="${badge.height + 6 * scale}" rx="${(badge.height + 6 * scale) / 2}" fill="${badgeColor}"/>`);
+    content.push(block(badge, '#ffffff'), block(layout.legend.criterion), block(layout.legend.counts, '#5b6475'));
     for (const row of layout.legend.rows) {
-      content.push(`<path d="M${style.padding} ${row.block.y - 4 * scale}H${layout.width - style.padding}" stroke="#e1e4e8"/>`);
-      content.push(block(row.block, row.color ?? style.ink));
+      const numberWidth = Math.max(22 * scale, row.number.lines[0]!.width + 10 * scale);
+      content.push(`<rect x="${row.number.x}" y="${row.number.y}" width="${numberWidth}" height="${row.number.height}" rx="${row.number.height / 2}" fill="${row.color ?? '#5b6475'}"/>`);
+      content.push(lines(row.number.lines, row.number.x + (numberWidth - row.number.lines[0]!.width) / 2, row.number.y + scale, '#ffffff'));
+      content.push(block(row.title, row.color ?? style.ink), block(row.detail, '#5b6475'));
     }
     for (const warning of layout.legend.warnings) content.push(block(warning));
     defs.push(`<image id="screenshot" width="${dimensions.width}" height="${dimensions.height}" href="data:image/png;base64,${Buffer.from(screenshot).toString('base64')}"/>`);

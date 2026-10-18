@@ -1,5 +1,8 @@
 # M4 rendering evidence
 
+This document records the original M4 implementation and performance measurements.
+The later user-approved prototype-fidelity correction, refreshed golden references, and current verification evidence are recorded in [PLAN.delivery.md](PLAN.delivery.md#approved-prototype-fidelity-baseline).
+
 M4 implements deterministic SVG generation and WASM rasterization from accepted capture evidence.
 The implementation and nine golden references were verified on 2026-10-18.
 Live capture, atomic persistence, history updates, and CLI integration remain M5 work.

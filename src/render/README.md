@@ -1,6 +1,6 @@
 # Evidence renderer
 
-`createEvidenceRenderer` initializes the pinned WASM runtime from supplied bytes and parses the supplied bundled Inter font.
+`createEvidenceRenderer` initializes the pinned WASM runtime from supplied bytes and parses the supplied bundled Inter Regular and SemiBold fonts.
 The integration layer owns asset loading; this module performs no filesystem, network, or device IO.
 WASM initialization is shared per process and failed initialization can be retried.
 The returned synchronous `render` method accepts a screenshot, effective step, criterion, and accepted M2 evidence.
@@ -16,7 +16,7 @@ Tiny masks retain opaque coverage and their fixed `masked` label appears in the 
 Raw capture artifacts remain the caller's separate audit inputs.
 
 The SVG builder consumes the validated layout and prepared screenshot.
-It uses explicit glyph outlines from the bundled Inter file at M3's measured positions, avoiding text shaping or host-font substitution.
+It uses explicit glyph outlines from the corresponding bundled Inter face at M3's measured positions, avoiding text shaping or host-font substitution.
 The same font bytes are also supplied to resvg through `fontBuffers` under T4.
 User/snapshot text appears only in escaped SVG titles and precomputed glyph outlines.
 SVG references are local IDs or the in-memory PNG data URI.

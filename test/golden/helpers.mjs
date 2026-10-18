@@ -4,8 +4,9 @@ import { evaluateStep } from '../../dist/check/step.js';
 export const root = new URL('../../', import.meta.url);
 export async function assets() {
   const font = await readFile(new URL('src/render/fonts/Inter-Regular.ttf', root));
+  const semibold = await readFile(new URL('src/render/fonts/Inter-SemiBold.ttf', root));
   const wasm = await readFile(new URL('../../node_modules/@resvg/resvg-wasm/index_bg.wasm', import.meta.url));
-  return { font: font.buffer.slice(font.byteOffset, font.byteOffset + font.byteLength), wasm };
+  return { font: font.buffer.slice(font.byteOffset, font.byteOffset + font.byteLength), semibold: semibold.buffer.slice(semibold.byteOffset, semibold.byteOffset + semibold.byteLength), wasm };
 }
 export const cases = ['ios-native', 'android-native', 'primitives-mixed', 'dense-masked', 'long-tags', 'partial-error', 'crop-edge', 'contrast', 'legend-only'];
 export async function setup() {

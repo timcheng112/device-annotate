@@ -5,11 +5,12 @@ import { createEvidenceRenderer } from '../render/evidence.js';
 let renderer: ReturnType<typeof createEvidenceRenderer> | undefined;
 export function loadRenderer(): ReturnType<typeof createEvidenceRenderer> {
   renderer ??= (async () => {
-    const [font, wasm] = await Promise.all([
+    const [font, semibold, wasm] = await Promise.all([
       readFile(new URL('../../src/render/fonts/Inter-Regular.ttf', import.meta.url)),
+      readFile(new URL('../../src/render/fonts/Inter-SemiBold.ttf', import.meta.url)),
       readFile(new URL('index_bg.wasm', import.meta.resolve('@resvg/resvg-wasm'))),
     ]);
-    return createEvidenceRenderer({ font: font.buffer.slice(font.byteOffset, font.byteOffset + font.byteLength), wasm });
+    return createEvidenceRenderer({ font: font.buffer.slice(font.byteOffset, font.byteOffset + font.byteLength), semibold: semibold.buffer.slice(semibold.byteOffset, semibold.byteOffset + semibold.byteLength), wasm });
   })().catch((error: unknown) => { renderer = undefined; throw error; });
   return renderer;
 }

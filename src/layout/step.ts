@@ -18,7 +18,7 @@ export type Region = { numbers: number[]; targetIds: string[]; rect: Rect; color
 export type View = { kind: 'overview' | 'detail'; targetId?: string; source: Rect; frame: Rect;
   width: number; height: number; regions: Region[]; masks: { numbers: number[]; rect: Rect; label: 'masked'; fill: string; hatch: true }[] };
 export type TextBlock = { x: number; y: number; height: number; lines: TextLine[]; source: string };
-export type LegendRow = { n: number; outcome: 'INFO' | 'PASS' | 'FAIL' | 'ERROR'; color?: string; block: TextBlock };
+export type LegendRow = { n: number; outcome: 'INFO' | 'PASS' | 'FAIL' | 'ERROR'; color?: string; number: TextBlock; title: TextBlock; detail: TextBlock; block: TextBlock };
 
 /** All positions are evidence-image pixels. Source rectangles remain raw screenshot pixels. */
 export function layoutStep(input: { step: StepInput; criterion: string; accepted: AcceptedEvaluation; metrics: TextMetrics }) {
@@ -88,33 +88,51 @@ export function layoutStep(input: { step: StepInput; criterion: string; accepted
     }
   }
   const width = Math.max(360 * style.fontSize / 16, ...views.map((view) => view.width));
-  const legendY = bottom, textWidth = width - style.padding * 2;
+  const legendY = bottom;
   bottom += style.padding;
-  function block(source: string): TextBlock {
-    const lines = metrics.wrap(source, style.fontSize, textWidth);
-    const result = { x: style.padding, y: bottom, height: lines.length * style.lineHeight, lines, source };
+  const scale = style.fontSize / 16;
+  function block(source: string, size = 13 * scale, weight: TextLine['weight'] = 'regular', x = style.padding): TextBlock {
+    const lines = metrics.wrap(source, size, width - style.padding - x, weight);
+    const result = { x, y: bottom, height: lines.length * size * 1.5, lines, source };
     bottom += result.height + style.gap;
     return result;
   }
-  const badge = block(`${summary.result.toUpperCase()} | Checks: ${summary.checkCounts.total}, passed: ${summary.checkCounts.passed}, failed: ${summary.checkCounts.failed}`);
-  const criterionBlock = block(criterion);
+  const badge = block(summary.result.toUpperCase(), 11 * scale, 'semibold', style.padding + 8 * scale);
+  bottom += 8 * scale;
+  const criterionBlock = block(criterion, 15 * scale, 'semibold');
+  const counts = block(`Checks: ${summary.checkCounts.total}, passed: ${summary.checkCounts.passed}, failed: ${summary.checkCounts.failed}`, 11.5 * scale);
+  bottom += 8 * scale;
+  // Preserve every value while presenting predicate names as readable labels, not JSON objects.
+  const describe = (value: object) => Object.entries(value).map(([key, item]) => `${key} = ${JSON.stringify(item)}`).join('; ');
   const rows: LegendRow[] = entries.map((entry) => {
     const primitive = entry.kind === 'check' ? entry.check : Object.values(entry.annotation)[0]!;
     const target = 'to' in primitive ? primitive.to : primitive.target;
     const text = 'text' in primitive && typeof primitive.text === 'string' ? primitive.text : target;
     const check = summary.checks.find((check) => check.n === entry.n);
-    const parts = [`${entry.n} ${outcome(entry.n)}: ${text}`];
+    const rowOutcome = outcome(entry.n);
+    const start = bottom;
+    const numberLines = [metrics.line(String(entry.n), 13 * scale, 'semibold')];
+    const numberWidth = Math.max(22 * scale, numberLines[0]!.width + 10 * scale);
+    const number = { x: style.padding, y: start, height: 22 * scale, lines: numberLines, source: String(entry.n) };
+    const x = style.padding + numberWidth + 12 * scale;
+    const symbol = rowOutcome === 'PASS' ? '✓ ' : rowOutcome === 'FAIL' ? '× ' : '';
+    const title = block(`${symbol}${rowOutcome} · ${text}`, 13 * scale, 'semibold', x);
+    bottom -= style.gap - 2 * scale;
+    const parts: string[] = [];
     if (isMask(entry.n)) parts.push('masked');
     if (check) {
-      parts.push(`Check: ${check.result.toUpperCase()}`);
-      parts.push(`Expected: ${JSON.stringify(check.expect)}`, `Actual: ${JSON.stringify(check.actual)}`);
-    }
+      if (rowOutcome === 'ERROR') parts.push(`Check: ${check.result.toUpperCase()}`);
+      parts.push(`Expected: ${describe(check.expect)}`, `Actual: ${describe(check.actual)}`);
+    } else if (rowOutcome === 'INFO') parts.push('Highlighted for context; no assertion');
     for (const error of summary.errors.filter((error) => error.n === entry.n)) parts.push(`${error.code}: ${error.message}`);
     for (const warning of geometry.warnings.filter((warning) => 'n' in warning && warning.n === entry.n)) parts.push(warning.message);
-    return { n: entry.n, outcome: outcome(entry.n), ...(geometry.targets.some((target) => target.n === entry.n) ? { color: colorFor(entry.n) } : {}), block: block(parts.join('\n')) };
+    const detail = block(parts.join('\n'), 11.5 * scale, 'regular', x);
+    bottom += 6 * scale;
+    return { n: entry.n, outcome: rowOutcome, ...(geometry.targets.some((target) => target.n === entry.n) ? { color: colorFor(entry.n) } : {}),
+      number, title, detail, block: { x, y: start, height: bottom - start, lines: [...title.lines, ...detail.lines], source: `${title.source}\n${detail.source}` } };
   });
   const warnings = geometry.warnings.filter((warning) => 'cropTarget' in warning).map((warning) => block(`${'cropTarget' in warning ? warning.cropTarget : ''}: ${warning.message}`));
-  return { kind: 'layout' as const, width, height: bottom + style.padding, style, views,
-    legend: { rect: { x: 0, y: legendY, width, height: bottom + style.padding - legendY }, badge, criterion: criterionBlock, rows, warnings },
+  return { kind: 'layout' as const, width, height: Math.ceil(bottom + style.padding), style, views,
+    legend: { rect: { x: 0, y: legendY, width, height: Math.ceil(bottom + style.padding) - legendY }, badge, counts, criterion: criterionBlock, rows, warnings },
     result: summary.result, checkCounts: summary.checkCounts };
 }

@@ -1,13 +1,15 @@
 import opentype from 'opentype.js';
 
 export type GlyphPlacement = { index: number; x: number; advance: number };
-export type TextLine = { text: string; displayText: string; width: number; glyphs: GlyphPlacement[] };
+export type TextLine = { size: number; weight: 'regular' | 'semibold'; text: string; displayText: string; width: number; glyphs: GlyphPlacement[] };
 export type TextMetrics = ReturnType<typeof createTextMetrics>;
 
 /** The caller loads the bundled bytes. Layout never reads files or host fonts. */
-export function createTextMetrics(bytes: ArrayBuffer) {
-  const font = opentype.parse(bytes);
-  function line(text: string, size: number): TextLine {
+export function createTextMetrics(bytes: ArrayBuffer, semiboldBytes: ArrayBuffer = bytes) {
+  const fonts = { regular: opentype.parse(bytes), semibold: opentype.parse(semiboldBytes) };
+  const font = fonts.regular;
+  function line(text: string, size: number, weight: TextLine['weight'] = 'regular'): TextLine {
+    const font = fonts[weight];
     if (!Number.isFinite(size) || size <= 0) throw new Error('Font size must be positive and finite.');
     // Explicit escapes retain unsupported characters as readable evidence rather than tofu.
     const displayText = [...text].map((character) => font.charToGlyphIndex(character) > 0
@@ -21,9 +23,9 @@ export function createTextMetrics(bytes: ArrayBuffer) {
       width += advance;
     }
     // Explicit glyph positions deliberately disable shaping/kerning differences in renderers.
-    return { text, displayText, width, glyphs };
+    return { size, weight, text, displayText, width, glyphs };
   }
-  function wrap(text: string, size: number, maxWidth: number): TextLine[] {
+  function wrap(text: string, size: number, maxWidth: number, weight: TextLine['weight'] = 'regular'): TextLine[] {
     if (!Number.isFinite(maxWidth) || maxWidth <= 0) throw new Error('Text width must be positive and finite.');
     const lines: TextLine[] = [];
     for (const paragraph of text.split('\n')) {
@@ -31,10 +33,10 @@ export function createTextMetrics(bytes: ArrayBuffer) {
       const widths = new Map<string, number>();
       const widthOf = (character: string) => {
         let width = widths.get(character);
-        if (width === undefined) { width = line(character, size).width; widths.set(character, width); }
+        if (width === undefined) { width = line(character, size, weight).width; widths.set(character, width); }
         return width;
       };
-      const flush = () => { lines.push(line(pending, size)); pending = ''; pendingWidth = 0; };
+      const flush = () => { lines.push(line(pending, size, weight)); pending = ''; pendingWidth = 0; };
       for (const token of paragraph.match(/\s+|\S+/gu) ?? []) {
         const tokenWidth = [...token].reduce((sum, character) => sum + widthOf(character), 0);
         if (pending && pendingWidth + tokenWidth > maxWidth) flush();
@@ -45,7 +47,7 @@ export function createTextMetrics(bytes: ArrayBuffer) {
           pending += character; pendingWidth += width;
         }
       }
-      lines.push(line(pending, size));
+      lines.push(line(pending, size, weight));
     }
     return lines;
   }

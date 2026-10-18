@@ -328,3 +328,69 @@ M6's help, skill, packaging, and verification scope is complete.
 The overall design is not signed off: the user explicitly reaffirmed exact approved-prototype fidelity, and the comparison above reopened that M4 work.
 Next safe action: implement the Style C legend hierarchy and badge presentation with the later grouped-tag/INFO/dense-overlap refinements, generate neutral candidates, compare them beside the exact agreed prototypes in the visible preview surface, and verify before replacing golden references.
 Preserve current capture behavior, privacy rules, unknown-environment admission, and the documented iOS limits throughout the visual correction.
+
+## Prototype fidelity implementation and pending visual acceptance
+
+The resumed visual increment is implemented locally on `plan/implementation` in `~/Documents/repos/device-annotate`.
+The legend now uses a compact outcome pill, a measured wrapping semibold criterion, separate explicit check counts, numbered region badges, semibold result/title rows, and subordinate readable predicate/value details.
+Repeated PASS/FAIL diagnostics are removed except when a completed check must remain visible alongside an ERROR.
+INFO rows retain explicit context-only wording, and zero evaluated checks remain explicit.
+Tags use semibold glyphs and pill-shaped single-line backgrounds; multiline tags retain bounded corner radii so their numbers remain on the colored background.
+Grouping, region colors, border semantics, masks, dense details, source coordinates, and evidence-error handling remain intact.
+
+Inter SemiBold is bundled from the same official Inter 4.1 archive as Regular, with its hash recorded in the font README.
+Layout lines carry their face and size, and SVG glyph definitions are keyed by glyph, face, and size.
+The package allowlist and isolated consumer check cover the additional font.
+No runtime font downloads or system-font dependencies were introduced.
+
+All nine neutral candidate PNGs/SVGs are under ignored `scripts/m0/.local/visual-fidelity/`.
+The local `comparison.html` presents the exact agreed references and all nine previous/candidate pairs in cmux surface `surface:40`.
+The browser initially restricted file references outside the gallery directory; embedding the local images corrected this, and all 32 images were verified loaded.
+The comparison contains the private Style C reference and must remain ignored and local.
+All nine candidates were inspected locally for hierarchy, wrapping, native dimensions, crop warnings, error details, masking, and contrast.
+The user has been asked to accept the concrete candidates or request adjustments; visual acceptance remains pending.
+Approved golden PNGs have deliberately not been replaced.
+
+Verification on Node 24.21.0, macOS arm64:
+
+- The full check command passed type checking and 732 tests; its nine failures are expected pixel comparisons against unchanged approved goldens.
+- The focused layout/render run passed all 31 tests before an additional typography regression was added.
+- The final layout run passed all 23 tests, including the new semibold hash, measured wrapping, 105 numbered rows, unsupported glyph preservation, and zero-check-count case.
+- All 18 generated-schema freshness checks and 22 vendor hash checks passed separately because golden failures stop the chained check command.
+- `npm run check:package -- --offline` passed installed CLI/API and pass/fail/error rendering checks with runtime network entry points blocked.
+- The resulting package contains 171 files and is 554894 bytes.
+- `npm run benchmark:render` passed all four cases and every measured sample stayed below one second; initialization was 49.4 ms and the largest first sample was iOS at 718.5 ms.
+- Warm rendering medians were 594.7 ms for iOS, 447.7 ms for Android, 152.5 ms for dense masked details, and 98.9 ms for long tags.
+- These measurements exclude device capture and asset/file reads and do not replace the earlier integrated capture measurements.
+
+Current phase: local implementation and candidate verification complete; visual acceptance and golden promotion pending.
+No commit, push, PR, publication, or fresh native-device run occurred in this continuation.
+Next safe action: incorporate the user's comparison feedback, promote only accepted candidate PNGs through file copying, rerun the full check command, and record the resulting visual baseline before claiming prototype-fidelity completion.
+
+## Visual review clarification
+
+The user's “ok continue” was initially interpreted as candidate acceptance, and the nine neutral candidates were copied into the golden directory.
+The full check then passed all 742 tests, type checking, 18 schema freshness checks, and 22 vendor hash checks.
+The user subsequently asked what visual acceptance meant and where to see the output, establishing that visual review had not yet happened.
+The original golden files were restored from HEAD, preserving the candidates and all implementation changes.
+Visual acceptance remains pending; no commit or external delivery occurred.
+The comparison is in cmux surface `surface:40`, titled “Prototype fidelity review”, and its local path is `scripts/m0/.local/visual-fidelity/comparison.html`.
+Next safe action: show the comparison, obtain the user's visual feedback, and promote candidates only after actual review.
+
+The user requested a clearer review focus and click-to-zoom screenshots.
+The ignored local comparison now leads with the primitives-mixed previous/updated pair and collapses prototype references and other cases into optional sections.
+Every screenshot opens a modal viewer with zoom in/out, wheel zoom, Fit, 100%, scrolling, and Escape/Close controls.
+The comparison remains local and visual acceptance remains pending.
+
+## Approved prototype-fidelity baseline
+
+The user explicitly approved the updated output with “ok lgtm, approved” after the focused comparison and interactive zoom were available in cmux.
+All nine reviewed neutral PNG candidates were promoted to `test/golden/approved/`.
+The full `npm run check` now passes all 742 tests, including nine exact golden pixel comparisons, type checking, 18 schema freshness checks, and 22 vendor hash checks.
+The package and rendering performance checks recorded above remain applicable because the implementation has not changed since those checks.
+M4 prototype fidelity is accepted and its local verification is complete.
+
+The visual implementation, bundled semibold font, tests, accepted neutral goldens, and updated evidence records are prepared for a local commit on `plan/implementation`.
+The private reference comparison and its zoom viewer remain ignored and local.
+No remote push, hosted verification, PR, merge, npm publication, or fresh native-device run was performed for this visual increment.
+Next action, if requested: push the local visual-fidelity commit and monitor the existing hosted verification workflow.

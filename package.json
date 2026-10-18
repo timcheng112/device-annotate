@@ -55,6 +55,7 @@
     "src/spec/*.schema.json",
     "src/manifest/*.schema.json",
     "src/render/fonts/Inter-Regular.ttf",
+    "src/render/fonts/Inter-SemiBold.ttf",
     "src/render/fonts/LICENSE.txt",
     "src/render/fonts/README.md",
     "src/vendor/agent-device/LICENSE",

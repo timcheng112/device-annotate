@@ -14,7 +14,7 @@ test('SVG uses actual region colors, bundled glyph paths, and explicit error dia
   assert.equal(result.layout.result, 'error');
   assert.match(result.svg, /ERROR/);
   assert.match(result.svg, /TARGET_NOT_FOUND/);
-  assert.match(result.svg, /id="glyph-\d+"/);
+  assert.match(result.svg, /id="glyph-\d+-(?:regular|semibold)-[\d.]+"/);
   assert.doesNotMatch(result.svg, /<text|font-family=|file:|https?:\/\/(?!www\.w3\.org)/);
   const png = PNG.sync.read(Buffer.from(result.png));
   for (const region of result.layout.views[0].regions) {
