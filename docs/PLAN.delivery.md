@@ -215,3 +215,8 @@ The first run passed the complete offline checks on Ubuntu.
 Android setup failed because `sdkmanager` was absent from `PATH`; the workflow now explicitly sets up Android command-line tools and the fixture SDK packages.
 iOS setup failed because the pinned agent-device CLI accepts `prepare --timeout`, while the workflow used `--timeout-ms`; the command now matches the installed CLI help.
 Both corrections concern test setup, and neither changes the capture-only adapter or environment admission gates.
+
+The second hosted run, https://github.com/timcheng112/device-annotate/actions/runs/39090147160 at `10aec39`, passed all 740 tests and the iOS native suite, including capture-only refusal.
+Android built the fixture but its emulator exited before boot: 3510 MB was available and the data partition required 7373 MB.
+The workflow now removes unused .NET and Android NDK installations from the disposable Android runner before setup, reports available disk space, and bounds emulator boot to five minutes.
+No local SDK installation is removed.

@@ -46,6 +46,11 @@ jobs:
       AGENT_DEVICE_STATE_DIR: ${{ github.workspace }}/scripts/m0/.local/ci-state
     steps:
       - uses: actions/checkout@v4
+      - name: Free space for Android emulator
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet "${ANDROID_HOME:?}/ndk"
+          df -h /
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -71,6 +76,7 @@ jobs:
           api-level: 33
           arch: x86_64
           target: google_apis
+          emulator-boot-timeout: 300
           script: |
             adb -s emulator-5554 install --no-incremental -r scripts/m0/.local/build/fixture.apk
             node node_modules/agent-device/bin/agent-device.mjs open dev.deviceproof.fixture --platform android --serial emulator-5554 --activity .FixtureActivity --json
