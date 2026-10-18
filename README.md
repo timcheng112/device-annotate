@@ -26,6 +26,7 @@ Physical-device support is unverified.
 See [third-party notices](THIRD_PARTY_NOTICES.md) for font, vendored code, and WASM dependency licensing.
 
 For local verification, run `npm ci`, `npm run check`, and `npm run check:package`.
-The package check packs into a temporary directory and installs into an isolated consumer using npm's offline cache, then exercises the installed CLI, Node API, renderer, and cleanup.
-Warm the dependency cache with `npm ci` first.
+The package check packs into a temporary directory and installs into an isolated consumer using npm, then exercises the installed CLI, Node API, renderer, and cleanup.
+Use `npm run check:package -- --offline` when both dependency tarballs and registry metadata are already cached.
+A fresh CI cache populated only by `npm ci` may lack the registry metadata needed for offline dependency resolution.
 The package remains private; packing and verification do not publish it.

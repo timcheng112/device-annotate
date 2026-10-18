@@ -1,6 +1,9 @@
 # device-annotate: implementation plan
 
-Status: M0 through M4 complete, with contracts through T56 approved; M5 implementation is in progress.
+Status: M0-M5 behavior and verification are implemented; M6 hosted verification is in progress.
+M4 visual fidelity is reopened following the user's request to match the exact agreed prototypes.
+Passing golden comparisons establish regression stability, not exact prototype fidelity.
+See [PLAN.delivery.md](PLAN.delivery.md) for the current visual gaps and verification state.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for runtime evidence, reproducible commands, and metadata collection limitations to address during M5 integration.
 The settled product and technical decisions remain in [REQUIREMENTS.md](REQUIREMENTS.md) and [DESIGN.md](DESIGN.md).
 This plan records the agreed behavior, implementation order, deliverables, and verification gates.

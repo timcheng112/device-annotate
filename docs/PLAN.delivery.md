@@ -1,7 +1,7 @@
 # M6 delivery
 
 M5 integrates capture, rendering, durable artifacts, ownership, and cleanup under [PLAN.md](PLAN.md).
-Current phase: M6 implemented and locally verified; hosted verification awaits push approval.
+Current phase: M6 implemented and locally verified; hosted verification is running.
 M5 remains complete, with public capture/cleanup, native adapters, local verification, and hosted CI gates passing.
 M0 through M4 are complete; M4 was committed as `12c12ab`.
 Its rendering and performance evidence remains in [M4-RENDERING.md](M4-RENDERING.md).
@@ -277,3 +277,32 @@ A read-only GitHub query confirmed `timcheng112/device-annotate` is private.
 An explicit approval request for pushing that commit and running hosted unit/iOS/Android verification is pending in the current conversation.
 No M6 push or hosted run has occurred.
 Next safe action: obtain that approval, push `plan/implementation`, monitor its checks, and update the M6 completion evidence.
+
+
+## M6 hosted verification in progress
+
+The user authorized continuation with the pending push and hosted checks.
+The push succeeded at `005c200`.
+[Run 39092468520](https://github.com/timcheng112/device-annotate/actions/runs/39092468520) is checking unit/package verification, iOS simulator behavior, and Android emulator behavior.
+Next safe action: monitor the run, fix any in-scope failures, and record final evidence before marking M6 complete.
+
+
+## Reopened prototype fidelity review
+
+During hosted M6 verification, the user clarified that the exact agreed prototypes remain the visual target.
+Direct comparison of `docs/prototypes/annotation-overlap/grouped.png` and `info.png` with `test/golden/approved/primitives-mixed.png` confirms the implemented grouping/result behavior but exposes presentation differences.
+The prototypes use pill-shaped tags and a stronger legend hierarchy with emphasized result/title rows and subdued supporting details.
+The implementation uses less-rounded tags, regular-weight legend text throughout, repeats the check result, and renders expected/actual objects as diagnostic JSON rows.
+The existing golden images preserve these differences, so their passing tests cannot establish prototype fidelity.
+The earlier M4 completion statement is therefore limited to implemented behavior and its recorded agent-reviewed output; visual fidelity is reopened.
+
+The visual follow-through must compare the approved T11 marker/legend style and T20/T21/T22/T25 refinements against production output, correct the identified differences, and present a side-by-side preview through the established visible surface before claiming design completion.
+Use neutral fixtures for committed/package artifacts and retain the original employer-app prototype inputs only in their ignored local location.
+M6 packaging verification and this visual follow-through are separate evidence gates; passing hosted checks does not close the visual gap.
+
+
+## M6 fresh-cache package check correction
+
+The first M6 hosted unit job passed all regression/schema/vendor checks, but isolated installation failed with `ENOTCACHED` because `npm ci` cached tarballs without the package registry metadata needed by a new offline consumer.
+The package verifier now permits normal npm installation with `--prefer-offline` by default and retains explicit `--offline` mode for a fully warmed cache.
+Only dependency installation can consult the registry; the consumer's runtime network blocks remain unchanged.

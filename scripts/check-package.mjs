@@ -5,6 +5,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+const args = process.argv.slice(2);
+assert.ok(args.length === 0 || (args.length === 1 && args[0] === '--offline'), 'Usage: npm run check:package [-- --offline]');
+const installMode = args.length ? ['--offline'] : ['--prefer-offline'];
 const root = fileURLToPath(new URL('../', import.meta.url));
 const temporary = await mkdtemp(join(tmpdir(), 'device-annotate-package-'));
 function run(command, args, cwd = root) {
@@ -25,7 +28,7 @@ try {
   const consumer = join(temporary, 'consumer');
   await cp(new URL('../test/package/', import.meta.url), consumer, { recursive: true });
   await writeFile(join(consumer, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
-  run('npm', ['install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund', join(temporary, packed.filename)], consumer);
+  run('npm', ['install', ...installMode, '--ignore-scripts', '--no-audit', '--no-fund', join(temporary, packed.filename)], consumer);
   await cp(new URL('../test/fixtures/capture-spike/ios/', import.meta.url), join(consumer, 'fixture'), { recursive: true });
   await cp(new URL('../examples/environment.complete.json', import.meta.url), join(consumer, 'environment.json'));
   textOutput(run(process.execPath, ['consumer.mjs'], consumer));
