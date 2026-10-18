@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { localDeviceAdapter } from '../../dist/capture/device.js';
+import { verifyNativeEnvironment } from './environment-gate.mjs';
 
 const platform = process.argv[2];
 assert.ok(['ios', 'android'].includes(platform), 'Usage: node test/e2e/native.mjs ios|android [output-directory]');
@@ -34,12 +35,13 @@ for (const [name, config, expected, exit] of [
   assert.equal(result.status, exit, result.stderr || result.stdout);
   const attempt = JSON.parse(result.stdout);
   assert.equal(attempt.result, expected, JSON.stringify(attempt.error));
+  const unavailable = verifyNativeEnvironment(platform, attempt.environment);
   assert.ok(attempt.raw && attempt.snapshot);
   assert.equal(Boolean(attempt.image), name !== 'error');
   for (const kind of ['raw', 'snapshot', 'image']) if (attempt[kind]) assert.ok((await readFile(join(out, attempt[kind]))).length);
   const ledger = JSON.parse(await readFile(join(out, 'manifest.json')));
   assert.equal(ledger.criteria[0].steps[0].attemptId, attempt.attemptId);
-  summary.push({ name, result: attempt.result, exit, elapsedMs: Math.round(performance.now() - start), image: attempt.image ? join(out, attempt.image) : null, unavailable: attempt.environment.unavailable.map((entry) => entry.path.join('.')) });
+  summary.push({ name, result: attempt.result, exit, elapsedMs: Math.round(performance.now() - start), image: attempt.image ? join(out, attempt.image) : null, unavailable });
 }
 // Exercise the real environment gate and ledger reconciliation through the CLI.
 const flowPath = join(output, 'flow.json');

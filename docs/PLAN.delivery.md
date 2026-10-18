@@ -171,6 +171,21 @@ The fixture builder now supports the host simulator architecture and `JAVA_HOME`
 Runner selection follows [GitHub's runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners), and Android setup follows the [emulator action's documentation](https://github.com/ReactiveCircus/android-emulator-runner/blob/main/README.md).
 These workflow definitions are local and have not run on hosted CI.
 
+## Resumed local verification
+
+Review of the native CI harness found that any missing Android environment metadata could select the refusal case and silently skip multi-step aggregation, replacement, and archival verification.
+The harness now requires complete Android environment metadata for every pass/fail/error case.
+iOS permits only the documented unknown active rotation and rotation-dependent pixel dimensions; unrelated missing metadata fails the native gate.
+Four regression tests cover complete metadata, Android metadata loss, the known iOS limitation, and unrelated iOS metadata loss.
+The tightened gate also accepts all six saved native pass/fail/error environment records from the preceding session.
+That replay uses saved evidence and does not constitute a fresh native run.
+
+`npm run check` passed after this change, including all 740 tests, type checking, 18 generated-schema freshness checks, and 22 vendor hash checks.
+Loopback transport tests ran with sandbox escalation.
+No simulator, emulator, or daemon was started during this continuation.
+No hosted CI run or publication occurred, and no Git remote is configured.
+The user has been asked for a repository destination and permission to push `plan/implementation` for hosted verification.
+
 ## Next safe action
 
 Review and run the committed native CI workflow after a Git remote and publication authorization are supplied.
