@@ -407,3 +407,17 @@ Current phase: approved visual increment complete and hosted verification succes
 The final evidence-only commit uses `[skip ci]`; the tested implementation commit remains `8ffbee2`.
 No PR, merge, or npm publication was performed.
 Next available delivery step: create a PR and merge when requested.
+
+## README preparation and branch topology correction
+
+The user authorized creating and merging a PR, then requested a README before npm publication.
+Repository inspection showed that `plan/implementation` is already the GitHub default branch and the only remote branch.
+There is no separate destination branch or unmerged implementation diff, so no PR or merge was created.
+The earlier suggestion to merge into a separate default branch was incorrect.
+
+README.md now documents the package purpose, unpublished/local installation and future registry installation, CLI quick starts, valid YAML examples, artifact meanings, annotation and check syntax, exit codes, build identity, platform limits, Node API, privacy, cleanup, reference, development checks, and licensing.
+Its YAML examples validate through the compiled public API and its JSON example parses successfully.
+The isolated offline package check passes with the expanded README included: 171 files, 557224 bytes, and successful installed CLI/API/rendering/cleanup checks.
+This documentation update changes no runtime implementation.
+The package remains private and unpublished; publication has not been authorized.
+Next available step is release preparation, including final package metadata and publication readiness review.
