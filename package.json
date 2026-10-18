@@ -28,7 +28,9 @@
     "check:vendor": "node scripts/check-vendor.mjs",
     "compare:vendor": "node scripts/vendor-agent-device.mjs",
     "test:golden": "npm run build && node --test test/golden/*.test.mjs",
-    "benchmark:render": "npm run build && node scripts/benchmark-render.mjs"
+    "benchmark:render": "npm run build && node scripts/benchmark-render.mjs",
+    "prepack": "npm run build",
+    "check:package": "node scripts/check-package.mjs"
   },
   "dependencies": {
     "@resvg/resvg-wasm": "2.6.2",
@@ -44,5 +46,20 @@
     "@types/node": "22.20.5",
     "ajv": "8.18.0",
     "typescript": "7.0.2"
-  }
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "bin/",
+    "src/cli/help.md",
+    "src/spec/*.schema.json",
+    "src/manifest/*.schema.json",
+    "src/render/fonts/Inter-Regular.ttf",
+    "src/render/fonts/LICENSE.txt",
+    "src/render/fonts/README.md",
+    "src/vendor/agent-device/LICENSE",
+    "src/vendor/agent-device/README.md",
+    "src/vendor/agent-device/sources.json",
+    "THIRD_PARTY_NOTICES.md"
+  ]
 }

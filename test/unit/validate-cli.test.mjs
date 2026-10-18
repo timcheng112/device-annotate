@@ -71,7 +71,7 @@ test("CLI supports literal dash-prefixed paths after -- and explicit help", (t) 
   assert.equal(run(["validate", "--", "-cart.yaml"], cwd).status, 0);
   const help = run(["validate", "--help"], cwd);
   assert.equal(help.status, 0);
-  assert.match(help.stdout, /Validates a spec offline/);
+  assert.match(help.stdout, /validates YAML or JSON offline/);
   assert.equal(help.stderr, "");
 });
 
@@ -98,5 +98,19 @@ test('capture CLI rejects invalid inputs and recordings before importing device 
     assert.equal(JSON.parse(result.stdout).error.code, code);
     assert.doesNotMatch(result.stderr, /OFFLINE_BOUNDARY/);
   }
+  assert.deepEqual(readdirSync(cwd), []);
+});
+
+test('all help aliases work without loading the device client or writing evidence', (t) => {
+  const cwd = fixture(t);
+  const reference = run(['help'], cwd);
+  assert.equal(reference.status, 0, reference.stderr);
+  for (const args of [['--help'], ['-h'], ['capture', '--help'], ['cleanup', '--help']]) {
+    const result = run(args, cwd);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stderr, '');
+    assert.equal(result.stdout, reference.stdout);
+  }
+  for (const match of reference.stdout.matchAll(/```yaml\n([\s\S]*?)```/g)) assert.equal(validate(match[1]).valid, true);
   assert.deepEqual(readdirSync(cwd), []);
 });

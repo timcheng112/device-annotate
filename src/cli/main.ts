@@ -1,5 +1,5 @@
 import { constants } from "node:fs";
-import { open } from "node:fs/promises";
+import { open, readFile } from "node:fs/promises";
 import { validate, type ValidationResult, type Diagnostic } from "../index.js";
 import { resolveArgumentPath } from "./paths.js";
 
@@ -38,15 +38,17 @@ function writeDiagnostic(error: Diagnostic): void {
 }
 
 const args = process.argv.slice(2);
-if (args[0] === 'capture' || args[0] === 'cleanup') {
+if ((args.length === 1 && ["help", "--help", "-h"].includes(args[0]!)) ||
+    (args.length === 2 && ["validate", "capture", "cleanup"].includes(args[0]!) && ["--help", "-h"].includes(args[1]!))) {
+  const pkg = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8'));
+  const reference = await readFile(new URL('../../src/cli/help.md', import.meta.url), 'utf8');
+  process.stdout.write(reference.replaceAll('{{version}}', pkg.version).replaceAll('{{peer}}', pkg.peerDependencies['agent-device']).replaceAll('{{node}}', pkg.engines.node));
+} else if (args[0] === 'capture' || args[0] === 'cleanup') {
   const { captureCommand, cleanupCommand } = await import('./capture.js');
   const result = args[0] === 'capture' ? await captureCommand(args.slice(1)) : await cleanupCommand(args.slice(1));
   process.stdout.write(`${JSON.stringify(result)}\n`);
   if ('error' in result && result.error) process.stderr.write(`${result.error.code}: ${result.error.message}\n`);
   process.exitCode = result.result === 'passed' ? 0 : result.result === 'failed' ? 1 : 2;
-} else if ((args.length === 1 && ["help", "--help", "-h"].includes(args[0]!)) ||
-    (args.length === 2 && args[0] === "validate" && ["--help", "-h"].includes(args[1]!))) {
-  process.stdout.write(usage);
 } else {
   const file = args[0] === "validate"
     ? args.length === 2 && !args[1]!.startsWith("-") ? args[1]

@@ -43,6 +43,15 @@ for (const [name, config, expected, exit] of [
   assert.equal(ledger.criteria[0].steps[0].attemptId, attempt.attemptId);
   summary.push({ name, result: attempt.result, exit, elapsedMs: Math.round(performance.now() - start), image: attempt.image ? join(out, attempt.image) : null, unavailable });
 }
+// Execute the exact single-step YAML shipped in versioned help on each live platform.
+const help = await readFile(join(cwd, 'src/cli/help.md'), 'utf8');
+const neutralExample = help.split('## Neutral fixture example')[1].match(/```yaml\n([\s\S]*?)```/)[1];
+const helpSpec = join(output, 'help-example.yaml');
+await writeFile(helpSpec, neutralExample);
+const helpResult = spawnSync(process.execPath, ['bin/device-annotate.mjs', 'capture', helpSpec, '--step', 'sample', '--platform', platform], { cwd, encoding: 'utf8', timeout: 300_000 });
+assert.equal(helpResult.status, 0, helpResult.stderr || helpResult.stdout);
+assert.equal(JSON.parse(helpResult.stdout).checkCounts.passed, 1);
+summary.push({ name: 'versioned-help-example', result: 'passed' });
 // Exercise the real environment gate and ledger reconciliation through the CLI.
 const flowPath = join(output, 'flow.json');
 const flowOut = join(output, 'flow');

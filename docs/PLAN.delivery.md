@@ -1,7 +1,8 @@
-# M5 delivery
+# M6 delivery
 
 M5 integrates capture, rendering, durable artifacts, ownership, and cleanup under [PLAN.md](PLAN.md).
-Current phase: M5 complete, with public capture/cleanup, native adapters, local verification, and hosted CI gates passing.
+Current phase: M6 implementation, covering versioned help, the repository skill, and isolated package verification.
+M5 remains complete, with public capture/cleanup, native adapters, local verification, and hosted CI gates passing.
 M0 through M4 are complete; M4 was committed as `12c12ab`.
 Its rendering and performance evidence remains in [M4-RENDERING.md](M4-RENDERING.md).
 M5 exposes public live capture and satisfies its local and hosted verification gates within the documented platform limitations.
@@ -233,3 +234,36 @@ Its emulator version was 37.2.12.0, and runner disk cleanup increased available 
 The workflow does not upload native image artifacts; hosted conclusions are supported by the executable assertions and job logs, while prior local native image review remains the visual evidence.
 No additional performance or hosted visual-review claim is made.
 M5 is complete, and M6 is the next milestone.
+
+## M6 implementation and local verification
+
+M6 now supplies the version-specific reference through `device-annotate help`, root help aliases, and help for validate/capture/cleanup.
+The reference covers spec fields, all primitives and predicates, session selection, stable testIDs, build/environment admission, outcomes, privacy, and retention/finished-run cleanup.
+Its metadata comes from the installed package version, engine, and peer requirement.
+The short repository skill follows T18 and delegates detailed syntax to installed help.
+The skill is excluded from the npm artifact.
+
+The npm file allowlist includes compiled JavaScript/declarations, the CLI reference, generated schemas, Inter and its license/provenance, and vendored agent-device license/provenance.
+Root MIT and third-party notices are present.
+The pinned agent-device peer remains 0.21.27; resvg WASM remains an installed dependency asset loaded locally.
+`prepack` builds the implementation before packing.
+The package remains private and has not been published.
+
+`npm run check` passes 741 tests, including all nine golden images, type checking, 18 schema freshness checks, and 22 vendor hashes on Node 24.21.0, macOS arm64.
+An old help-wording assertion was updated for the full reference; help aliases additionally run under the existing no-device loader with no evidence writes.
+`npm run check:package` passes with a 170-file, approximately 347 KB tarball installed from the offline cache into a temporary isolated consumer.
+It verifies the allowlist, required assets/notices, CLI help and YAML examples, public validation/capture preflight/cleanup, and pass/fail/error rendering plus durable raw/manifest artifacts through the controlled device boundary.
+The consumer process blocks network entry points; live device capture remains the separate native gate.
+Temporary consumer files are removed after verification.
+
+Source inspection finds only guarded loopback socket/HTTP transport in `src/capture/daemon.ts` and bounded local platform probes in `src/capture/environment.ts`.
+There is no telemetry, upload, runtime font/WASM download, or package-initiated external-network path in the implemented workflow.
+These conclusions exclude npm installation and caller-invoked agent-device setup.
+No new visual or performance claim is made because rendering code is unchanged; M4/M5 evidence remains authoritative.
+
+The skill-creator Python validator was attempted but the host Python lacks PyYAML.
+Equivalent frontmatter/name/description/scaffold checks passed with the installed YAML parser, and the short workflow was reviewed against T18.
+
+Current phase: local verification complete; hosted M6 verification pending.
+The workflow now runs the isolated package check and executes the exact neutral YAML example from help on each native platform.
+Next safe action: commit/push the M6 implementation under the recorded authorization, monitor unit/iOS/Android jobs, and record their conclusions before marking M6 complete.

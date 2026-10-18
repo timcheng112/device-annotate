@@ -13,6 +13,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - run: npm run check:package
   ios:
     runs-on: macos-15
     timeout-minutes: 30
