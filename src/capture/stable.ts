@@ -20,7 +20,16 @@ export interface CaptureAdapter {
 export function snapshotsMatch(before: SnapshotState, after: SnapshotState): boolean {
   const comparable = (snapshot: SnapshotState) => {
     const evidence: Record<string, unknown> = { ...snapshot };
-    for (const key of ['refsGeneration', 'snapshotDiagnostics', 'createdAt']) delete evidence[key];
+    for (const key of ['refsGeneration', 'snapshotDiagnostics', 'createdAt', 'unchanged']) delete evidence[key];
+    if (snapshot.snapshotQuality) {
+      const { timing: _timing, ...quality } = snapshot.snapshotQuality;
+      evidence.snapshotQuality = quality;
+    }
+    const android = evidence.androidSnapshot;
+    if (typeof android === 'object' && android !== null) {
+      const { elapsedMs: _elapsed, ...metadata } = android as Record<string, unknown>;
+      evidence.androidSnapshot = metadata;
+    }
     return { ...evidence, nodes: snapshot.nodes.map(({ ref: _ref, ...node }) => node) };
   };
   return isDeepStrictEqual(comparable(before), comparable(after));
@@ -30,6 +39,31 @@ export class StableCaptureFailure extends CaptureFailure {
   constructor(code: string, message: string, readonly observation: CaptureObservation, options?: ErrorOptions) {
     super(code, message, options);
   }
+}
+
+/** iOS must never enter upstream stable-wait's activating snapshot path. */
+export async function waitForQuietSnapshots(snapshot: () => Promise<SnapshotState>, options: {
+  quietMs?: number; timeoutMs?: number; intervalMs?: number;
+  now?: () => number; sleep?: (ms: number) => Promise<void>;
+} = {}): Promise<void> {
+  const quietMs = options.quietMs ?? 500;
+  const timeoutMs = options.timeoutMs ?? 60_000;
+  const intervalMs = options.intervalMs ?? 100;
+  const now = options.now ?? (() => performance.now());
+  const sleep = options.sleep ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
+  const deadline = now() + timeoutMs;
+  let previous = await snapshot();
+  let quietSince = now();
+  while (now() < deadline) {
+    await sleep(Math.min(intervalMs, deadline - now()));
+    if (now() >= deadline) break;
+    const current = await snapshot();
+    if (now() >= deadline) break;
+    if (!snapshotsMatch(previous, current)) quietSince = now();
+    else if (now() - quietSince >= quietMs) return;
+    previous = current;
+  }
+  throw new CaptureFailure('CAPTURE_UNSTABLE', 'The foreground app did not remain quiet within 60 seconds. Let it settle and retry; device-proof will not activate it.');
 }
 
 /** One initial capture plus at most three retries. Never evaluate a rejected pair. */

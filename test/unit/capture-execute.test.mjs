@@ -37,7 +37,7 @@ for (const [name, config, result] of [
   assert.deepEqual(await readFile(join(output.directory, output.attempt.raw)), screenshot);
   assert.deepEqual(JSON.parse(await readFile(join(output.directory, output.attempt.snapshot))), snapshot);
   assert.deepEqual(JSON.parse(await readFile(join(output.directory, 'manifest.json'))), output.manifest);
-  assert.deepEqual(state.calls, ['factory', 'environment', 'wait', 'snapshot', 'screenshot', 'snapshot', 'close']);
+  assert.deepEqual(state.calls, ['factory', 'environment', 'wait', 'snapshot', 'screenshot', 'snapshot', 'environment', 'close']);
 });
 test('rendering failure preserves completed checks and audit artifacts without image', async (t) => {
   const state = await setup(t, { checks: [{ target: 'id="center"', expect: { exists: true } }] });
@@ -87,4 +87,18 @@ test('unknown environment blocks multi-step capture before screenshot work', asy
   assert.equal(output.attempt.error.code, 'ENVIRONMENT_UNAVAILABLE');
   assert.deepEqual(state.calls, ['factory', 'close']);
   assert.equal(output.attempt.raw, undefined);
+});
+
+test('environment changes during capture preserve raw evidence and refuse evaluation', async (t) => {
+  const state = await setup(t);
+  let reads = 0;
+  state.adapter.environment = async () => {
+    const next = structuredClone(environment);
+    if (++reads > 1) next.display.appearance = next.display.appearance === 'dark' ? 'light' : 'dark';
+    return next;
+  };
+  const output = await executeCapture(state.input, state.dependencies);
+  assert.equal(output.attempt.error.code, 'ENVIRONMENT_CHANGED');
+  assert.ok(output.attempt.raw && output.attempt.snapshot);
+  assert.equal(output.attempt.image, undefined); assert.deepEqual(output.attempt.checks, []);
 });

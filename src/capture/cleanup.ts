@@ -6,6 +6,9 @@ import { planHistoryPruning } from '../manifest/prune.js';
 import { evidenceStore } from './store.js';
 import { lockOutput } from './lock.js';
 import { CaptureFailure } from './failure.js';
+import { protectManifestRecording } from './recording-guard.js';
+import * as z from 'zod';
+import { localPathSchema } from '../spec/values.js';
 
 /** Walk every managed component without following symlinks. Paths are schema-validated first. */
 async function observe(directory: string, relative: string) {
@@ -39,6 +42,7 @@ export async function previewCleanup(directory: string, input: Manifest, now = D
     });
   }
   const attempts = [...candidate.history, ...candidate.criteria.flatMap((group) => group.steps.filter((step) => step.result !== 'incomplete'))];
+  await protectManifestRecording(directory, attempts.flatMap((attempt) => attempt.recordings));
   const paths = [...new Set(attempts.flatMap((attempt) => referencedAttemptArtifacts({ step: attempt.step, attemptId: attempt.attemptId,
     ...(attempt.image ? { image: attempt.image } : {}), ...(attempt.raw ? { raw: attempt.raw } : {}), ...(attempt.snapshot ? { snapshot: attempt.snapshot } : {}),
   }).map(({ path }) => path)))];
@@ -79,7 +83,10 @@ async function apply(directory: string, preview: Awaited<ReturnType<typeof previ
   await evidenceStore(directory).publish(preview.manifest);
 }
 
-export async function cleanup(options: { outDir: string; apply?: boolean; finished?: boolean }) {
+export async function cleanup(input: { outDir: string; apply?: boolean; finished?: boolean }) {
+  const parsed = z.strictObject({ outDir: localPathSchema, apply: z.boolean().optional(), finished: z.boolean().optional() }).safeParse(input);
+  if (!parsed.success) throw new CaptureFailure('INVALID_INPUT', 'Supply an output directory and boolean apply/finished cleanup options.');
+  const options = parsed.data;
   const lock = await lockOutput(options.outDir);
   try {
     const manifest = await evidenceStore(lock.directory).read();

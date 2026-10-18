@@ -1,15 +1,17 @@
 # M5 delivery
 
 M5 integrates capture, rendering, durable artifacts, ownership, and cleanup under [PLAN.md](PLAN.md).
-Current phase: implementation, with the internal integration and persistence foundation verified.
+Current phase: verification, with public capture/cleanup, native adapters, and local native suites implemented.
 M0 through M4 are complete; M4 was committed as `12c12ab`.
 Its rendering and performance evidence remains in [M4-RENDERING.md](M4-RENDERING.md).
-M5 is incomplete and does not yet expose public live capture.
+M5 exposes public live capture but remains incomplete until the required hosted CI gates run successfully.
 
 Worktree: `/Users/timcheng112/Downloads/device-proof`.
 Branch: `plan/implementation`.
 Local commits are authorized.
-No push, publication, PR, external communication, or live-device session changes occurred during this implementation session.
+No push, publication, PR, or external communication occurred.
+This continuation used only the dedicated neutral M0 simulator/emulator and a new isolated M5 daemon.
+No Git remote is configured, so hosted CI execution requires a destination and authorization to publish the branch.
 
 ## Implemented foundation
 
@@ -37,7 +39,8 @@ Invalid replacement manifests and ownership refusals preserve earlier manifest b
 The device factory runs only after locking and ownership checks.
 Rendering failures preserve completed assertions and raw evidence; mask omissions publish no annotated image path.
 A newer error replaces an older pass while retaining the earlier immutable attempt in history.
-The public API/CLI and actual local-device adapter remain outstanding.
+The public API/CLI and local-device adapter are now connected to this integration seam.
+Environment metadata is observed again after raw evidence is saved; changed metadata refuses evaluation and preserves the raw artifacts.
 
 `src/capture/cleanup.ts` implements preview/apply, automatic history pruning, and explicit finished-run cleanup under the same folder lock.
 Current evidence and caller-owned recordings are protected using device/inode identities, including hardlink aliases.
@@ -54,7 +57,8 @@ Type checking, all 18 generated-schema freshness checks, and all 22 vendor hash 
 These are the same gates as `npm run check`, executed separately after the combined command's approval review timed out.
 Transport tests use temporary loopback mock servers and require sandbox escalation because sandboxed listeners return `EPERM`.
 The retried full test run received approval and passed.
-No live iOS/Android verification or CI run has been performed for M5.
+These counts describe the earlier foundation checkpoint.
+The continuation results below supersede its lack of live-device verification.
 
 ## Approved capture-only contract refinement
 
@@ -73,10 +77,104 @@ Android retains the approved upstream wait.
 Proceed with dependent integration without asking again.
 The earlier question about foreground preflight was superseded by discovery of the observe-only API.
 
+## Public and native integration
+
+`src/capture/device.ts` selects a unique session from cwd-scoped inventory, pins its daemon-provided address, and verifies its creation time and device around each operation.
+Implicit iOS and Android sessions and explicit addresses share this selection boundary.
+Every request uses the previously verified injected transport.
+iOS uses only observe-only snapshots, verifies the returned observation contract, and uses a bounded 500 ms quiet period with a 60-second budget.
+A refusal returns `IOS_OBSERVATION_UNAVAILABLE` without ordinary snapshot or stable-wait fallback.
+Android retains upstream stable wait.
+Screenshots disable stabilization and status-bar normalization; iOS requests observed native density.
+Temporary screenshots are private local files and adapter cleanup never closes the caller's device session.
+
+Native testing exposed Android `elapsedMs` and the response-level `unchanged` age summary as acquisition bookkeeping.
+Stability ignores those fields and snapshot-quality timing, while retaining backend, coverage, truncation, geometry, labels, and unknown evidence-bearing fields.
+Regression tests distinguish timing-only changes from changed capture quality.
+
+`src/capture/environment.ts` uses bounded read-only native subprocesses, tied to the selected session's UDID, simulator set, or serial.
+iOS identity includes host hardware identity, canonical simulator-set path, and UDID.
+Android identity includes host identity, canonical AVD path, and Android ID, so an emulator port or reused AVD pathname alone cannot establish identity.
+Android reads effective configuration for appearance and exact font scale, including an observed scale of 1 when the settings database contains no font-scale row.
+Unknown or unsupported metadata retains one diagnostic per null field.
+The collector supports a Linux host machine ID and Android SDK environment variables for CI.
+Physical-device and remote-target metadata remain unverified; unsupported metadata does not establish compatibility.
+
+On this host, `devicectl device info displays` returns CoreDevice error 1000 for the booted iOS simulator.
+The collector uses supported JSON-file output with a bounded timeout and does not infer rotation from portrait-shaped pixels.
+iOS display rotation and rotation-dependent pixel dimensions therefore remain unknown here.
+Fresh iOS single-step evidence works; multi-step capture correctly refuses under T35.
+Android's observed metadata is complete, and its live multi-step flow passes.
+Custom simulator sets retain scoped simctl queries and identity, but the unscoped devicectl display probe is deliberately unavailable for those sets.
+
+`src/capture/public.ts` implements `capture()` with spec ownership, caller-supplied build validation, recording readability checks, and structured errors.
+The exported API stays lazy so offline validation never imports a device or process-launch client.
+The CLI supports spec capture, one-off criterion/box capture, build JSON, platform/session selection, repeatable recording references, and cleanup preview/apply.
+Both capture preflight and cleanup reject invalid inputs before device or artifact work.
+The shared recording guard refuses direct, symlink, and hardlink aliases of `manifest.json` before replacement.
+
+```sh
+node bin/device-proof.mjs capture path/to/spec.yaml --step sample --platform ios --build build.json
+node bin/device-proof.mjs capture --step control --criterion 'The expected control is visible' --box 'id="control"' --platform android --out evidence/control
+node bin/device-proof.mjs cleanup evidence/control
+node bin/device-proof.mjs cleanup evidence/control --apply
+```
+
+```js
+import { capture, cleanup } from 'device-proof';
+const attempt = await capture({ specPath: '/absolute/spec.yaml', step: 'sample', platform: 'ios', build });
+const preview = await cleanup({ outDir: '/absolute/evidence' });
+```
+
+## Continuation verification
+
+The complete regression gate passes 736 tests, type checking, 18 generated-schema freshness checks, and 22 vendor hash checks.
+The transport suite ran with sandbox escalation for its loopback listeners.
+New coverage includes the quiet loop, session ambiguity, preflight's offline boundary, metadata failures, recording aliases, changed environments, and cleanup boolean validation.
+A child-process interruption test stops publication immediately before atomic rename, kills the lock owner, verifies unchanged previous manifest bytes, and recovers the folder for another publication.
+
+`test/e2e/native.mjs` runs the real CLI against a pre-opened neutral fixture on each platform.
+Both platforms produced a passing assertion with exit 0, a deliberately false assertion with exit 1, and a missing-mask evidence error with exit 2.
+Both error cases retained raw/snapshot artifacts and published no annotated image.
+Android additionally passed live multi-step aggregation, recapture replacement, renamed-step archival, retained-step reuse, and artifact readability checks.
+iOS passed the explicit unknown-environment multi-step refusal gate.
+The native harness requires the installed neutral fixture to match the locally built fixture artifact used for its build identity.
+
+`test/e2e/ios-refusal.mjs` stopped the dedicated neutral app, attempted capture, and verified `IOS_OBSERVATION_UNAVAILABLE`, no image/raw path, no app reactivation, and byte-identical daemon metadata.
+It restored the neutral app after checking.
+The production adapter performed no app activation.
+
+Four native PASS/FAIL images were visually inspected for correct center-target anchoring, readable legends, result symbols, and solid/dashed outlines.
+A fresh cmux preview opened the gallery, and all four images reported successful loading at their native output dimensions.
+The local gallery and native reports are under ignored `scripts/m0/.local/m5-evidence/`.
+No employer-app captures were used or committed.
+After verification, the isolated M5 daemon stopped gracefully and released both neutral-device claims.
+The dedicated M0 simulator and emulator were returned to their initial stopped state.
+The local native evidence and cmux preview remain available.
+
+`test/e2e/performance.mjs` measures the complete capture entry point minus adapter construction, metadata collection, stable observation, screenshot acquisition, and adapter resource cleanup.
+The remainder includes validation, locking, rendering initialization, artifact synchronization, manifest replacement, and history pruning.
+Four sequential samples per platform ran on this Apple M2 host with Node 24.21.0.
+All measured added-processing samples were below one second.
+
+| Platform | First processing/persistence | Subsequent range | Total capture range |
+|---|---:|---:|---:|
+| iOS | 929 ms | 704-744 ms | 3.72-4.09 s |
+| Android | 744 ms | 537-591 ms | 1.46-1.76 s |
+
+These measurements apply to the neutral center-box fixture and this host, not arbitrary spec sizes or all machines.
+The JSON samples remain in the ignored native evidence folder, and the committed script reproduces the measurement boundary.
+
+`.github/workflows/verify.yml` defines offline checks, a dedicated macOS iOS simulator job, and an Ubuntu Android emulator job.
+Fixture setup and iOS runner preparation happen through the test harness before capture-only verification.
+The fixture builder now supports the host simulator architecture and `JAVA_HOME` on Linux.
+Runner selection follows [GitHub's runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners), and Android setup follows the [emulator action's documentation](https://github.com/ReactiveCircus/android-emulator-runner/blob/main/README.md).
+These workflow definitions are local and have not run on hosted CI.
+
 ## Next safe action
 
-Implement the actual local-device adapter using the approved observe-only iOS stability refinement in T8.
-Complete session-selected read-only environment collection under T52/T53, recording/build preflight at the public boundary, capture/cleanup CLI and Node API, interrupted-write coverage, and both native end-to-end suites and CI definitions.
-Finished-run preview, application, and repeat application are covered by focused filesystem tests.
-Recheck simulator, emulator, and daemon state before live work, preserving the daemon guard and neutral-fixture restrictions.
-Do not mark M5 complete until the full [M5 exit criteria](PLAN.md#m5-capture-and-artifact-integration) are satisfied.
+Review and run the committed native CI workflow after a Git remote and publication authorization are supplied.
+The iOS host limitation remains explicit: multi-step iOS evidence requires a toolchain/provider that can reliably expose active display rotation, or a separately verified read-only observation source.
+Do not substitute configured orientation, screenshot aspect ratio, or a guessed default for that observation.
+Keep T8's approved observe-only refusal behavior intact.
+Do not mark M5 complete until the full [M5 exit criteria](PLAN.md#m5-capture-and-artifact-integration), including successful hosted iOS and Android CI runs, are satisfied.

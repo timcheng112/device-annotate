@@ -1,0 +1,75 @@
+name: Verify
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      AGENT_DEVICE_STATE_DIR: ${{ github.workspace }}/scripts/m0/.local/ci-state
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: python3 scripts/m0/build-fixtures.py ios
+      - name: Open dedicated neutral simulator
+        shell: bash
+        run: |
+          runtime=$(xcrun simctl list runtimes -j | python3 -c 'import json,sys; print(next(x["identifier"] for x in json.load(sys.stdin)["runtimes"] if x["isAvailable"] and "iOS" in x["name"]))')
+          udid=$(xcrun simctl create 'Device Proof CI' com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro "$runtime")
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid" -b
+          xcrun simctl install "$udid" scripts/m0/.local/build/DeviceProofFixture.app
+          node node_modules/agent-device/bin/agent-device.mjs open dev.deviceproof.fixture --platform ios --udid "$udid" --json
+          node node_modules/agent-device/bin/agent-device.mjs prepare ios-runner --platform ios --udid "$udid" --timeout-ms 120000 --json
+          node test/e2e/native.mjs ios scripts/m0/.local/ci-evidence/ios
+          node test/e2e/ios-refusal.mjs "$udid" scripts/m0/.local/ci-evidence/ios-refusal
+  android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      AGENT_DEVICE_STATE_DIR: ${{ github.workspace }}/scripts/m0/.local/ci-state
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - run: npm ci
+      - run: npm run build
+      - run: sdkmanager 'platforms;android-33' 'build-tools;33.0.1'
+      - run: python3 scripts/m0/build-fixtures.py android
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          arch: x86_64
+          target: google_apis
+          script: |
+            adb -s emulator-5554 install --no-incremental -r scripts/m0/.local/build/fixture.apk
+            node node_modules/agent-device/bin/agent-device.mjs open dev.deviceproof.fixture --platform android --serial emulator-5554 --activity .FixtureActivity --json
+            adb -s emulator-5554 shell am start -W -n dev.deviceproof.fixture/.FixtureActivity
+            node test/e2e/native.mjs android scripts/m0/.local/ci-evidence/android

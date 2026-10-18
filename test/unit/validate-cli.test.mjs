@@ -56,7 +56,7 @@ test("CLI distinguishes file failures, including invalid UTF-8 and directories",
 
 test("CLI rejects missing/extra arguments and unsupported commands without capture", (t) => {
   const cwd = fixture(t);
-  for (const args of [[], ["validate"], ["validate", "one.yaml", "two.yaml"], ["validate", "--unknown"], ["capture", "cart.yaml"]]) {
+  for (const args of [[], ["validate"], ["validate", "one.yaml", "two.yaml"], ["validate", "--unknown"], ["unknown-command", "cart.yaml"]]) {
     const result = run(args, cwd);
     assert.equal(result.status, 2);
     assert.equal(JSON.parse(result.stdout).error.code, "INVALID_INPUT");
@@ -82,4 +82,21 @@ test("CLI refuses a FIFO without waiting for input", { skip: process.platform ==
   assert.equal(result.error, undefined);
   assert.equal(result.status, 2);
   assert.equal(JSON.parse(result.stdout).error.code, "SPEC_UNAVAILABLE");
+});
+
+test('capture CLI rejects invalid inputs and recordings before importing device clients', (t) => {
+  const cwd = fixture(t);
+  const base = ['capture', '--step', 'sample', '--criterion', 'Neutral criterion', '--out', 'output'];
+  for (const [args, code] of [
+    [['capture', '--step', 'sample', '--out', 'output'], 'INVALID_INPUT'],
+    [[...base, '--recording', 'missing.mp4'], 'RECORDING_UNAVAILABLE'],
+    [[...base, '--build', 'missing.json'], 'INVALID_INPUT'],
+    [[...base, '--platform', 'invalid'], 'INVALID_INPUT'],
+  ]) {
+    const result = run(args, cwd);
+    assert.equal(result.status, 2, result.stderr);
+    assert.equal(JSON.parse(result.stdout).error.code, code);
+    assert.doesNotMatch(result.stderr, /OFFLINE_BOUNDARY/);
+  }
+  assert.deepEqual(readdirSync(cwd), []);
 });

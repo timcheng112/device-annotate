@@ -3,6 +3,7 @@
 import os
 import pathlib
 import plistlib
+import platform
 import subprocess
 import sys
 import zipfile
@@ -22,7 +23,7 @@ if sys.argv[1] == 'ios':
     app.mkdir(exist_ok=True)
     sdk = output('xcrun', '--sdk', 'iphonesimulator', '--show-sdk-path')
     run('xcrun', '--sdk', 'iphonesimulator', 'swiftc', ROOT / 'fixture.swift', '-parse-as-library', '-sdk', sdk,
-        '-target', 'arm64-apple-ios17.0-simulator', '-Xlinker', '-syslibroot', '-Xlinker', sdk,
+        '-target', f'{platform.machine()}-apple-ios17.0-simulator', '-Xlinker', '-syslibroot', '-Xlinker', sdk,
         '-o', app / 'DeviceProofFixture')
     with (app / 'Info.plist').open('wb') as file:
         plistlib.dump(dict(CFBundleIdentifier='dev.deviceproof.fixture', CFBundleName='DeviceProofFixture',
@@ -36,7 +37,8 @@ elif sys.argv[1] == 'android':
     sdk = pathlib.Path(os.environ.get('ANDROID_HOME', pathlib.Path.home() / 'Library/Android/sdk'))
     bt = sdk / 'build-tools/33.0.1'
     jar = sdk / 'platforms/android-33/android.jar'
-    java = pathlib.Path(output('/usr/libexec/java_home')) / 'bin'
+    java_home = os.environ.get('JAVA_HOME') or output('/usr/libexec/java_home')
+    java = pathlib.Path(java_home) / 'bin'
     work = BUILD / 'android'
     for folder in ['classes', 'res/values', 'gen', 'dex']:
         (work / folder).mkdir(parents=True, exist_ok=True)

@@ -81,3 +81,36 @@ test('managed directory symlinks cannot redirect artifacts outside the folder', 
   await assert.rejects(evidenceStore(dir).allocate('sample'), { code: 'ARTIFACT_PATH_UNSAFE' });
   assert.deepEqual(await readdir(outside), []);
 });
+
+test('process interruption before atomic rename preserves the previous ledger and permits recovery', async (t) => {
+  const dir = await folder(t), store = evidenceStore(dir);
+  await store.publish(manifest());
+  const before = await readFile(join(dir, 'manifest.json'));
+  const module = new URL('../../dist/capture/store.js', import.meta.url).href;
+  const lockModule = new URL('../../dist/capture/lock.js', import.meta.url).href;
+  const script = `
+    import fs from 'node:fs/promises';
+    import { syncBuiltinESMExports } from 'node:module';
+    fs.rename = async () => { console.log('before-rename'); await new Promise(() => setInterval(() => {}, 1000)); };
+    syncBuiltinESMExports();
+    const { evidenceStore } = await import(${JSON.stringify(module)});
+    const { lockOutput } = await import(${JSON.stringify(lockModule)});
+    const directory = process.argv[1];
+    await lockOutput(directory);
+    const store = evidenceStore(directory);
+    const ledger = await store.read();
+    ledger.retention.maxAttemptsPerStep = 3;
+    await store.publish(ledger);
+  `;
+  const child = spawn(process.execPath, ['--input-type=module', '-e', script, dir], { stdio: ['ignore', 'pipe', 'pipe'] });
+  t.after(() => child.kill('SIGKILL'));
+  await once(child.stdout, 'data');
+  const exited = once(child, 'exit'); child.kill('SIGKILL'); await exited;
+  assert.deepEqual(await readFile(join(dir, 'manifest.json')), before);
+  assert.ok((await readdir(dir)).some((name) => name.startsWith('.manifest-')));
+  const recovered = await lockOutput(dir);
+  try {
+    assert.deepEqual(await store.read(owner), manifest());
+    await store.publish(manifest());
+  } finally { await recovered.release(); }
+});

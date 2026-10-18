@@ -8,6 +8,7 @@ test('stability ignores refs, acquisition timestamps, diagnostics, and object ke
   const after = structuredClone(fixture);
   after.refsGeneration++;
   after.createdAt = 12345;
+  after.unchanged = { ageMs: 157, nodeCount: after.nodes.length };
   after.snapshotDiagnostics = { stats: { count: 999 } };
   after.nodes.forEach((node) => { node.ref = 'different'; });
   assert.equal(snapshotsMatch(fixture, after), true);

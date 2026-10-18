@@ -1,4 +1,5 @@
 import { PNG } from 'pngjs';
+import { isDeepStrictEqual } from 'node:util';
 import { evaluateStep } from '../check/step.js';
 import { assessEnvironment, type Environment } from '../manifest/environment.js';
 import { attemptSchema, type Attempt } from '../manifest/attempt.js';
@@ -12,6 +13,7 @@ import { evidenceStore } from './store.js';
 import { CaptureFailure } from './failure.js';
 import { loadRenderer } from './assets.js';
 import { applyHistoryCleanup } from './cleanup.js';
+import { protectManifestRecording } from './recording-guard.js';
 
 export interface EvidenceAdapter extends CaptureAdapter {
   platform: Platform;
@@ -34,6 +36,10 @@ export async function executeCapture(input: {
   try {
     const store = evidenceStore(lock.directory);
     const previous = await store.read(input.owner);
+    await protectManifestRecording(lock.directory, [...input.recordings,
+      ...(previous?.history.flatMap((attempt) => attempt.recordings) ?? []),
+      ...(previous?.criteria.flatMap((group) => group.steps.flatMap((step) => step.result === 'incomplete' ? [] : step.recordings)) ?? []),
+    ]);
     const { prepared } = input;
     let ledger = reconcileManifest({ spec: prepared.spec, owner: input.owner, ...(previous ? { previous } : {}), ...(prepared.build ? { build: prepared.build } : {}) });
     // Claim a new folder before touching a device, including attempts that fail immediately.
@@ -67,6 +73,10 @@ export async function executeCapture(input: {
       ]);
       const failed = saved.find((result) => result.status === 'rejected');
       if (failed?.status === 'rejected') throw failed.reason;
+      const afterEnvironment = assessEnvironment(await adapter.environment(), count);
+      if (!isDeepStrictEqual(observed.environment, afterEnvironment.environment)) {
+        throw new CaptureFailure('ENVIRONMENT_CHANGED', 'Device environment changed during capture. Let the device settle and retry; the raw observation was preserved.');
+      }
       const png = PNG.sync.read(Buffer.from(accepted.screenshot));
       const { criterion, ...step } = prepared.effectiveStep;
       const evaluated = evaluateStep({ snapshot: accepted.snapshot, screenshot: { width: png.width, height: png.height }, platform: adapter.platform, step });

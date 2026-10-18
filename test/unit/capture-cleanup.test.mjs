@@ -81,3 +81,8 @@ test('finished-run cleanup previews current artifacts and repeated application i
   assert.equal(manifest.result, 'incomplete'); assert.equal(manifest.history.length, 0);
   assert.deepEqual((await cleanup({ outDir: dir, finished: true, apply: true })).files, []);
 });
+
+test('cleanup rejects truthy non-boolean apply flags before touching files', async () => {
+  await assert.rejects(cleanup({ outDir: '/unused', apply: 'false' }), { code: 'INVALID_INPUT' });
+  await assert.rejects(cleanup({ outDir: '/unused', finished: 'true' }), { code: 'INVALID_INPUT' });
+});
