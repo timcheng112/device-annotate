@@ -671,3 +671,9 @@ The resized GIF fully decodes, and its extracted final frame was inspected with 
 The in-app browser was unavailable, so live browser layout verification was not claimed.
 The prior package candidate is stale after this README correction and must be rebuilt before publishing.
 Npm publication remains paused for the user's sizing review; the existing publication authorization is retained.
+
+The user then requested matching preview widths.
+Both previews now use a 298 × 600 display frame; the GIF adds white side padding around the proportional 231 × 600 video content.
+The GIF fully decodes and has verified intrinsic dimensions of 298 × 600.
+Its immutable asset commit is 504ba54f12c379e34edb9109b59fad71628abecd.
+The full-resolution MP4 is unchanged, and publication remains paused for review.
