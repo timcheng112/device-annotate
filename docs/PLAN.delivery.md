@@ -659,3 +659,15 @@ GitHub remains public with plan/implementation as the default branch, and its re
 Neutral GIF/MP4 examples are committed at a5ffe77ea79bc0420ab9c421a4664a8b4b32cb42.
 README media links now use immutable public URLs pinned to that commit, and the release-pending wording is removed.
 The final package must pass verification and the public example downloads must match local bytes before npm publication.
+
+
+### Publication paused for preview sizing
+
+Before npm publication, the user requested stopping to fix README previews that were too tall.
+Both README previews now have an explicit 600-pixel display height with proportional widths: 298 pixels for the screenshot and 231 pixels for the GIF.
+The GIF itself was regenerated from the original MP4 at 231 × 600, so its intrinsic size is also bounded.
+Its immutable asset commit is 9ad568beaafdfd3a510e4231a1dd285f5aac04e5; the full-size MP4 and screenshot links are preserved.
+The resized GIF fully decodes, and its extracted final frame was inspected with all checklist rows visible.
+The in-app browser was unavailable, so live browser layout verification was not claimed.
+The prior package candidate is stale after this README correction and must be rebuilt before publishing.
+Npm publication remains paused for the user's sizing review; the existing publication authorization is retained.

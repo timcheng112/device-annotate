@@ -24,13 +24,13 @@ This adds that verification layer on top of [agent-device](https://github.com/ca
 ### Screenshot
 
 <a href="https://raw.githubusercontent.com/timcheng112/device-annotate/8ffbee2be5b556a184514ddfa5b0071f33034803/test/golden/approved/primitives-mixed.png">
-  <img src="https://raw.githubusercontent.com/timcheng112/device-annotate/8ffbee2be5b556a184514ddfa5b0071f33034803/test/golden/approved/primitives-mixed.png" width="480" alt="Native screen with numbered annotations, PASS/FAIL checks, and expected versus actual details.">
+  <img src="https://raw.githubusercontent.com/timcheng112/device-annotate/8ffbee2be5b556a184514ddfa5b0071f33034803/test/golden/approved/primitives-mixed.png" width="298" height="600" alt="Native screen with numbered annotations, PASS/FAIL checks, and expected versus actual details.">
 </a>
 
 ### Video
 
 <a href="https://raw.githubusercontent.com/timcheng112/device-annotate/a5ffe77ea79bc0420ab9c421a4664a8b4b32cb42/docs/examples/running-checklist.mp4">
-  <img src="https://raw.githubusercontent.com/timcheng112/device-annotate/a5ffe77ea79bc0420ab9c421a4664a8b4b32cb42/docs/examples/running-checklist.gif" width="480" alt="Android recording with a running checklist that accumulates PASS, FAIL, and INFO results below the video.">
+  <img src="https://raw.githubusercontent.com/timcheng112/device-annotate/9ad568beaafdfd3a510e4231a1dd285f5aac04e5/docs/examples/running-checklist.gif" width="231" height="600" alt="Android recording with a running checklist that accumulates PASS, FAIL, and INFO results below the video.">
 </a>
 
 Real Android recording, including a deliberately failed check.
