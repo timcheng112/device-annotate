@@ -1,15 +1,16 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { realpath, readFile, mkdtemp, rm } from 'node:fs/promises';
-import { homedir, tmpdir } from 'node:os';
+import { realpath, readFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 import type { AgentDeviceSession, AgentDeviceDevice } from 'agent-device';
 import { environmentSchema, type Environment } from '../manifest/environment.js';
+import { integratedPanel, simulatorInterfaceOrientation } from './ios-display.js';
 
 const exec = promisify(execFile);
 export type ReadProbe = (file: string, args: string[]) => Promise<string>;
 /** No shell, boot helpers, settings writes, or unbounded subprocesses. */
-const readProbe: ReadProbe = async (file, args) => (await exec(file, args, { timeout: 5_000, maxBuffer: 2 * 1024 * 1024 })).stdout.trim();
+const readProbe: ReadProbe = async (file, args) => (await exec(file, args, { timeout: args.includes('clang') ? 30_000 : 5_000, maxBuffer: 2 * 1024 * 1024 })).stdout.trim();
 
 export async function collectEnvironment(session: AgentDeviceSession, device: AgentDeviceDevice, agentDevice: string, probe: ReadProbe = readProbe): Promise<Environment> {
   const environment: Environment = {
@@ -39,39 +40,20 @@ export async function collectEnvironment(session: AgentDeviceSession, device: Ag
     const [display, appearance, textSize] = await Promise.all([
       simctl('io', device.id, 'enumerate'), simctl('ui', device.id, 'appearance'), simctl('ui', device.id, 'content_size'),
     ]);
-    // Accept only one integrated panel. Enumeration does not establish active rotation.
-    const panels = display.split(/\n\s*\(\d+\)/).filter((part) => /Screen Type: Integrated/.test(part));
-    if (panels.length === 1) {
-      const scale = panels[0]!.match(/Preferred UI Scale:\s*([\d.]+)/)?.[1];
-      if (scale && Number.isFinite(Number(scale)) && Number(scale) > 0) environment.display.pixelDensity = Number(scale);
-    }
+    const panel = integratedPanel(display);
+    if (panel) environment.display.pixelDensity = panel.density;
     if (appearance === 'light' || appearance === 'dark') environment.display.appearance = appearance;
     const size = environmentSchema.shape.display.shape.textSize.safeParse({ kind: 'ios-content-size', value: textSize });
     if (size.success) environment.display.textSize = size.data;
-    // Older Xcode releases lack this read. Never infer orientation from a portrait-shaped image.
-    const temporary = await mkdtemp(join(tmpdir(), 'device-annotate-display-'));
-    try {
-      // devicectl supports JSON files, not stdout parsing. It has no simulator-set selector.
-      if (await realpath(set) !== await realpath(join(homedir(), 'Library/Developer/CoreSimulator/Devices'))) throw new Error('Custom simulator set is unsupported by this probe.');
-      const path = join(temporary, 'display.json');
-      await query('xcrun', ['devicectl', 'device', 'info', 'displays', '--device', device.id, '--quiet', '--timeout', '5', '--json-output', path]);
-      const raw = await readFile(path, 'utf8');
-      const displays = JSON.parse(raw).result?.displays;
-      const integrated = Array.isArray(displays) ? displays.filter((entry: { type?: string }) => entry.type === 'integrated') : [];
-      if (integrated.length === 1) {
-        const panel = integrated[0];
-        const rotations = { rot0: 'portrait', rot90: 'landscape-right', rot180: 'portrait-upside-down', rot270: 'landscape-left' } as const;
-        const rotation = rotations[panel.currentOrientation as keyof typeof rotations];
-        const native = panel.nativeSize;
-        if (rotation && Array.isArray(native) && native.length === 2 && native.every((n: unknown) => typeof n === 'number' && Number.isSafeInteger(n) && n > 0)) {
-          environment.display.rotation = rotation;
-          const landscape = rotation.startsWith('landscape');
-          environment.display.pixelWidth = landscape ? native[1] : native[0];
-          environment.display.pixelHeight = landscape ? native[0] : native[1];
-        }
+    if (panel) {
+      const orientation = await simulatorInterfaceOrientation(set, device.id, probe);
+      if (orientation) {
+        environment.display.rotation = orientation;
+        const landscape = orientation.startsWith('landscape');
+        environment.display.pixelWidth = landscape ? panel.height : panel.width;
+        environment.display.pixelHeight = landscape ? panel.width : panel.height;
       }
-    } catch { /* Unsupported or unrecognized native output remains unknown. */ }
-    finally { await rm(temporary, { recursive: true, force: true }); }
+    }
   } else if (device.platform === 'android' && device.kind === 'emulator' && session.device.android?.serial === device.id) {
     const sdk = process.env.ANDROID_HOME ?? process.env.ANDROID_SDK_ROOT;
     const adb = sdk ? join(sdk, 'platform-tools/adb') : process.platform === 'darwin' ? join(homedir(), 'Library/Android/sdk/platform-tools/adb') : 'adb';

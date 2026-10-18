@@ -21,7 +21,7 @@ try {
   const attempt = JSON.parse(result.stdout);
   assert.equal(attempt.error.code, 'IOS_OBSERVATION_UNAVAILABLE');
   assert.equal(attempt.raw, undefined); assert.equal(attempt.image, undefined);
-  const processes = execFileSync('xcrun', ['simctl', 'spawn', udid, 'launchctl', 'list'], { encoding: 'utf8', timeout: 10_000 });
+  const processes = execFileSync('xcrun', ['simctl', 'spawn', udid, 'launchctl', 'list'], { encoding: 'utf8', timeout: 30_000 });
   assert.ok(!processes.split('\n').some((line) => /^\d+\s/.test(line) && line.includes('UIKitApplication:dev.deviceproof.fixture[')), 'Capture must not launch the terminated app');
   assert.deepEqual(await readFile(metadata), before);
   console.log(JSON.stringify({ result: 'passed', refusal: attempt.error.code, appRemainedStopped: true, daemonUnchanged: true }));

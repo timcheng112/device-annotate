@@ -76,11 +76,12 @@ Use `device-annotate help` for video commands, multi-step flows, the Node API, a
 | Device | Screenshots | Video checklist |
 | --- | --- | --- |
 | Android emulator | Verified, including multi-step flows | Verified |
-| iOS simulator | Verified for single steps | Verified for single steps |
+| iOS simulator | Verified, including multi-step flows | Verified, including multi-step flows |
 | Physical Android device | Unverified | Unverified |
 | Physical iPhone / iPad | Unverified | Unverified |
 
-iOS multi-step flows are currently blocked by unavailable display metadata.
+iOS simulators need Xcode.
+Multi-step flows require readable device metadata on both platforms.
 
 ## Before you start
 

@@ -14,11 +14,8 @@ test('Android metadata loss fails instead of skipping multi-step verification', 
   }
 });
 
-test('iOS gate allows the recorded rotation and active-dimensions limitation', () => {
-  const paths = ['display.rotation', 'display.pixelWidth', 'display.pixelHeight'];
-  assert.deepEqual(verifyNativeEnvironment('ios', environment(...paths)), paths);
-});
-
-test('iOS unrelated metadata loss fails even alongside the known limitation', () => {
-  assert.throws(() => verifyNativeEnvironment('ios', environment('display.rotation', 'device.identity')), /Unexpected unavailable ios metadata/);
+test('iOS metadata loss fails instead of skipping multi-step verification', () => {
+  for (const path of ['display.rotation', 'display.pixelWidth', 'display.pixelHeight', 'device.identity']) {
+    assert.throws(() => verifyNativeEnvironment('ios', environment(path)), /Unexpected unavailable ios metadata/);
+  }
 });

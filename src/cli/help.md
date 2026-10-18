@@ -150,8 +150,9 @@ For separately delivered JavaScript or other runtime code, use `runtime: {"kind"
 Single-step captures may omit identity but their unknown build cannot establish reuse compatibility.
 Multi-step captures also require observed device, OS, display, and tool metadata.
 Unknown metadata refuses multi-step capture before accepting evidence; a fresh single-step capture may record unknown values.
-The tested iOS toolchain cannot reliably expose active rotation/pixel dimensions, so iOS multi-step capture is currently refused.
-Android emulator multi-step capture is verified.
+iOS simulators use a read-only native orientation probe compiled with local Xcode.
+Multi-step capture works when this probe and the other device metadata reads succeed; unsupported tooling leaves metadata unknown and refuses multi-step capture.
+Android emulator and iOS simulator multi-step capture are verified.
 Physical devices and other platforms have no release verification claim.
 
 A step replacement updates the shared manifest and archives its previous attempt.
@@ -268,7 +269,7 @@ Split flows whose full checklist exceeds rendering limits.
 Multiple raw chunks are preserved but are not exported as a continuous recording.
 Video has captions only; it does not track or mask moving targets.
 
-Build and environment requirements match screenshot capture, including the current multi-step iOS limitation.
+Build and environment requirements match screenshot capture on Android emulators and iOS simulators.
 A session/environment change refuses new checks.
 Recording startup preflights tools and environment before starting the recorder.
 An interrupted start is never automatically retried or stopped: inspect agent-device before stopping any recorder.

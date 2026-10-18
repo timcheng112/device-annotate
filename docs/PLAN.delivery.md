@@ -677,3 +677,25 @@ Both previews now use a 298 × 600 display frame; the GIF adds white side paddin
 The GIF fully decodes and has verified intrinsic dimensions of 298 × 600.
 Its immutable asset commit is 504ba54f12c379e34edb9109b59fad71628abecd.
 The full-resolution MP4 is unchanged, and publication remains paused for review.
+
+
+### Approved iOS multi-step work for 0.2.0
+
+The user explicitly requested fixing iOS multi-step support and including it in 0.2.0 before publication.
+Publication is deferred until this increment is implemented and verified; existing release authorization remains for the completed 0.2.0 scope.
+Current phase: final native verification and release preparation.
+The existing devicectl displays probe fails on the tested iOS 18.3 simulator; simctl io enumerate provides native panel dimensions/density but does not establish rotation.
+Do not infer directional orientation from screenshot aspect ratio or remove the complete-environment guard to make the flow pass.
+The dedicated Device Proof M0 simulator AB4DDFFF-D9C3-4A5F-9753-136F764E318E is booted for this work, with neutral fixture session ios-multi-fixture under scripts/m0/.local/ios-video-daemon.
+No npm publication has occurred, and the saved candidate must be rebuilt after this change.
+
+The old devicectl probe is replaced by a bundled read-only FrontBoardServices orientation helper compiled with local Xcode for both simulator architectures.
+The complete-environment guard remains intact, including unknown metadata refusal and environment-change detection.
+Local verification passed all 756 automated tests, schema freshness, vendor hashes, and the offline installed-package consumer check (191 files).
+Real iOS 18.3.1 recordings passed single-step PASS/FAIL/INFO and a three-step PASS/FAIL/INFO running checklist, full FFmpeg decode, checksum/idempotent re-render, and rotation-change refusal.
+The final three-row checklist frame was visually inspected.
+Evidence is in scripts/m0/.local/video-verification/ios-YhbvLk, with summary.json and multi.png.
+Both actual landscape directions and return to portrait passed dimension/orientation checks in test/e2e/ios-display.mjs.
+The iOS native CI gate now requires complete metadata and exercises multi-step reuse and both landscape directions.
+The observe-only refusal test's process-list timeout increases from 10 to 30 seconds after a hosted simulator timeout; all refusal assertions remain intact.
+Next: finish screenshot native checks, push the reviewed change, verify hosted CI, rebuild the package, and publish 0.2.0 under existing authorization.

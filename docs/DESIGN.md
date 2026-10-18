@@ -886,6 +886,14 @@ The generated [JSON Schema](../src/manifest/environment.schema.json) validates s
 `environmentsMatch` requires complete records and exact agreement across all compatibility facts, independently of object key order.
 This comparison covers environment compatibility only; build identity, effective step configuration, capture readiness, and manifest reconciliation remain separate requirements.
 
+The iOS simulator collector reads the integrated panel dimensions and density through `simctl io enumerate`.
+A bundled Objective-C helper reads `FBSOrientationObserver.activeInterfaceOrientation` from FrontBoardServices without launching or activating an app.
+Local Xcode compiles a temporary universal simulator executable for Intel and Apple Silicon; every simulator command targets the session's simulator set and UDID, and the executable is removed after observation.
+UIKit interface-orientation constants distinguish both landscape directions and upside-down portrait, including apps that lock their interface orientation despite device rotation.
+The collector maps native panel dimensions into the observed interface orientation rather than inferring orientation from aspect ratio.
+FrontBoardServices is private simulator infrastructure: missing frameworks, selectors, compiler support, unknown orientations, malformed output, or ambiguous panels remain unknown metadata and preserve the multi-step refusal.
+This helper is used only for local simulators, never installed into the user's app.
+
 ### T54. Immutable attempt folders and managed artifact references
 
 Agreed on 2026-10-16 during M1 contract review.
@@ -1104,4 +1112,4 @@ Older ledgers without a digest require a fresh deterministic export to match the
 
 Moving target highlights and video redaction are deferred.
 Specs containing masks are refused before recording to avoid implying that screenshot masks redact video.
-Existing multi-step build/environment requirements, including the current iOS geometry limitation, remain in force.
+Existing multi-step build/environment requirements remain in force on both platforms.

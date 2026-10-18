@@ -50,6 +50,7 @@
     "dist/**/*.js",
     "dist/**/*.d.ts",
     "bin/",
+    "src/capture/ios-orientation.m",
     "src/cli/help.md",
     "src/spec/*.schema.json",
     "src/manifest/*.schema.json",

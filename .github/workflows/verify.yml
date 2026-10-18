@@ -39,6 +39,7 @@ jobs:
           node node_modules/agent-device/bin/agent-device.mjs open dev.deviceproof.fixture --platform ios --udid "$udid" --json
           node node_modules/agent-device/bin/agent-device.mjs prepare ios-runner --platform ios --udid "$udid" --timeout 120000 --json
           node test/e2e/native.mjs ios scripts/m0/.local/ci-evidence/ios
+          node test/e2e/ios-display.mjs "$udid"
           node test/e2e/ios-refusal.mjs "$udid" scripts/m0/.local/ci-evidence/ios-refusal
   android:
     runs-on: ubuntu-24.04

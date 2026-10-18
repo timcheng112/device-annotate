@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { mkdir, mkdtemp, readFile, writeFile, access } from 'node:fs/promises';
-import { resolve, join } from 'node:path';
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createAgentDeviceClient } from 'agent-device';
 import { guardedTransport, installedAgentVersion } from '../dist/capture/daemon.js';
@@ -29,6 +29,7 @@ try {
   assert.ok(snapshot.nodes.some(n => n.identifier === 'center'));
   environment = await observer.environment();
 } finally { await observer.close(); }
+assert.deepEqual(environment.unavailable, []);
 const base = join(root, 'scripts/m0/.local/video-verification');
 await mkdir(base, { recursive: true });
 const out = await mkdtemp(join(base, 'ios-'));
@@ -76,13 +77,47 @@ for (const [name, config, exit, status] of [
     if (!stopped) await exec(process.execPath, [cli, 'video', 'stop', '--out', folder], { cwd: root, timeout: 240000 }).catch(() => {});
   }
 }
-if (environment.unavailable.length) {
-  const spec = join(out, 'multi.json'), folder = join(out, 'multi');
-  await writeFile(spec, JSON.stringify({ criteria: [{ criterion: 'Metadata gate', steps: { first: {}, second: {} } }] }));
-  const result = await command(['video', 'start', spec, '--out', folder, '--build', build, '--platform', 'ios', '--session', session], 2);
-  assert.equal(result.error.code, 'ENVIRONMENT_UNAVAILABLE');
-  await assert.rejects(access(join(folder, 'video.json')), { code: 'ENOENT' });
-  cases.push({ name: 'multi-step', result: 'refused-as-required', unavailable: environment.unavailable });
+const steps = {
+  review: { checks: [{ target: 'id="center"', expect: { exists: true } }] },
+  verify: { checks: [{ target: 'id="center"', expect: { text: 'deliberately wrong' } }] },
+  context: { annotate: [{ box: { target: 'id="center"', text: 'Context only' } }] },
+};
+const spec = join(out, 'multi.json'), folder = join(out, 'multi');
+await writeFile(spec, JSON.stringify({ criteria: [{ criterion: 'iOS running checklist', steps }] }));
+await command(['video', 'start', spec, '--out', folder, '--build', build, '--platform', 'ios', '--session', session]);
+let stopped = false;
+try {
+  for (const [step, exit] of [['review', 0], ['verify', 1], ['context', 0]]) {
+    await command(['video', 'mark', '--out', folder, '--step', step], exit);
+  }
+  const result = await command(['video', 'stop', '--out', folder], 1);
+  stopped = true;
+  const info = await probeVideo(result.video, 'export');
+  await mediaCommand('ffmpeg', ['-nostdin', '-v', 'error', '-xerror', '-i', result.video, '-f', 'null', '-']);
+  await mediaCommand('ffmpeg', ['-nostdin', '-v', 'error', '-sseof', '-1', '-i', result.video, '-frames:v', '1', '-n', join(out, 'multi.png')]);
+  const run = await readRun(folder);
+  assert.deepEqual(checklistAt(run, info.durationMs).map(row => row.status), ['PASS', 'FAIL', 'INFO']);
+  assert.deepEqual(checklistAt(run, run.marks[1].startedMs).map(row => row.status), ['PASS', 'CHECKING', 'PENDING']);
+  const before = createHash('sha256').update(await readFile(result.video)).digest('hex');
+  await command(['video', 'render', '--out', folder], 1);
+  assert.equal(createHash('sha256').update(await readFile(result.video)).digest('hex'), before);
+  cases.push({ name: 'multi-step', result: 'passed', video: result.video, info });
+} finally {
+  if (!stopped) await exec(process.execPath, [cli, 'video', 'stop', '--out', folder], { cwd: root, timeout: 240000 }).catch(() => {});
+}
+const rotationFolder = join(out, 'rotation');
+await command(['video', 'start', spec, '--out', rotationFolder, '--build', build, '--platform', 'ios', '--session', session]);
+const rotate = direction => exec(process.execPath, [join(root, 'node_modules/agent-device/bin/agent-device.mjs'), 'orientation', direction, '--platform', 'ios', '--session', session, '--json'], { cwd: root, timeout: 120000 });
+try {
+  await command(['video', 'mark', '--out', rotationFolder, '--step', 'review']);
+  await rotate('landscape-left');
+  const changed = await command(['video', 'mark', '--out', rotationFolder, '--step', 'verify'], 2);
+  assert.equal(changed.attempt.error.code, 'ENVIRONMENT_CHANGED');
+  assert.equal(changed.attempt.checkCounts.total, 0);
+  cases.push({ name: 'rotation-change', result: 'refused-as-required' });
+} finally {
+  await exec(process.execPath, [cli, 'video', 'stop', '--out', rotationFolder], { cwd: root, timeout: 240000 }).catch(() => {});
+  await rotate('portrait');
 }
 await writeFile(join(out, 'summary.json'), JSON.stringify({ platform: 'ios', udid, cases }, null, 2) + '\n');
 console.log(JSON.stringify({ result: 'passed', out, cases }));

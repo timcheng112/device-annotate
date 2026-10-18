@@ -30,7 +30,8 @@ if sys.argv[1] == 'ios':
             CFBundleDisplayName='Device Proof Fixture', CFBundleExecutable='DeviceProofFixture',
             CFBundlePackageType='APPL', CFBundleVersion='1', CFBundleShortVersionString='1.0',
             MinimumOSVersion='17.0', LSRequiresIPhoneOS=True, UILaunchScreen={}, UIDeviceFamily=[1],
-            UISupportedInterfaceOrientations=['UIInterfaceOrientationPortrait']), file)
+            UISupportedInterfaceOrientations=['UIInterfaceOrientationPortrait', 'UIInterfaceOrientationPortraitUpsideDown',
+                'UIInterfaceOrientationLandscapeLeft', 'UIInterfaceOrientationLandscapeRight']), file)
     run('codesign', '--force', '--sign', '-', app)
     print(app)
 elif sys.argv[1] == 'android':

@@ -16,7 +16,8 @@ Select the cwd-scoped session with `--platform` when necessary, or an explicit s
 Alternate agent-device actions with `device-annotate capture <spec> --step <name>`.
 Capture refreshes snapshots, so reacquire refs before later agent-device actions.
 Supply truthful native/runtime build identities for multi-step flows; unknown build or environment metadata cannot establish reusable evidence.
-Consult help for current platform limitations, including the iOS multi-step metadata refusal.
+Multi-step flows work on Android emulators and iOS simulators when required device metadata is readable.
+The iOS orientation probe requires local Xcode; consult help when metadata is unavailable.
 
 Passed means that step is complete; inspect the shared manifest before claiming the entire flow is done.
 INFO annotations and zero-check captures prove no assertions.
