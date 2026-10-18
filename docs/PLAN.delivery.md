@@ -11,11 +11,12 @@ Branch: `plan/implementation`.
 Local commits are authorized.
 The user authorized creating the private GitHub repository, pushing this branch, and running hosted CI.
 The private repository is https://github.com/timcheng112/device-annotate, configured as `origin`.
-GitHub rejected the initial push because the active OAuth credential lacks `workflow` scope; the remote remains empty and CI has not started.
-GitHub CLI permission refresh is awaiting user authorization in the browser.
+The initial push was rejected for missing OAuth `workflow` scope; the user completed the GitHub CLI permission refresh.
+The authorized push succeeded, and `plan/implementation` tracks `origin/plan/implementation`.
+The first hosted verification run is https://github.com/timcheng112/device-annotate/actions/runs/39090014690 at commit `91b3b79` passed the unit gate but failed both native setup paths before capture.
 No PR or package publication occurred.
 This continuation used only the dedicated neutral M0 simulator/emulator and a new isolated M5 daemon.
-Hosted verification can proceed after GitHub grants the requested credential permission.
+Hosted verification is running on GitHub Actions.
 
 ## Implemented foundation
 
@@ -201,9 +202,16 @@ The checkout moved from `~/Downloads/device-proof` to `~/Documents/repos/device-
 Neutral fixture identities, the existing `versions.deviceProof` evidence field, and the `.device-proof-lock` journal remain unchanged to preserve existing evidence and locking compatibility.
 Recorded native fixture provenance retains its original capture-time workspace path; fresh native runs must prepare a session scoped to the new checkout path.
 
-Complete the pending GitHub CLI workflow-scope authorization, push `plan/implementation` to `origin`, and monitor all three jobs in the committed native CI workflow.
+Monitor the unit, iOS, and Android jobs in the hosted workflow and resolve any M5 failures.
 Repository creation, this push, and hosted CI execution are authorized; a further publication confirmation is unnecessary.
 The iOS host limitation remains explicit: multi-step iOS evidence requires a toolchain/provider that can reliably expose active display rotation, or a separately verified read-only observation source.
 Do not substitute configured orientation, screenshot aspect ratio, or a guessed default for that observation.
 Keep T8's approved observe-only refusal behavior intact.
 Do not mark M5 complete until the full [M5 exit criteria](PLAN.md#m5-capture-and-artifact-integration), including successful hosted iOS and Android CI runs, are satisfied.
+
+## First hosted CI corrections
+
+The first run passed the complete offline checks on Ubuntu.
+Android setup failed because `sdkmanager` was absent from `PATH`; the workflow now explicitly sets up Android command-line tools and the fixture SDK packages.
+iOS setup failed because the pinned agent-device CLI accepts `prepare --timeout`, while the workflow used `--timeout-ms`; the command now matches the installed CLI help.
+Both corrections concern test setup, and neither changes the capture-only adapter or environment admission gates.
