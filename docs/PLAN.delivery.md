@@ -458,3 +458,19 @@ The independent pack and isolated-consumer tarballs have matching integrity.
 Current phase: metadata and candidate package verified; public README images and npm authentication pending.
 Next safe action: act on the user's public-image hosting choice, update README image URLs, authenticate interactively with npm, then regenerate and verify the final tarball.
 Publication still requires explicit approval after that final artifact is ready.
+
+## Public repository and verified README image URLs
+
+The user explicitly requested making the repository public.
+GitHub now reports `timcheng112/device-annotate` as PUBLIC.
+Both README screenshots link to absolute raw.githubusercontent.com URLs pinned to the approved visual commit `8ffbee2be5b556a184514ddfa5b0071f33034803`.
+Anonymous HTTP requests returned 200 and exact matches to the approved local PNG bytes for both images.
+The user confirmed this image-link approach.
+
+The updated isolated package check passes, and the rebuilt release candidate contains 171 files and is 557951 bytes.
+The candidate at `/private/tmp/device-annotate-release-0.1.0/device-annotate-0.1.0.tgz` has integrity `sha512-GrZMyvLsZdCxWazoO+yrAv7SbgSEvRgZohVO0wfhGk3Yk4cGYGlM+lPNd1mjz1l+/OQAhXD4PfKhycpzWmIclw==`.
+The rebuilt pack and isolated-consumer tarballs match.
+The offline publish dry run passes with the expected unauthenticated warning.
+Npm login instructions have been provided; authentication has not yet been confirmed.
+Next safe action: verify npm identity after the user signs in, then obtain explicit publication approval for the reviewed release candidate.
+No npm publication has occurred.

@@ -24,8 +24,8 @@ Click an image to open it at full resolution.
 The shared tags preserve each entry's number and result.
 The legend separates PASS, FAIL, and INFO, shows expected and actual values, and labels the masked region.
 
-<a href="test/golden/approved/primitives-mixed.png">
-  <img src="test/golden/approved/primitives-mixed.png" width="480" alt="Annotated neutral screen with grouped numbered tags, passing and failing checks, informational highlights, a masked account region, and a detailed legend below the screenshot.">
+<a href="https://raw.githubusercontent.com/timcheng112/device-annotate/8ffbee2be5b556a184514ddfa5b0071f33034803/test/golden/approved/primitives-mixed.png">
+  <img src="https://raw.githubusercontent.com/timcheng112/device-annotate/8ffbee2be5b556a184514ddfa5b0071f33034803/test/golden/approved/primitives-mixed.png" width="480" alt="Annotated neutral screen with grouped numbered tags, passing and failing checks, informational highlights, a masked account region, and a detailed legend below the screenshot.">
 </a>
 
 <details>
@@ -34,8 +34,8 @@ The legend separates PASS, FAIL, and INFO, shows expected and actual values, and
 When several distinct targets overlap, an overview and individual detail views share one evidence image.
 The masked account region stays covered in every view.
 
-<a href="test/golden/approved/dense-masked.png">
-  <img src="test/golden/approved/dense-masked.png" width="480" alt="Neutral order summary with overlapping numbered regions, separate detail views for each target, a mask preserved across views, and passing check results.">
+<a href="https://raw.githubusercontent.com/timcheng112/device-annotate/8ffbee2be5b556a184514ddfa5b0071f33034803/test/golden/approved/dense-masked.png">
+  <img src="https://raw.githubusercontent.com/timcheng112/device-annotate/8ffbee2be5b556a184514ddfa5b0071f33034803/test/golden/approved/dense-masked.png" width="480" alt="Neutral order summary with overlapping numbered regions, separate detail views for each target, a mask preserved across views, and passing check results.">
 </a>
 
 </details>
