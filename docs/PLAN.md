@@ -434,7 +434,7 @@ The measured in-memory processing pipeline stays below one second on the recorde
 
 ## M5. Capture and artifact integration
 
-Implementation is in progress; [the delivery record](PLAN.delivery.md) tracks the verified internal foundation, remaining public/native integration, and pending iOS capture-only stability decision.
+Implementation is in progress; [the delivery record](PLAN.delivery.md) tracks the verified internal foundation, remaining public/native integration, and approved iOS observe-only stability refinement.
 
 ### Work
 

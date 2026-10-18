@@ -56,7 +56,7 @@ Transport tests use temporary loopback mock servers and require sandbox escalati
 The retried full test run received approval and passed.
 No live iOS/Android verification or CI run has been performed for M5.
 
-## Pending capture-only contract decision
+## Approved capture-only contract refinement
 
 Additional review of the pinned agent-device 0.21.27 source found that ordinary iOS snapshots can activate a background session app.
 The runner's `prepareActivatedTarget` calls `activateTarget` when the target needs activation.
@@ -67,14 +67,15 @@ Its runner path resolves the existing app without activation and refuses observa
 However, the T8-required `client.command.wait({ stable: true })` goes through `runStableCaptureLoop` and ordinary selector snapshots, and does not expose observe-only snapshot options.
 The relevant upstream source paths are `src/commands/interaction/runtime/stable-capture.ts`, `src/commands/interaction/runtime/selector-read-shared.ts`, and `apple/runner/AgentDeviceRunner/AgentDeviceRunnerUITests/RunnerTests+CommandDispatch.swift` at the pinned revision.
 
-The user was asked whether to replace the iOS stable-wait call with a bounded quiet-period loop of observe-only snapshots.
-That is the recommended resolution because it preserves capture-only behavior; Android can retain the approved upstream wait.
-This refines T8 and requires the user's answer before dependent live integration.
+The user approved replacing the iOS stable-wait call with a bounded quiet-period loop of observe-only snapshots on 2026-10-18.
+[DESIGN.md T8](DESIGN.md#t8-stability-check) now records that refinement, including observe-only comparison snapshots and refusal without activation or fallback.
+Android retains the approved upstream wait.
+Proceed with dependent integration without asking again.
 The earlier question about foreground preflight was superseded by discovery of the observe-only API.
 
 ## Next safe action
 
-Resolve the pending iOS stability decision, record the accepted T8 refinement, and implement the actual local-device adapter.
+Implement the actual local-device adapter using the approved observe-only iOS stability refinement in T8.
 Complete session-selected read-only environment collection under T52/T53, recording/build preflight at the public boundary, capture/cleanup CLI and Node API, interrupted-write coverage, and both native end-to-end suites and CI definitions.
 Finished-run preview, application, and repeat application are covered by focused filesystem tests.
 Recheck simulator, emulator, and daemon state before live work, preserving the daemon guard and neutral-fixture restrictions.

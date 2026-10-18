@@ -115,6 +115,13 @@ T54 defines the immutable attempt layout and requires callers to use manifest/ca
 3. Compare the two snapshots, ignoring refs.
 4. If they differ, retry up to 3 times, then return an error.
 
+Refinement approved on 2026-10-18 during M5 integration.
+On iOS, replace the upstream stable-wait call with a bounded quiet-period loop using `observeOnly: true` snapshots, and use observe-only snapshots for the screenshot comparison pair.
+The pinned upstream stable-wait path can activate a background session app, which conflicts with capture-only behavior.
+Observe-only capture requires an already-ready compatible runner and refuses unavailable foreground observations; device-proof must report that refusal rather than activate the app or fall back to ordinary snapshots.
+Android retains the upstream stable-wait call.
+The snapshot/screenshot/snapshot acceptance check and bounded retries remain required.
+
 ### T9. Session targeting
 
 Default to passing `cwd` and `platform` exactly as the CLI does, so device-proof attaches to the agent's implicit session with no setup.
