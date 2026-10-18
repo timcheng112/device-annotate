@@ -49,7 +49,7 @@ export async function collectEnvironment(session: AgentDeviceSession, device: Ag
     const size = environmentSchema.shape.display.shape.textSize.safeParse({ kind: 'ios-content-size', value: textSize });
     if (size.success) environment.display.textSize = size.data;
     // Older Xcode releases lack this read. Never infer orientation from a portrait-shaped image.
-    const temporary = await mkdtemp(join(tmpdir(), 'device-proof-display-'));
+    const temporary = await mkdtemp(join(tmpdir(), 'device-annotate-display-'));
     try {
       // devicectl supports JSON files, not stdout parsing. It has no simulator-set selector.
       if (await realpath(set) !== await realpath(join(homedir(), 'Library/Developer/CoreSimulator/Devices'))) throw new Error('Custom simulator set is unsupported by this probe.');

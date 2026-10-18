@@ -1,8 +1,8 @@
 {
-  "name": "device-proof",
+  "name": "device-annotate",
   "version": "0.1.0",
   "private": true,
-  "description": "Capture and verify annotated evidence for native mobile apps.",
+  "description": "Agent-first screenshot annotation and visual assertions, powered by agent-device.",
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -13,7 +13,7 @@
   },
   "types": "./dist/index.d.ts",
   "bin": {
-    "device-proof": "bin/device-proof.mjs"
+    "device-annotate": "bin/device-annotate.mjs"
   },
   "engines": {
     "node": ">=22.12"

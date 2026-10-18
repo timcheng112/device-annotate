@@ -8,7 +8,7 @@ import { evidenceStore } from '../../dist/capture/store.js';
 import { manifestSchema } from '../../dist/manifest/schema.js';
 
 async function setup(t) {
-  const dir = await mkdtemp(join(tmpdir(), 'device-proof-cleanup-'));
+  const dir = await mkdtemp(join(tmpdir(), 'device-annotate-cleanup-'));
   t.after(() => rm(dir, { recursive: true, force: true }));
   const manifest = JSON.parse(await readFile(new URL('../../examples/manifest-ledger.json', import.meta.url)));
   manifest.retention = { maxAttemptsPerStep: 0, maxAgeDays: 0, maxBytes: 0 };

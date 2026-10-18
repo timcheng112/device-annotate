@@ -6,7 +6,7 @@ import { runCapture } from '../../dist/capture/public.js';
 import { localDeviceAdapter } from '../../dist/capture/device.js';
 const platform = process.argv[2];
 if (!['ios', 'android'].includes(platform)) throw new Error('Supply ios or android with the neutral fixture already foregrounded.');
-const out = await mkdtemp(join(tmpdir(), 'device-proof-native-performance-'));
+const out = await mkdtemp(join(tmpdir(), 'device-annotate-native-performance-'));
 const samples = [];
 for (let index = 0; index < 4; index++) {
   let captureMs = 0;

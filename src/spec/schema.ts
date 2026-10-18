@@ -19,7 +19,7 @@ export const specStructureSchema = z.strictObject({
     criterion: criterionSchema,
     steps: stepsSchema,
   })).min(1, "Supply at least one acceptance criterion."),
-}).describe("Structural spec validation only. Run device-proof validate for complete offline validation, including unique step names across criteria.");
+}).describe("Structural spec validation only. Run device-annotate validate for complete offline validation, including unique step names across criteria.");
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);

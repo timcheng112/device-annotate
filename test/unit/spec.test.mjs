@@ -109,6 +109,6 @@ test("criterion wording and empty-step normalization survive whole-file validati
 });
 
 test("the generated schema explains its structural-validation boundary", () => {
-  assert.match(exported.$comment, /device-proof validate/);
+  assert.match(exported.$comment, /device-annotate validate/);
   assert.match(exported.description, /unique step names across criteria/);
 });

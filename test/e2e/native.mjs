@@ -12,7 +12,7 @@ import { verifyNativeEnvironment } from './environment-gate.mjs';
 const platform = process.argv[2];
 assert.ok(['ios', 'android'].includes(platform), 'Usage: node test/e2e/native.mjs ios|android [output-directory]');
 const cwd = fileURLToPath(new URL('../../', import.meta.url));
-const output = process.argv[3] ? resolve(process.argv[3]) : await mkdtemp(join(tmpdir(), `device-proof-native-${platform}-`));
+const output = process.argv[3] ? resolve(process.argv[3]) : await mkdtemp(join(tmpdir(), `device-annotate-native-${platform}-`));
 await mkdir(output, { recursive: true });
 const adapter = await localDeviceAdapter({ cwd, platform });
 try {
@@ -31,7 +31,7 @@ for (const [name, config, expected, exit] of [
   const out = join(output, name);
   await writeFile(specPath, JSON.stringify({ out, criteria: [{ criterion: `Neutral ${platform} ${name} evidence`, steps: { sample: config } }] }));
   const start = performance.now();
-  const result = spawnSync(process.execPath, ['bin/device-proof.mjs', 'capture', specPath, '--step', 'sample', '--platform', platform], { cwd, encoding: 'utf8', timeout: 300_000 });
+  const result = spawnSync(process.execPath, ['bin/device-annotate.mjs', 'capture', specPath, '--step', 'sample', '--platform', platform], { cwd, encoding: 'utf8', timeout: 300_000 });
   assert.equal(result.status, exit, result.stderr || result.stdout);
   const attempt = JSON.parse(result.stdout);
   assert.equal(attempt.result, expected, JSON.stringify(attempt.error));
@@ -53,7 +53,7 @@ await writeFile(buildPath, JSON.stringify({ appId: 'dev.deviceproof.fixture', na
 const saveFlow = async (first) => writeFile(flowPath, JSON.stringify({ out: flowOut, criteria: [{ criterion: 'Neutral multi-step flow', steps: { [first]: {}, second: {} } }] }));
 await saveFlow('first');
 const runStep = (step) => {
-  const result = spawnSync(process.execPath, ['bin/device-proof.mjs', 'capture', flowPath, '--step', step, '--platform', platform, '--build', buildPath], { cwd, encoding: 'utf8', timeout: 300_000 });
+  const result = spawnSync(process.execPath, ['bin/device-annotate.mjs', 'capture', flowPath, '--step', step, '--platform', platform, '--build', buildPath], { cwd, encoding: 'utf8', timeout: 300_000 });
   return { status: result.status, attempt: JSON.parse(result.stdout) };
 };
 const first = runStep('first');

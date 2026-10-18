@@ -11,7 +11,7 @@ const fixture = JSON.parse(await readFile(new URL('../fixtures/capture-spike/ios
 const screenshot = await readFile(new URL('../fixtures/capture-spike/ios/capture.raw.png', import.meta.url));
 const environment = JSON.parse(await readFile(new URL('../../examples/environment.complete.json', import.meta.url)));
 async function setup(t) {
-  const cwd = await mkdtemp(join(tmpdir(), 'device-proof-public-'));
+  const cwd = await mkdtemp(join(tmpdir(), 'device-annotate-public-'));
   t.after(() => rm(cwd, { recursive: true, force: true }));
   let calls = 0;
   return { cwd, options: { cwd, step: 'sample', criterion: 'Neutral evidence', out: 'output' },

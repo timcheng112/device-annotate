@@ -236,7 +236,7 @@ cmux browser open "file://$PWD/docs/prototypes/capture-spike/index.html" --focus
 
 `session-checks.mjs` closes the implicit fixture sessions, tests named sessions, and closes those named sessions.
 The mismatch experiment uses its own `.local/mismatch-state` daemon and closes its disposable session afterward.
-The command sequence intentionally drives only the neutral fixture; production device-proof remains capture-and-verify only.
+The command sequence intentionally drives only the neutral fixture; production device-annotate remains capture-and-verify only.
 `verify-geometry.mjs` is offline and also verifies the retained compatibility diagnostic without requiring its earlier mislinked app to be reinstalled.
 The compatibility pair records the initial SDK-linking experiment, not the corrected builder's current output.
 

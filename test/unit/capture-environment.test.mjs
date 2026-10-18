@@ -7,7 +7,7 @@ import { collectEnvironment } from '../../dist/capture/environment.js';
 import { assessEnvironment } from '../../dist/manifest/environment.js';
 
 test('iOS probes bind to session simulator set and preserve unknown rotation on older tools', async (t) => {
-  const set = await mkdtemp(join(tmpdir(), 'device-proof-set-'));
+  const set = await mkdtemp(join(tmpdir(), 'device-annotate-set-'));
   t.after(() => rm(set, { recursive: true, force: true }));
   const calls = [];
   const session = { device: { ios: { udid: 'fixture', simulatorSetPath: set } } };

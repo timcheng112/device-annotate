@@ -5,16 +5,16 @@ import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { validate } from "device-proof";
+import { validate } from "device-annotate";
 
 const root = new URL("../../", import.meta.url);
-const bin = fileURLToPath(new URL("bin/device-proof.mjs", root));
+const bin = fileURLToPath(new URL("bin/device-annotate.mjs", root));
 const loader = fileURLToPath(new URL("test/fixtures/no-device-loader.mjs", root));
 const example = readFileSync(new URL("examples/cart.yaml", root), "utf8");
 const run = (args, cwd) => spawnSync(process.execPath, ["--no-warnings", "--experimental-loader", loader, bin, ...args], { cwd, encoding: "utf8", timeout: 5000 });
 
 function fixture(t) {
-  const cwd = mkdtempSync(path.join(tmpdir(), "device-proof-validate-"));
+  const cwd = mkdtempSync(path.join(tmpdir(), "device-annotate-validate-"));
   t.after(() => rmSync(cwd, { recursive: true, force: true }));
   return cwd;
 }
@@ -60,7 +60,7 @@ test("CLI rejects missing/extra arguments and unsupported commands without captu
     const result = run(args, cwd);
     assert.equal(result.status, 2);
     assert.equal(JSON.parse(result.stdout).error.code, "INVALID_INPUT");
-    assert.match(result.stderr, /Usage: device-proof validate/);
+    assert.match(result.stderr, /Usage: device-annotate validate/);
   }
   assert.deepEqual(readdirSync(cwd), []);
 });

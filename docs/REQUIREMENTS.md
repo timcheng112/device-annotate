@@ -1,7 +1,7 @@
-# device-proof: requirements
+# device-annotate: requirements
 
-Working name.
-`device-proof` is free on npm as of 2026-10-14.
+The user selected `device-annotate` on 2026-10-18.
+Agent-first screenshot annotation and visual assertions, powered by agent-device.
 
 ## Purpose
 

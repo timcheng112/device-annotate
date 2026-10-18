@@ -64,7 +64,7 @@ The continuation results below supersede its lack of live-device verification.
 
 Additional review of the pinned agent-device 0.21.27 source found that ordinary iOS snapshots can activate a background session app.
 The runner's `prepareActivatedTarget` calls `activateTarget` when the target needs activation.
-This conflicts with device-proof's capture-only requirement if used without qualification.
+This conflicts with device-annotate's capture-only requirement if used without qualification.
 
 The public snapshot API supports `observeOnly: true`.
 Its runner path resolves the existing app without activation and refuses observations unless the app reports `runningForeground`; it also requires an already-ready compatible runner.
@@ -114,14 +114,14 @@ Both capture preflight and cleanup reject invalid inputs before device or artifa
 The shared recording guard refuses direct, symlink, and hardlink aliases of `manifest.json` before replacement.
 
 ```sh
-node bin/device-proof.mjs capture path/to/spec.yaml --step sample --platform ios --build build.json
-node bin/device-proof.mjs capture --step control --criterion 'The expected control is visible' --box 'id="control"' --platform android --out evidence/control
-node bin/device-proof.mjs cleanup evidence/control
-node bin/device-proof.mjs cleanup evidence/control --apply
+node bin/device-annotate.mjs capture path/to/spec.yaml --step sample --platform ios --build build.json
+node bin/device-annotate.mjs capture --step control --criterion 'The expected control is visible' --box 'id="control"' --platform android --out evidence/control
+node bin/device-annotate.mjs cleanup evidence/control
+node bin/device-annotate.mjs cleanup evidence/control --apply
 ```
 
 ```js
-import { capture, cleanup } from 'device-proof';
+import { capture, cleanup } from 'device-annotate';
 const attempt = await capture({ specPath: '/absolute/spec.yaml', step: 'sample', platform: 'ios', build });
 const preview = await cleanup({ outDir: '/absolute/evidence' });
 ```
@@ -187,6 +187,13 @@ No hosted CI run or publication occurred, and no Git remote is configured.
 The user has been asked for a repository destination and permission to push `plan/implementation` for hosted verification.
 
 ## Next safe action
+
+The user selected `device-annotate` as the final library and CLI name on 2026-10-18.
+Package metadata, imports, CLI entry points, diagnostics, documentation, and schema descriptions use the selected name.
+The package lock and JSON Schemas are regenerated through their existing tools.
+`npm run check` passes after the final rename: 740 tests, type checking, 18 generated-schema checks, and 22 vendor hash checks.
+A direct npm registry check returned 404 for `device-annotate`; this does not reserve the name.
+The checkout path, neutral fixture identities, existing `versions.deviceProof` evidence field, and `.device-proof-lock` journal remain unchanged to preserve existing evidence and locking compatibility.
 
 Review and run the committed native CI workflow after a Git remote and publication authorization are supplied.
 The iOS host limitation remains explicit: multi-step iOS evidence requires a toolchain/provider that can reliably expose active display rotation, or a separately verified read-only observation source.

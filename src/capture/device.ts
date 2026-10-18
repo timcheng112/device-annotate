@@ -45,9 +45,9 @@ export async function localDeviceAdapter(options: DeviceOptions): Promise<Eviden
   const devices = await client.devices.list({ platform });
   const device = devices.find((entry) => entry.id === selected.device.id && entry.platform === platform);
   if (!device || device.booted === false || ((device.kind === 'simulator' || device.kind === 'emulator') && device.booted !== true)) {
-    throw new CaptureFailure('DEVICE_UNAVAILABLE', 'The selected local device is unavailable. Prepare it with agent-device; device-proof will not boot or select another device.');
+    throw new CaptureFailure('DEVICE_UNAVAILABLE', 'The selected local device is unavailable. Prepare it with agent-device; device-annotate will not boot or select another device.');
   }
-  const directory = await mkdtemp(join(tmpdir(), 'device-proof-capture-'));
+  const directory = await mkdtemp(join(tmpdir(), 'device-annotate-capture-'));
   let density: number | null = null;
   const snapshot = async () => {
     await checkSession();

@@ -1,4 +1,4 @@
-# device-proof: technical design
+# device-annotate: technical design
 
 Status: M0, M1, and M2 are complete; runtime findings are recorded in [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md), and implementation of layout, rendering, and capture continues through [PLAN.md](PLAN.md).
 Requirements live in [REQUIREMENTS.md](REQUIREMENTS.md).
@@ -37,7 +37,7 @@ These answer the open questions in the requirements.
 
 - The Node client talks to the same daemon as the CLI.
   Requests are serialized per session and per device.
-- A public `snapshot` starts a new ref frame, so the agent's `@eN` refs go stale after device-proof captures.
+- A public `snapshot` starts a new ref frame, so the agent's `@eN` refs go stale after device-annotate captures.
 - `noRecord` exists on snapshot, get, is and find, but not on screenshot.
 - The client defaults to session `"default"`; the CLI scopes its implicit session by worktree and platform.
 
@@ -65,14 +65,14 @@ A later `--scale` option may shrink output after drawing.
 
 Generate one SVG containing the screenshot and the annotations, rasterize with resvg-wasm (about 2.5 MB, no native binaries).
 Pass the bundled font via `fontBuffers`; WASM cannot load system fonts, so output is identical on every OS.
-device-proof's own code owns layout: anchoring, label placement, collision avoidance and contrast.
+device-annotate's own code owns layout: anchoring, label placement, collision avoidance and contrast.
 
 ### T5. CLI
 
 ```
-device-proof capture <spec.yaml> --step <name>
-device-proof capture --step control --box 'id="x"' --criterion "The expected control is visible" --out evidence/control
-device-proof validate <spec.yaml>
+device-annotate capture <spec.yaml> --step <name>
+device-annotate capture --step control --box 'id="x"' --criterion "The expected control is visible" --out evidence/control
+device-annotate validate <spec.yaml>
 ```
 
 `validate` needs no device.
@@ -118,13 +118,13 @@ T54 defines the immutable attempt layout and requires callers to use manifest/ca
 Refinement approved on 2026-10-18 during M5 integration.
 On iOS, replace the upstream stable-wait call with a bounded quiet-period loop using `observeOnly: true` snapshots, and use observe-only snapshots for the screenshot comparison pair.
 The pinned upstream stable-wait path can activate a background session app, which conflicts with capture-only behavior.
-Observe-only capture requires an already-ready compatible runner and refuses unavailable foreground observations; device-proof must report that refusal rather than activate the app or fall back to ordinary snapshots.
+Observe-only capture requires an already-ready compatible runner and refuses unavailable foreground observations; device-annotate must report that refusal rather than activate the app or fall back to ordinary snapshots.
 Android retains the upstream stable-wait call.
 The snapshot/screenshot/snapshot acceptance check and bounded retries remain required.
 
 ### T9. Session targeting
 
-Default to passing `cwd` and `platform` exactly as the CLI does, so device-proof attaches to the agent's implicit session with no setup.
+Default to passing `cwd` and `platform` exactly as the CLI does, so device-annotate attaches to the agent's implicit session with no setup.
 `--session <name>` for named sessions.
 Needs one runtime test to confirm.
 
@@ -155,7 +155,7 @@ Prototype findings:
 
 ### T12. Output stays local
 
-device-proof writes files with relative paths and never uploads or knows about MRs.
+device-annotate writes files with relative paths and never uploads or knows about MRs.
 Getting evidence into an MR, chat or CI is the caller's job (`fh`, an MR skill).
 
 ### T13. One image per step
@@ -178,7 +178,7 @@ Why one copy matters (from `src/daemon-client/daemon-launch-spec.ts`, `resolveDa
 - A client whose version differs from the running daemon either replaces the daemon (if the client is newer, or the daemon is older) or is refused (`refuseNewer`, if the daemon is newer and alive).
 - Replacing the daemon mid-run would drop the agent's live session.
 
-So device-proof, before its first call, compares the agent-device version it resolved with the running daemon's version.
+So device-annotate, before its first call, compares the agent-device version it resolved with the running daemon's version.
 On a mismatch it stops with a clear error naming both versions, instead of letting the client replace the daemon.
 This also covers the case of a global agent-device CLI next to a different project-local copy.
 
@@ -240,7 +240,7 @@ T26 adds explicit check counts so callers can distinguish assertion-free capture
 ### T17. Module layout
 
 ```
-device-proof/
+device-annotate/
 ├─ src/
 │  ├─ cli/                  # argument parsing for capture and validate; exit codes
 │  ├─ spec/                 # YAML loading, zod schema, generated JSON Schema, validation errors
@@ -252,7 +252,7 @@ device-proof/
 │  ├─ manifest/             # read and update manifest.json, result precedence
 │  ├─ vendor/agent-device/  # vendored check code, LICENSE, source commit
 │  └─ index.ts              # Node API: capture(), validate()
-├─ skills/device-proof/SKILL.md
+├─ skills/device-annotate/SKILL.md
 ├─ test/{unit,golden,e2e,fixtures}/
 └─ scripts/sync-vendor.ts
 ```
@@ -266,14 +266,14 @@ The spec schema is defined in zod; the JSON Schema file is generated from it.
 
 ### T18. Skill
 
-- Lives in the GitHub repo at `skills/device-proof/SKILL.md`, with `name` and `description` frontmatter.
+- Lives in the GitHub repo at `skills/device-annotate/SKILL.md`, with `name` and `description` frontmatter.
 - Not in the npm package, matching agent-device.
-  Users install it with `npx skills add <owner>/device-proof` (Vercel's `skills` CLI), which clones the repo, finds `SKILL.md` in standard locations, and installs it into the chosen agents at project or global scope.
+  Users install it with `npx skills add <owner>/device-annotate` (Vercel's `skills` CLI), which clones the repo, finds `SKILL.md` in standard locations, and installs it into the chosen agents at project or global scope.
   No catalog publishing is required; pushing to the repo is the release.
-- Kept short and stable: when to use device-proof, prerequisites (agent-device and its skill), the workflow, outcome rules, integrity rules, and masking.
+- Kept short and stable: when to use device-annotate, prerequisites (agent-device and its skill), the workflow, outcome rules, integrity rules, and masking.
 - Outcome rules: passed means done; failed means fix the app; error means fix the selector, spec or add a `testID`, never change app behavior to clear an error.
 - Integrity rules: never edit images or `manifest.json` by hand; never weaken an `expect` to turn a failure into a pass (change it only if the criterion was misread, and say so); report failures as they are.
-- The detailed, version-specific reference (spec format, annotation types, checks, examples) lives in `device-proof help`, which ships with the binary.
+- The detailed, version-specific reference (spec format, annotation types, checks, examples) lives in `device-annotate help`, which ships with the binary.
 
 ### T19. Standalone absence checks
 
@@ -381,7 +381,7 @@ T29 defines retention of superseded files.
 ### T28. Environment compatibility for evidence reuse
 
 Agreed on 2026-10-14 during implementation-plan review.
-Reuse requires the same device configuration and the same device-proof and agent-device versions.
+Reuse requires the same device configuration and the same device-annotate and agent-device versions.
 A change of platform or device, OS version, display configuration, or either tool version requires fresh captures for the run.
 Old results must not contribute to the current run's outcomes or check counts after such a change.
 Ordinary app navigation between steps is expected and does not itself invalidate earlier evidence.
@@ -485,7 +485,7 @@ Identity values may be content hashes or immutable build-system identifiers.
 The caller must identify the actual installed build and running bundle; a version label or source revision alone does not establish unchanged runtime code.
 Schema validation checks the supplied structure and required values; it cannot prove that the supplied identities describe the running app.
 
-For example, `device-proof capture cart.yaml --step before --build build.json` supplies the flow's identity for that capture.
+For example, `device-annotate capture cart.yaml --step before --build build.json` supplies the flow's identity for that capture.
 Automated generation of this file, including convenient integration with development builds, has not been implemented or specified.
 
 ### T35. Complete environment identity for multi-step captures
@@ -624,7 +624,7 @@ Agreed on 2026-10-15 during M1 contract review after verifying the JSON Schema e
 Generated JSON Schema checks fields, types, required values, and annotation combinations.
 The shared offline validator additionally checks rules spanning the file, including unique step names across criteria.
 The CLI and capture preflight use that complete validator.
-An editor's JSON Schema check may therefore accept a file that `device-proof validate` rejects.
+An editor's JSON Schema check may therefore accept a file that `device-annotate validate` rejects.
 Document this distinction explicitly in the generated schema and validation guidance.
 
 Keep parity tests for structural rules and separate tests proving complete validation rejects semantic errors that the structural schema accepts.
@@ -691,7 +691,7 @@ Omitting recordings means an empty list.
 Recordings are per-capture inputs, separate from YAML and effective step configuration.
 CLI recording paths resolve from the invocation directory under T44.
 
-The manifest references the caller's existing files; device-proof does not copy, annotate, or modify them.
+The manifest references the caller's existing files; device-annotate does not copy, annotate, or modify them.
 Caller-owned recordings remain excluded from history cleanup even if a referenced file sits inside the evidence folder.
 Missing, unreadable, or non-regular files fail preflight before device access.
 Input validation reports the recording's list position and preflight identifies the path that failed.
@@ -795,7 +795,7 @@ Agreed on 2026-10-15 during M1 contract review.
 Node's `validate(input)` accepts YAML text or a parsed spec object and returns a synchronous discriminated result:
 
 ```ts
-import { validate } from "device-proof";
+import { validate } from "device-annotate";
 
 const result = validate(yamlText); // A parsed object is also accepted.
 if (result.valid) {
@@ -811,7 +811,7 @@ Success returns `{ valid: true, spec }` with schema defaults applied and caller 
 Shared crop inheritance remains represented by `defaults`; capture obtains each effective configuration through T40's normalization.
 Relative paths stay as supplied until T44's path-resolution boundary.
 
-`device-proof validate <spec.yaml>` reads one local UTF-8 file and calls that same validator.
+`device-annotate validate <spec.yaml>` reads one local UTF-8 file and calls that same validator.
 It writes one JSON result to stdout, writes readable diagnostics to stderr on failure, and exits 0 for valid input or 2 for validation, argument, or file-access errors.
 Use `--` before a filename that starts with a hyphen.
 Validation creates no evidence files and never loads or contacts the device client.
@@ -819,7 +819,7 @@ The [cart example](../examples/cart.yaml) is executable with the local developme
 
 ```sh
 npm run build
-./bin/device-proof.mjs validate examples/cart.yaml
+./bin/device-annotate.mjs validate examples/cart.yaml
 ```
 
 Use YAML 1.2 core syntax with exactly one document, string mapping keys, and unique keys.

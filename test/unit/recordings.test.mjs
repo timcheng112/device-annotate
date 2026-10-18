@@ -32,7 +32,7 @@ for (const [label, input, valid] of cases) {
 }
 
 async function fixture(t) {
-  const cwd = await mkdtemp(path.join(tmpdir(), "device-proof-recordings-"));
+  const cwd = await mkdtemp(path.join(tmpdir(), "device-annotate-recordings-"));
   t.after(() => rm(cwd, { recursive: true, force: true }));
   // Deliberately opaque bytes: this preflight verifies file access, not video validity.
   await writeFile(path.join(cwd, "clip.mp4"), "test-only opaque recording bytes");

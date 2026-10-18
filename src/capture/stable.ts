@@ -63,7 +63,7 @@ export async function waitForQuietSnapshots(snapshot: () => Promise<SnapshotStat
     else if (now() - quietSince >= quietMs) return;
     previous = current;
   }
-  throw new CaptureFailure('CAPTURE_UNSTABLE', 'The foreground app did not remain quiet within 60 seconds. Let it settle and retry; device-proof will not activate it.');
+  throw new CaptureFailure('CAPTURE_UNSTABLE', 'The foreground app did not remain quiet within 60 seconds. Let it settle and retry; device-annotate will not activate it.');
 }
 
 /** One initial capture plus at most three retries. Never evaluate a rejected pair. */

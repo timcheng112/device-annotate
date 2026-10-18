@@ -3,7 +3,7 @@ import { open } from "node:fs/promises";
 import { validate, type ValidationResult, type Diagnostic } from "../index.js";
 import { resolveArgumentPath } from "./paths.js";
 
-const usage = "Usage: device-proof validate <spec.yaml>\nValidates a spec offline.\ndevice-proof capture [spec.yaml] --step <name> [--platform ios|android] [--session <name>] [--build <file>] [--recording <file>]\nOne-off: --criterion <text> --box <selector> --out <folder>\ndevice-proof cleanup <folder> [--apply] [--finished]\n";
+const usage = "Usage: device-annotate validate <spec.yaml>\nValidates a spec offline.\ndevice-annotate capture [spec.yaml] --step <name> [--platform ios|android] [--session <name>] [--build <file>] [--recording <file>]\nOne-off: --criterion <text> --box <selector> --out <folder>\ndevice-annotate cleanup <folder> [--apply] [--finished]\n";
 
 async function readAndValidate(file: string): Promise<ValidationResult> {
   let source: string;

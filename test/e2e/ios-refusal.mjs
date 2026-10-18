@@ -16,7 +16,7 @@ const metadata = join(daemonStateDirectory(), 'daemon.json');
 const before = await readFile(metadata);
 execFileSync('xcrun', ['simctl', 'terminate', udid, 'dev.deviceproof.fixture']);
 try {
-  const result = spawnSync(process.execPath, ['bin/device-proof.mjs', 'capture', '--step', 'refused', '--criterion', 'Unavailable foreground app must not be activated', '--platform', 'ios', '--out', out], { encoding: 'utf8', timeout: 120_000 });
+  const result = spawnSync(process.execPath, ['bin/device-annotate.mjs', 'capture', '--step', 'refused', '--criterion', 'Unavailable foreground app must not be activated', '--platform', 'ios', '--out', out], { encoding: 'utf8', timeout: 120_000 });
   assert.equal(result.status, 2, result.stderr);
   const attempt = JSON.parse(result.stdout);
   assert.equal(attempt.error.code, 'IOS_OBSERVATION_UNAVAILABLE');

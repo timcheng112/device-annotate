@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { validate } from "device-proof";
+import { validate } from "device-annotate";
 import { diagnosticSchema } from "../../dist/spec/errors.js";
 
 const root = new URL("../../", import.meta.url);
@@ -123,7 +123,7 @@ test("excessive alias expansion returns an error instead of escaping the API", (
 test("the public API validates YAML with all host built-ins and device imports blocked", () => {
   const loader = fileURLToPath(new URL("test/fixtures/offline-validation-loader.mjs", root));
   const code = `
-    const { validate } = await import("device-proof");
+    const { validate } = await import("device-annotate");
     if (!validate(${JSON.stringify(source)}).valid) throw new Error("Valid YAML rejected");
     if (validate("criteria: !custom []").valid) throw new Error("Unknown tag accepted");
     console.log("offline API passed");

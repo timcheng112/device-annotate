@@ -7,7 +7,7 @@ import { resolveArgumentPath, resolveSpecPaths } from "../../dist/cli/paths.js";
 import { specSchema } from "../../dist/spec/schema.js";
 
 // These directories are deliberately hypothetical; resolution must not require them to exist.
-const project = path.resolve("/device-proof-path-tests/project");
+const project = path.resolve("/device-annotate-path-tests/project");
 const specPath = path.join(project, "specs", "cart.yaml");
 const spec = { criteria: [{ criterion: "Cart is visible", steps: { cart: {} } }] };
 
@@ -32,7 +32,7 @@ test("default output uses the spec basename without its final extension", () => 
 });
 
 test("absolute output paths and explicit parent-relative output paths are respected", () => {
-  const absoluteOut = path.resolve("/device-proof-path-tests/other-output");
+  const absoluteOut = path.resolve("/device-annotate-path-tests/other-output");
   assert.equal(resolveSpecPaths({ cwd: project, specPath, out: absoluteOut }).outDir, absoluteOut);
   assert.equal(resolveSpecPaths({ cwd: project, specPath, out: "../evidence/cart" }).outDir, path.join(project, "evidence/cart"));
 });

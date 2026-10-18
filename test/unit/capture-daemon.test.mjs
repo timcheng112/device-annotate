@@ -9,7 +9,7 @@ import { once } from 'node:events';
 import { guardedTransport, installedAgentVersion } from '../../dist/capture/daemon.js';
 
 async function setup(t, overrides = {}) {
-  const stateDir = await mkdtemp(join(tmpdir(), 'device-proof-daemon-'));
+  const stateDir = await mkdtemp(join(tmpdir(), 'device-annotate-daemon-'));
   t.after(() => rm(stateDir, { recursive: true, force: true }));
   const info = { pid: process.pid, token: 'test-only-secret', version: '0.21.27', codeOrigin: 'installed', port: 1234, ...overrides };
   const save = () => writeFile(join(stateDir, 'daemon.json'), JSON.stringify(info));

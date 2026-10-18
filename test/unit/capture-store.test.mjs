@@ -10,7 +10,7 @@ import { evidenceStore } from '../../dist/capture/store.js';
 import { reconcileManifest } from '../../dist/manifest/reconcile.js';
 
 async function folder(t) {
-  const dir = await mkdtemp(join(tmpdir(), 'device-proof-store-'));
+  const dir = await mkdtemp(join(tmpdir(), 'device-annotate-store-'));
   t.after(() => rm(dir, { recursive: true, force: true }));
   return dir;
 }

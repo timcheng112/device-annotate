@@ -1,4 +1,4 @@
-# device-proof: implementation plan
+# device-annotate: implementation plan
 
 Status: M0 through M4 complete, with contracts through T56 approved; M5 implementation is in progress.
 See [CAPTURE-SPIKE.md](CAPTURE-SPIKE.md) for runtime evidence, reproducible commands, and metadata collection limitations to address during M5 integration.
@@ -110,7 +110,7 @@ M5 must verify exclusive access, error reporting, and interruption recovery.
 
 Each milestone must satisfy its verification criteria before its dependent work is considered complete.
 M0 is the first delivery: reproducible neutral captures and documented compatibility findings on both platforms.
-The application-driving fixture harness may use agent-device; device-proof's production code continues to capture and verify only.
+The application-driving fixture harness may use agent-device; device-annotate's production code continues to capture and verify only.
 
 | Milestone | Reviewable deliverable |
 |---|---|
@@ -236,10 +236,10 @@ The fourteenth slice adds the pure [annotated-image policy](../src/layout/image-
 It keeps original entry numbers and error rows for usable partial images, requires positive drawable readiness for every mask, and suppresses output when screenshot/crop/mask readiness fails.
 It rejects contradictory drawable numbers, including markers for targets proven absent or hidden, and refuses silently dropped annotations.
 This determines eligibility only; actual geometry, mask application, ERROR-badge rendering, visual review, and atomic saving remain M3-M5 work.
-The fifteenth slice adds the [public validation API](../src/index.ts), [YAML/object validator](../src/spec/validate.ts), [validation CLI](../src/cli/main.ts), executable [development entry point](../bin/device-proof.mjs), and [YAML example](../examples/cart.yaml).
+The fifteenth slice adds the [public validation API](../src/index.ts), [YAML/object validator](../src/spec/validate.ts), [validation CLI](../src/cli/main.ts), executable [development entry point](../bin/device-annotate.mjs), and [YAML example](../examples/cart.yaml).
 The package exports typed ESM validation and pins `yaml` 2.9.0; the CLI returns the same JSON result as the API and adds readable stderr diagnostics on failure.
 YAML syntax and field diagnostics include source locations, duplicate keys cannot silently replace steps, and validation preserves schema defaults without reading device or output state.
-Run `npm run build` and `./bin/device-proof.mjs validate examples/cart.yaml` to exercise it locally.
+Run `npm run build` and `./bin/device-annotate.mjs validate examples/cart.yaml` to exercise it locally.
 The sixteenth slice adds pure [capture-input preparation](../src/spec/capture-input.ts) under the already approved T23, T33, T34, T40, T41, T42, and T46 rules.
 Spec-based captures pass through the public complete validator before selecting a step, so invalid unselected steps and duplicate names still fail.
 One-off captures require a portable step name and nonblank criterion, preserve the criterion verbatim, and normalize through the same spec and effective-step path.
@@ -307,7 +307,7 @@ M1 adds no live capture or image-rendering claim; those capabilities remain assi
 - Normalize file-based and one-off inputs into the same internal representation.
 - Define normalized effective step configuration, including its criterion and inherited settings, so reconciliation distinguishes semantic edits from formatting-only changes.
 - Require a non-empty `--criterion` for one-off captures and preserve the supplied wording.
-- Expose offline `validate()` and `device-proof validate` without loading or contacting the device client.
+- Expose offline `validate()` and `device-annotate validate` without loading or contacting the device client.
 
 ### Verification and exit criteria
 
@@ -481,8 +481,8 @@ Local implementation and native verification are complete; [the delivery record]
 
 ### Work
 
-- Write version-specific `device-proof help` covering the full spec, annotations, predicates, examples, and diagnostics.
-- Use `skill-creator` when writing `skills/device-proof/SKILL.md`, following the scope and integrity rules in T18.
+- Write version-specific `device-annotate help` covering the full spec, annotations, predicates, examples, and diagnostics.
+- Use `skill-creator` when writing `skills/device-annotate/SKILL.md`, following the scope and integrity rules in T18.
 - Explain session selection, stale refs after capture, stable selectors, and adding `testID`s.
 - Explain that masks affect the annotated image while raw screenshots and snapshots remain audit artifacts.
 - Explain retention limits, stored capture times, cleanup on command execution, preview/apply behavior, and explicit cleanup of finished runs in help and the skill.

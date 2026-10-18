@@ -60,7 +60,7 @@ test("invalid requested ownership is rejected even when the folder has no owner"
 });
 
 async function fixture(t) {
-  const cwd = await mkdtemp(path.join(tmpdir(), "device-proof-owner-"));
+  const cwd = await mkdtemp(path.join(tmpdir(), "device-annotate-owner-"));
   t.after(() => rm(cwd, { recursive: true, force: true }));
   const specPath = path.join(cwd, "cart.yaml");
   await writeFile(specPath, "# fixture spec path; YAML parsing is separate\n");
