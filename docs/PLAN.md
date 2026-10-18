@@ -434,7 +434,8 @@ The measured in-memory processing pipeline stays below one second on the recorde
 
 ## M5. Capture and artifact integration
 
-Local implementation and native verification are complete; [the delivery record](PLAN.delivery.md) tracks the public interfaces, live results, iOS metadata limitation, and pending hosted CI gates.
+M5 is complete.
+[The delivery record](PLAN.delivery.md) tracks public capture and cleanup, local native verification, the documented iOS metadata limitation, and successful hosted unit, iOS simulator, and Android emulator jobs at commit `4c49684`.
 
 ### Work
 

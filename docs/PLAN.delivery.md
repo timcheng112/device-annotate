@@ -1,10 +1,10 @@
 # M5 delivery
 
 M5 integrates capture, rendering, durable artifacts, ownership, and cleanup under [PLAN.md](PLAN.md).
-Current phase: verification, with public capture/cleanup, native adapters, and local native suites implemented.
+Current phase: M5 complete, with public capture/cleanup, native adapters, local verification, and hosted CI gates passing.
 M0 through M4 are complete; M4 was committed as `12c12ab`.
 Its rendering and performance evidence remains in [M4-RENDERING.md](M4-RENDERING.md).
-M5 exposes public live capture but remains incomplete until the required hosted CI gates run successfully.
+M5 exposes public live capture and satisfies its local and hosted verification gates within the documented platform limitations.
 
 Worktree: `/Users/timcheng112/Documents/repos/device-annotate`.
 Branch: `plan/implementation`.
@@ -16,7 +16,7 @@ The authorized push succeeded, and `plan/implementation` tracks `origin/plan/imp
 The first hosted verification run is https://github.com/timcheng112/device-annotate/actions/runs/39090014690 at commit `91b3b79` passed the unit gate but failed both native setup paths before capture.
 No PR or package publication occurred.
 This continuation used only the dedicated neutral M0 simulator/emulator and a new isolated M5 daemon.
-Hosted verification is running on GitHub Actions.
+Hosted verification passed on GitHub Actions at implementation commit `4c49684`.
 
 ## Implemented foundation
 
@@ -174,7 +174,7 @@ The JSON samples remain in the ignored native evidence folder, and the committed
 Fixture setup and iOS runner preparation happen through the test harness before capture-only verification.
 The fixture builder now supports the host simulator architecture and `JAVA_HOME` on Linux.
 Runner selection follows [GitHub's runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners), and Android setup follows the [emulator action's documentation](https://github.com/ReactiveCircus/android-emulator-runner/blob/main/README.md).
-These workflow definitions are local and have not run on hosted CI.
+These workflow definitions were subsequently exercised on hosted CI; results and setup corrections are recorded below.
 
 ## Resumed local verification
 
@@ -202,12 +202,13 @@ The checkout moved from `~/Downloads/device-proof` to `~/Documents/repos/device-
 Neutral fixture identities, the existing `versions.deviceProof` evidence field, and the `.device-proof-lock` journal remain unchanged to preserve existing evidence and locking compatibility.
 Recorded native fixture provenance retains its original capture-time workspace path; fresh native runs must prepare a session scoped to the new checkout path.
 
-Monitor the unit, iOS, and Android jobs in the hosted workflow and resolve any M5 failures.
-Repository creation, this push, and hosted CI execution are authorized; a further publication confirmation is unnecessary.
+Continue with M6 help, skill, and package verification from [PLAN.md](PLAN.md#m6-help-skill-and-package-verification).
+The private repository and implementation branch are published, and M5 hosted verification is complete.
+Package publication and PR creation remain separate actions that have not been requested.
 The iOS host limitation remains explicit: multi-step iOS evidence requires a toolchain/provider that can reliably expose active display rotation, or a separately verified read-only observation source.
 Do not substitute configured orientation, screenshot aspect ratio, or a guessed default for that observation.
 Keep T8's approved observe-only refusal behavior intact.
-Do not mark M5 complete until the full [M5 exit criteria](PLAN.md#m5-capture-and-artifact-integration), including successful hosted iOS and Android CI runs, are satisfied.
+The [M5 exit criteria](PLAN.md#m5-capture-and-artifact-integration), including successful hosted iOS and Android CI runs, are now satisfied within these limits.
 
 ## First hosted CI corrections
 
@@ -220,3 +221,15 @@ The second hosted run, https://github.com/timcheng112/device-annotate/actions/ru
 Android built the fixture but its emulator exited before boot: 3510 MB was available and the data partition required 7373 MB.
 The workflow now removes unused .NET and Android NDK installations from the disposable Android runner before setup, reports available disk space, and bounds emulator boot to five minutes.
 No local SDK installation is removed.
+
+## Successful hosted verification and M5 completion
+
+[Run 39090940944](https://github.com/timcheng112/device-annotate/actions/runs/39090940944) passed all three jobs at commit `4c49684` on 2026-10-18.
+The Ubuntu unit job passes all 740 tests, type checking, 18 schema freshness checks, and 22 vendor hash checks.
+The macOS iOS simulator job passes native pass/fail/error capture and the unavailable-foreground refusal test without app reactivation or daemon replacement.
+The known missing iOS rotation and active pixel dimensions correctly produce the T35 multi-step refusal; hosted success does not establish iOS multi-step support.
+The Ubuntu Android API 33 x86_64 Google APIs emulator job passes native pass/fail/error capture with complete environment metadata, then multi-step aggregation, recapture replacement, renamed-step archival, retained-step reuse, and referenced-artifact readability.
+Its emulator version was 37.2.12.0, and runner disk cleanup increased available space from 14 GB to 26 GB before SDK setup.
+The workflow does not upload native image artifacts; hosted conclusions are supported by the executable assertions and job logs, while prior local native image review remains the visual evidence.
+No additional performance or hosted visual-review claim is made.
+M5 is complete, and M6 is the next milestone.
