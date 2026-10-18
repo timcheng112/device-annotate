@@ -683,7 +683,7 @@ The full-resolution MP4 is unchanged, and publication remains paused for review.
 
 The user explicitly requested fixing iOS multi-step support and including it in 0.2.0 before publication.
 Publication is deferred until this increment is implemented and verified; existing release authorization remains for the completed 0.2.0 scope.
-Current phase: final native verification and release preparation.
+Current phase: complete and published.
 The existing devicectl displays probe fails on the tested iOS 18.3 simulator; simctl io enumerate provides native panel dimensions/density but does not establish rotation.
 Do not infer directional orientation from screenshot aspect ratio or remove the complete-environment guard to make the flow pass.
 The dedicated Device Proof M0 simulator AB4DDFFF-D9C3-4A5F-9753-136F764E318E is booted for this work, with neutral fixture session ios-multi-fixture under scripts/m0/.local/ios-video-daemon.
@@ -699,3 +699,18 @@ Both actual landscape directions and return to portrait passed dimension/orienta
 The iOS native CI gate now requires complete metadata and exercises multi-step reuse and both landscape directions.
 The observe-only refusal test's process-list timeout increases from 10 to 30 seconds after a hosted simulator timeout; all refusal assertions remain intact.
 Next: finish screenshot native checks, push the reviewed change, verify hosted CI, rebuild the package, and publish 0.2.0 under existing authorization.
+
+Final local screenshot verification passed PASS/FAIL/error, the shipped help example, multi-step replacement/rename/reuse, and observe-only refusal with the app remaining stopped.
+The exact release tarball's installed native helper successfully read the live simulator orientation.
+The dedicated verification session was closed and its simulator shut down after testing.
+Commit 8a72d7f6114558f58e28ad0ac697111c4afdc32b is pushed; hosted run https://github.com/timcheng112/device-annotate/actions/runs/39128487073 passed unit/package, Android, and iOS jobs.
+The rebuilt tarball is /private/tmp/device-annotate-release-0.2.0-ios/device-annotate-0.2.0.tgz (578803 bytes, 191 files).
+Its integrity is sha512-KOmirZwbiA26JsZcxWvtyNvKXAETQQD55+6Ao4OODc+SeMGHB+eFPY5vACt4wEj1RSRg7gOxq6mJYQ/ldyfdZQ==.
+Publication was invoked under the user's existing authorization and is waiting for npm browser authentication.
+Next: complete authentication, verify registry version/integrity/README, then record publication.
+
+Npm browser authentication completed and device-annotate@0.2.0 was published on 2026-10-18.
+Registry metadata confirms latest=0.2.0, the expected integrity, and the updated README with iOS multi-step support.
+The tarball downloaded from npm matches the tested candidate byte for byte and includes the native helper.
+Published package: https://www.npmjs.com/package/device-annotate/v/0.2.0.
+No release work remains; the requested technical walkthrough can follow separately.
