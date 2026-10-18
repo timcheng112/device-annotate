@@ -6,7 +6,7 @@ M0 through M4 are complete; M4 was committed as `12c12ab`.
 Its rendering and performance evidence remains in [M4-RENDERING.md](M4-RENDERING.md).
 M5 exposes public live capture but remains incomplete until the required hosted CI gates run successfully.
 
-Worktree: `/Users/timcheng112/Downloads/device-proof`.
+Worktree: `/Users/timcheng112/Documents/repos/device-annotate`.
 Branch: `plan/implementation`.
 Local commits are authorized.
 No push, publication, PR, or external communication occurred.
@@ -193,7 +193,9 @@ Package metadata, imports, CLI entry points, diagnostics, documentation, and sch
 The package lock and JSON Schemas are regenerated through their existing tools.
 `npm run check` passes after the final rename: 740 tests, type checking, 18 generated-schema checks, and 22 vendor hash checks.
 A direct npm registry check returned 404 for `device-annotate`; this does not reserve the name.
-The checkout path, neutral fixture identities, existing `versions.deviceProof` evidence field, and `.device-proof-lock` journal remain unchanged to preserve existing evidence and locking compatibility.
+The checkout moved from `~/Downloads/device-proof` to `~/Documents/repos/device-annotate` at the user's request.
+Neutral fixture identities, the existing `versions.deviceProof` evidence field, and the `.device-proof-lock` journal remain unchanged to preserve existing evidence and locking compatibility.
+Recorded native fixture provenance retains its original capture-time workspace path; fresh native runs must prepare a session scoped to the new checkout path.
 
 Review and run the committed native CI workflow after a Git remote and publication authorization are supplied.
 The iOS host limitation remains explicit: multi-step iOS evidence requires a toolchain/provider that can reliably expose active display rotation, or a separately verified read-only observation source.
