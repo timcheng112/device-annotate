@@ -474,3 +474,14 @@ The offline publish dry run passes with the expected unauthenticated warning.
 Npm login instructions have been provided; authentication has not yet been confirmed.
 Next safe action: verify npm identity after the user signs in, then obtain explicit publication approval for the reviewed release candidate.
 No npm publication has occurred.
+
+## Authorized publication blocked by npm authentication policy
+
+The user explicitly authorized publication with “publish it”.
+`npm whoami` confirmed `timcheng112`, and the release tarball's SHA-512 integrity was rechecked before the real publish attempt.
+Npm rejected the PUT with E403: two-factor authentication or a granular access token with bypass 2FA enabled is required for publishing.
+A subsequent registry lookup returned 404, confirming no version was published.
+This was an npm authentication-policy rejection, not an automatic tool approval rejection.
+Publication authorization remains valid for this release candidate; the user must complete the required account authentication setup before retrying.
+The prepared tarball is unchanged.
+Next safe action: enable npm 2FA, retry the authorized publication with interactive authentication, and verify registry version and integrity before reporting success.
